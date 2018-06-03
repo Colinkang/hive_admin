@@ -84,11 +84,11 @@ export default {
 			tel: '',
 			address: '',
 			tableData: [],
+			ids: [],
 		};
 	},
 	created: function() {
-    this.getOrgList(10, 1);
-    
+		this.getOrgList(10, 1);
 	},
 	methods: {
 		empty() {
@@ -107,19 +107,27 @@ export default {
 			result.then(res => {});
 		},
 		getOrgList(pageSize, pageNo) {
-      let _this = this;
+			let _this = this;
 			let result = post('/getPageOrganizations', { pageSize: pageSize, pageNo: pageNo });
 			result.then(function(res) {
-			   if(res.data.responseCode ==='000000'){
-           let organizations = res.data.data.organizations;
-          //  for(let t of organizations)
-          _this.tableData = organizations;
-         }
+				if (res.data.responseCode === '000000') {
+					let organizations = res.data.data.organizations;
+					//  for(let t of organizations)
+					_this.tableData = organizations;
+				}
 			});
-    },
-    delete(){
-      post('/',null);
-    }
+		},
+		deleteOrg() {
+			let _this = this;
+			let result = post('/deleteOrganizations', {
+				ids: _this.ids,
+			});
+			result.then(res => {
+				if (res.data.responseCode === '000000') {
+					console.log(res.data);
+				}
+			});
+		},
 	},
 };
 </script>
