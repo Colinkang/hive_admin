@@ -3,7 +3,7 @@
   <div class="section-left">
     <table border="0">
       <tr>
-        <th>封箱ID</th>
+        <th>蜂箱ID</th>
         <th>温度</th>
         <th>湿度</th>
         <th>重量</th>
@@ -73,7 +73,7 @@
             </div>
             <div class="overview-row">
               <div class="overview-row-left">
-                数量：111
+                数量：11133
               </div>
               <div class="overview-row-right">
                 正常
@@ -216,7 +216,6 @@ export default {
 			normalBeeBoxNum: '',
 			offLineBeeBoxNum: '',
 			protectionNum: '',
-			// runningBeeBoxNum: stat.runningBeeBoxNum,
 			totalBeeBoxNum: '',
 			date: '',
 			boxId: '',

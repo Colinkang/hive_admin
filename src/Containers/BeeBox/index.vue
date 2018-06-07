@@ -25,7 +25,7 @@
       <div class="section-left">
         <table border="0">
           <tr>
-            <th>封箱ID</th>
+            <th>蜂箱ID</th>
             <th>温度</th>
             <th>湿度</th>
             <th>重量</th>
@@ -33,7 +33,7 @@
             <th>状态</th>
             <th>电量</th>
           </tr>
-          <tr v-for="(item) in hiveList" @click="slectThisRow(item.boxId)">
+          <tr v-for="(item) in hiveList" :key="item.boxId" @click="slectThisRow(item.boxId)">
             <td>-</td>
             <td>1</td>
             <td>2</td>
@@ -222,38 +222,42 @@
 </template>
 
 <script>
+import { get, post } from '../../common/post.js';
 export default {
-  components: {
+	components: {},
+	data() {
+		return {
+			hiveList: [1, 2, 3, 4, 5, 6, 7, 8, 8, 98, 7, 6, 5, 1, 3, 4, 5, 5],
+			checked: true,
+		};
+	},
+	created: function() {
+		this.getHiveList();
+	},
 
-  },
-  data() {
-    return {
-      hiveList: [1, 2, 3, 4, 5, 6, 7, 8, 8, 98, 7, 6, 5, 1, 3, 4, 5, 5],
-      checked:true
-    };
-  },
-  created: function() {
-
-  },
-
-  methods: {
-    slectThisRow(id) {
-      //  this.idChange(id)
-    },
-
-  },
+	methods: {
+		getHiveList() {
+			let result = post('/getBeeBoxes', null);
+			result.then(res => {
+				console.log(111, res);
+			});
+		},
+		slectThisRow(id) {
+			//  this.idChange(id)
+		},
+	},
 };
 </script>
 
 <style scoped>
-.outer-box{
-  width: 100%;
+.outer-box {
+	width: 100%;
 }
 .box {
-  position: relative;
-  width: 100%;
+	position: relative;
+	width: 100%;
 
-  display: flex;
+	display: flex;
 }
 
 .hive-top {
@@ -262,7 +266,6 @@ export default {
 	background-color: #162f46;
 	position: relative;
 	color: white;
-
 }
 .hive-control-btn {
 	position: absolute;
@@ -271,14 +274,15 @@ export default {
 	height: 50px;
 	line-height: 50px;
 }
-.el-button--text{
-  color:white;
+.el-button--text {
+	color: white;
 }
 .hive-control-btn span {
 	margin-left: 10px;
 }
 
-.hive-control-btn span:hover,.el-button--text:hover {
+.hive-control-btn span:hover,
+.el-button--text:hover {
 	cursor: pointer;
 	color: rgb(0, 138, 207);
 }
@@ -293,235 +297,233 @@ export default {
 }
 
 .section-left {
-  position: relative;
-  width: 30%;
-  overflow: scroll;
-  padding-bottom: 20px;
-  background: white;
+	position: relative;
+	width: 30%;
+	overflow: scroll;
+	padding-bottom: 20px;
+	background: white;
 }
 
 .section-right {
-  width: 68%;
-  height: 100%;
-  padding-left: 10px;
-  padding-right: 10px;
-
+	width: 68%;
+	height: 100%;
+	padding-left: 10px;
+	padding-right: 10px;
 }
 
 .section-right-top {
-  position: relative;
-  width: 100%;
-  height: 667px;
-  display: flex;
+	position: relative;
+	width: 100%;
+	height: 667px;
+	display: flex;
 }
 
 .section-right-top-left {
-  width: 43%;
-  height: 100%;
+	width: 43%;
+	height: 100%;
 }
 
 .section-right-top-right {
-  margin-left: 2%;
-  width: 55%;
-  height: 100%;
-  background: #0b1b36;
+	margin-left: 2%;
+	width: 55%;
+	height: 100%;
+	background: #0b1b36;
 }
 
 .section-right-bottom {
-  position: relative;
-  width: 100%;
-  height: 403px;
-  margin-top: 20px;
-  display: flex;
-  background: #40577f;
+	position: relative;
+	width: 100%;
+	height: 403px;
+	margin-top: 20px;
+	display: flex;
+	background: #40577f;
 }
 
 table {
-  border-collapse: collapse;
-  width: 100%;
+	border-collapse: collapse;
+	width: 100%;
 }
 
 table tr:hover {
-  cursor: pointer;
-  background: #eee;
+	cursor: pointer;
+	background: #eee;
 }
 
 table,
 th,
 td {
-  border: 1px solid #d3d7db;
-  font-size: 14px;
-  height: 25px;
-  line-height: 25px;
-  text-align: center;
-  color:black;
+	border: 1px solid #d3d7db;
+	font-size: 14px;
+	height: 25px;
+	line-height: 25px;
+	text-align: center;
+	color: black;
 }
 
 table tr th {
-  width: 14.28%;
+	width: 14.28%;
 }
 
 .detail-box {
-  position: relative;
-  width: 100%;
-  color: white;
-  margin-top: 10px;
-  padding-top: 5px;
-  height: 85px;
-  background: #0b1b36;
+	position: relative;
+	width: 100%;
+	color: white;
+	margin-top: 10px;
+	padding-top: 5px;
+	height: 85px;
+	background: #0b1b36;
 }
 
 .section-title {
-  width: 100%;
-  text-align: left;
-  text-indent: 20px;
-  margin-top: 10px;
+	width: 100%;
+	text-align: left;
+	text-indent: 20px;
+	margin-top: 10px;
 }
 
 .dtail-row {
-  width: 90%;
-  margin-left: 20px;
-  margin-top: 5px;
-  display: flex;
-  align-items: center;
-  font-size: 12px;
+	width: 90%;
+	margin-left: 20px;
+	margin-top: 5px;
+	display: flex;
+	align-items: center;
+	font-size: 12px;
 }
 
 .detail-col {
-  width: 33%;
-  text-align: left;
+	width: 33%;
+	text-align: left;
 }
 
 .chart-box {
-  position: relative;
-  color: #daac52;
-  height: 450px;
-  border: 1px solid #746c5e;
-  width: 100%;
-  margin-top: 20px;
+	position: relative;
+	color: #daac52;
+	height: 450px;
+	border: 1px solid #746c5e;
+	width: 100%;
+	margin-top: 20px;
 }
 
 .overview {
-  position: relative;
-  width: 100%;
-  color: #daac52;
-  height: 270px;
-  background: #0b1b36;
-  display: flex;
+	position: relative;
+	width: 100%;
+	color: #daac52;
+	height: 270px;
+	background: #0b1b36;
+	display: flex;
 }
 
 .chart-line {
-  width: 100%;
-  margin-top: 30px;
-  height: 330px;
+	width: 100%;
+	margin-top: 30px;
+	height: 330px;
 }
 
 .overview-chart {
-  width: 100%;
-  height: 100%;
-  display: flex;
+	width: 100%;
+	height: 100%;
+	display: flex;
 }
 
 .id-select {
-  width: 34%;
-  height: 100%;
+	width: 34%;
+	height: 100%;
 }
 
 .overview-chart-left {
-  width: 45%;
-  height: 100%;
-  font-size: 14px;
+	width: 45%;
+	height: 100%;
+	font-size: 14px;
 }
 
 .overview-chart-right {
-  width: 55%;
-  height: 100%;
-  background: white;
+	width: 55%;
+	height: 100%;
+	background: white;
 }
 
 .overview-row {
-  width: 100%;
-  display: flex;
-  margin-top: 30px;
+	width: 100%;
+	display: flex;
+	margin-top: 30px;
 }
 
 .overview-row-left {
-  width: 65%;
-  text-align: left;
+	width: 65%;
+	text-align: left;
 }
 
 .overview-row-right {
-  text-align: left;
-  width: 35%;
+	text-align: left;
+	width: 35%;
 }
 
 .line-chart-box {
-  margin-top: 10px;
-  width: 100%;
-  height: 290px;
-  background: #0b1b36;
-
+	margin-top: 10px;
+	width: 100%;
+	height: 290px;
+	background: #0b1b36;
 }
 
 .section-right-bottom-left {
-  width: 38%;
-  height: 100%;
+	width: 38%;
+	height: 100%;
 }
 
 .section-right-bottom-right {
-  width: 62%;
-  height: 100%;
+	width: 62%;
+	height: 100%;
 }
 
 .form-title {
-  margin-left: 5px;
-  margin-top: 20px;
-  text-align: left;
-  color: white;
-  font-size: 20px
+	margin-left: 5px;
+	margin-top: 20px;
+	text-align: left;
+	color: white;
+	font-size: 20px;
 }
 
 .form-row {
-  width: 96%;
-  margin-left: 2%;
-  margin-top: 10px;
-  text-align: left;
-  color: white;
-  font-size: 14px;
+	width: 96%;
+	margin-left: 2%;
+	margin-top: 10px;
+	text-align: left;
+	color: white;
+	font-size: 14px;
 }
 
 .name-input {
-  width: 80%;
+	width: 80%;
 }
 
 .tiaojian,
 .canshu {
-  width: 49%;
-  display: inline-block;
+	width: 49%;
+	display: inline-block;
 }
-.sure-btn{
-  width: 80px;
-  height: 30px;
-  text-align: center;
-  line-height: 30px;
-  background: #0b1b36;
-  color: white;
+.sure-btn {
+	width: 80px;
+	height: 30px;
+	text-align: center;
+	line-height: 30px;
+	background: #0b1b36;
+	color: white;
 }
-textarea{
-  width: 100%;
-  height: 150px;
+textarea {
+	width: 100%;
+	height: 150px;
 }
-.group-table{
-  height: 305px;
-  background: #e8f0f9;
-  overflow:scroll;
+.group-table {
+	height: 305px;
+	background: #e8f0f9;
+	overflow: scroll;
 }
-.icon-span{
-  float: right;
-  font-size: 12px;
-  margin-right: 20px;
+.icon-span {
+	float: right;
+	font-size: 12px;
+	margin-right: 20px;
 }
-.icon-span i{
-  font-size: 13px;
+.icon-span i {
+	font-size: 13px;
 }
 </style>
