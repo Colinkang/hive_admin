@@ -33,49 +33,91 @@
       </div>
     </div>
   </div>
-  <div class="list-box">
-    <table border="0" class="header">
-      <tr>
-        <th style="border:none;width:3%;text-align:center">
-          <el-checkbox v-model="checked"></el-checkbox>
-        </th>
-        <th>组织ID<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
-        <th>组织名称<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
-        <th>联系人<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
-        <th>成员数量<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
-        <th>创建时间<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
-        <th>邮箱</th>
-        <th>联系电话</th>
-        <th>地址</th>
-        <th>状态</th>
-      </tr>
-      <tr v-for="item in list">
-        <td style="border:none;width:3%;text-align:center;background:none">
-          <el-checkbox v-model="checked"></el-checkbox>
-        </td>
-        <td>1</td>
-        <td>2</td>
-        <td>3</td>
-        <td>4</td>
-        <td>5</td>
-        <td>6</td>
-        <td>7</td>
-        <td>022222222222222222222222222222222222222222222222222222</td>
-        <td>2</td>
+  <div class="list-container">
+    <div class="list-left">
+      <div class="form-row">
+        <span class="title">组织列表</span>
+      </div>
+      <table border="0" class="header">
+        <tr>
+          <th style="border:none;width:3%;text-align:center">
+            <el-checkbox v-model="checked"></el-checkbox>
+          </th>
+          <th>组织ID<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
+          <th>组织名称<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
+          <th>联系人<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
+          <th>管理员</th>
+          <th>成员数量</th>
+        </tr>
+        <tr v-for="item in list">
+          <td style="border:none;width:3%;text-align:center;background:none">
+            <el-checkbox v-model="checked"></el-checkbox>
+          </td>
+          <td>1</td>
+          <td>2</td>
+          <td>3</td>
+          <td>4</td>
+          <td>5</td>
 
-      </tr>
-    </table>
-  </div>
-  <div class="form-row">
-    <span class="icon-span"><i class="iconfont icon-shuaxin1">删除</i> </span>
-    <span class="icon-span"><i class="iconfont icon-shuaxin1">刷新</i> </span>
 
-  </div>
-  <div class="form-row" style="text-align:center">
-    <el-pagination small layout="prev, pager, next" :total="50">
-    </el-pagination>
+        </tr>
+      </table>
+      <div class="form-row" style="margin-top:20px">
+        <span class="icon-span"><i class="iconfont icon-shuaxin1">删除</i> </span>
+        <span class="icon-span"><i class="iconfont icon-shuaxin1">刷新</i> </span>
 
+      </div>
+    </div>
+    <div class="list-right">
+      <div class="form-row">
+        <span class="title">蜂农列表</span>
+      </div>
+      <div class="form-row">
+        <span class="farmer-span">管理员：张三</span>
+        <span class="farmer-span">联系人：张三</span>
+        <span class="farmer-span">联系邮箱：171chjvhebde@qq.com</span>
+        <span class="farmer-span">联系电话：10029e9719212</span>
+        <span class="farmer-span">联系地址：上海市嘉定区嘉定镇嘉定村</span>
+
+      </div>
+      <table border="0" class="header">
+        <tr>
+          <th style="border:none;width:3%;text-align:center">
+            <el-checkbox v-model="checked"></el-checkbox>
+          </th>
+          <th>组织ID<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
+          <th>组织名称<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
+          <th>蜂农<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
+          <th>蜂箱数量<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
+          <th>创建时间<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
+          <th>邮箱</th>
+          <th>联系电话</th>
+          <th>地址</th>
+        </tr>
+        <tr v-for="item in list">
+          <td style="border:none;width:3%;text-align:center;background:none">
+            <el-checkbox v-model="checked"></el-checkbox>
+          </td>
+          <td>1</td>
+          <td>2</td>
+          <td>3</td>
+          <td>4</td>
+          <td>5</td>
+          <td>4</td>
+          <td>5</td>
+          <td>5</td>
+
+
+
+        </tr>
+      </table>
+      <div class="form-row" style="margin-top:20px">
+        <span class="icon-span"><i class="iconfont icon-shuaxin1">删除</i> </span>
+        <span class="icon-span"><i class="iconfont icon-shuaxin1">刷新</i> </span>
+      </div>
+    </div>
   </div>
+
 </div>
 </template>
 <script>
@@ -84,7 +126,8 @@ export default {
   data: () => ({
     list: [
       1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15
-    ]
+    ],
+    checked: true
   })
 }
 </script>
@@ -97,7 +140,7 @@ export default {
   background: #15232f;
   border: 1px solid #235978;
   color: white;
-  padding-bottom: 100px;
+  padding-bottom: 10px;
 }
 
 .form-row {
@@ -110,6 +153,7 @@ export default {
   display: inline-block;
   margin-top: 10px;
   margin-left: 10px;
+  margin-bottom: 20px;
   font-size: 17px;
 }
 
@@ -189,12 +233,45 @@ export default {
 .header {
   color: white;
 }
-.icon-span{
+
+.icon-span {
   float: right;
   font-size: 12px;
   margin-right: 20px;
 }
-.icon-span i{
+
+.icon-span i {
   font-size: 13px;
+}
+
+.list-container {
+  width: 100%;
+  display: flex;
+  margin-top: 20px;
+}
+
+.list-left {
+  height: 900px;
+  margin-left: 10px;
+  background: #2c4261;
+  padding: 10px;
+  width: 30%;
+}
+
+.list-right {
+  width: 70%;
+  height: 900px;
+  margin-left: 10px;
+  margin-right: 10px;
+  background: #0b1b36;
+  padding: 10px;
+}
+.farmer-span{
+  margin-left: 20px;
+  display: inline-block;
+  min-width: 100px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  color:#5c5466
 }
 </style>

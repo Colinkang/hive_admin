@@ -2,15 +2,15 @@
   <div class="outer-box">
     <div class="hive-top">
             <div class="hive-control-btn">
-                <hiveadd ref="hive"></hiveadd>
+                
                 <span><i class="iconfont icon-add"></i>
-                  <el-button type="text" @click="hiveShow">添加</el-button>
+                  <el-button type="text" >添加</el-button>
                 </span>
                 <span><i class="iconfont icon-069delete"></i>
-                  <el-button type="text" @click="delete1">删除</el-button>
+                  <el-button type="text" >删除</el-button>
                 </span>
                 <span><i class="iconfont icon-shuaxin1"></i>
-                  <el-button type="text" @click="delete1">刷新</el-button>
+                  <el-button type="text" >刷新</el-button>
                 </span>
             </div>
             <div class="hive-top-input">
@@ -229,7 +229,8 @@ export default {
   data() {
     return {
       hiveList: [1, 2, 3, 4, 5, 6, 7, 8, 8, 98, 7, 6, 5, 1, 3, 4, 5, 5],
-      checked:true
+      checked:true,
+      search:""
     };
   },
   created: function() {

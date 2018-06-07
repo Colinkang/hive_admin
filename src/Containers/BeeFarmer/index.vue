@@ -45,7 +45,7 @@
         <th style="border:none;width:3%;text-align:center">
           <el-checkbox v-model="checked"></el-checkbox>
         </th>
-        <th>蜂农id<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
+        <th>蜂农ID<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
         <th>登录名</th>
         <th>姓名</th>
         <th>蜂箱数量<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
@@ -93,7 +93,8 @@ export default {
   data: () => ({
     list: [
       1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15
-    ]
+    ],
+    checked: true,
   })
 }
 </script>
@@ -127,12 +128,12 @@ export default {
 }
 
 .input-section-left {
-  width: 65%;
+  width: 70%;
   height: 160px;
 }
 
 .input-section-right {
-  width: 35%;
+  width: 30%;
   height: 160px;
   border-left: 2px solid white;
 }
@@ -198,12 +199,14 @@ export default {
 .header {
   color: white;
 }
-.icon-span{
+
+.icon-span {
   float: right;
   font-size: 12px;
   margin-right: 20px;
 }
-.icon-span i{
+
+.icon-span i {
   font-size: 13px;
 }
 </style>
