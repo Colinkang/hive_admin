@@ -1,14 +1,18 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import content from '@/components/content/index.vue';
-import Hive from '@/Containers/Hive/index'
-import Beekeeper from '@/Containers/Beekeeper/index'
-import Organization from '@/Containers/Organization/index'
-import Event1 from '@/Containers/Event/index'
-import AI from '@/Containers/AI/index'
-import UAV from '@/Containers/UAV/index'
-import Management from '@/Containers/Management/index'
+// import Hive from '@/Containers/Hive'
+// import HiveMap from '@/Containers/Map'
+import content from '../components/content/index.vue';
+// import BeeKeeperInfo from '@/Containers/BeeKeeper';
+// import UpdatePwd from '@/Containers/BeeKeeper/updatepwd.vue';
 
+import BeeBox from '../Containers/BeeBox/index'
+import BeeFarmer from '../Containers/BeeFarmer/index.vue'
+import Organization from '../Containers/Organization/index.vue'
+import Event from '../Containers/Event/index.vue'
+import AI from '../Containers/AI/index.vue'
+import Drone from '../Containers/Drone/index.vue'
+import Control from '../Containers/Control/index.vue'
 
 
 Vue.use(Router)
@@ -19,44 +23,37 @@ export default new Router({
       path: '/',
       name: 'content',
       component: content,
-      redirect: '/hive',
+      redirect: '/beebox',
       children: [
         {
-          path: '/hive',
-          name: 'hive',
-          component: Hive
+            path:'beebox',
+            component:BeeBox
         },
         {
-          path: '/beekeeper',
-          name: 'beekeeper',
-          component: Beekeeper
+            path:'beefarmer',
+            component:BeeFarmer
         },
         {
-          path: '/organization',
-          name: 'organization',
-          component: Organization
+            path:'organization',
+            component:Organization
         },
         {
-          path: '/event',
-          name: 'event',
-          component: Event1
+            path:'event',
+            component:Event
         },
         {
-          path: '/ai',
-          name: 'ai',
-          component: AI
+            path:'ai',
+            component:AI
         },
         {
-          path: '/uav',
-          name: 'uav',
-          component: UAV
+            path:'dron',
+            component:Drone
         },
         {
-          path: '/management',
-          name: 'management',
-          component: Management
-        },
+            path:'control',
+            component:Control
+        }
       ]
-    },
+    }
   ]
 })

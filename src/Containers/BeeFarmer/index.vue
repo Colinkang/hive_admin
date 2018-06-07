@@ -1,17 +1,23 @@
 <template>
 <div class="container">
   <div class="form-row">
-    <span class="title">组织</span>
+    <span class="title">蜂农</span>
   </div>
   <div class="form-row form-row-section">
     <div class="input-section-left">
       <div class="form-row">
-        <span style="margin-left:20px;margin-top:10px;display:block">创建组织</span>
-        <span class="input-item" style="margin-left:20px;"><label>组织名称 <input style="width:120px;"/></label></span>
-        <span class="input-item" style="margin-left:20px;"><label>联系人名称 <input style="width:120px;"/></label></span>
-
+        <span style="margin-left:20px;margin-top:10px;display:block">创建蜂农</span>
+        <span class="input-item" style="margin-left:20px;"><label>姓名 <input style="width:120px;"/></label></span>
+        <span class="input-item" style="margin-left:20px"><label>组织
+            <select style="width:120px;">
+            <option value ="volvo">Volvo</option>
+            <option value ="saab">Saab</option>
+            <option value="opel">Opel</option>
+            <option value="audi">Audi</option>
+          </select></label></span>
         <span class="input-item" style="margin-left:20px;"><label>邮箱 <input style="width:120px;"/></label></span>
-        <span class="input-item" style="margin-left:20px;"><label>联系电话 <input style="width:120px;"/></label></span>
+        <span class="input-item" style="margin-left:20px;"><label>联系电话 <input style="width:120px;"/></label><span class="sent-code">发送短信验证码</span></span>
+        <span class="input-item" style="margin-left:20px;"><label>验证码 <input style="width:50px;"/></label></span>
         <span class="input-item" style="margin-left:20px;"><label>地址 <input style="width:350px;"/></label></span>
       </div>
       <div class="form-row">
@@ -39,11 +45,13 @@
         <th style="border:none;width:3%;text-align:center">
           <el-checkbox v-model="checked"></el-checkbox>
         </th>
-        <th>组织ID<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
-        <th>组织名称<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
-        <th>联系人<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
-        <th>成员数量<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
+        <th>蜂农id<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
+        <th>登录名</th>
+        <th>姓名</th>
+        <th>蜂箱数量<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
         <th>创建时间<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
+        <th>修改时间<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
+        <th>合作社</th>
         <th>邮箱</th>
         <th>联系电话</th>
         <th>地址</th>
@@ -60,9 +68,10 @@
         <td>5</td>
         <td>6</td>
         <td>7</td>
+        <td>8</td>
+        <td>9</td>
         <td>022222222222222222222222222222222222222222222222222222</td>
-        <td>2</td>
-
+        <td>11</td>
       </tr>
     </table>
   </div>

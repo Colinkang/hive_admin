@@ -1,6 +1,6 @@
 <template>
   <div id="">
-    AI
+无人机
 
   </div>
 </template>

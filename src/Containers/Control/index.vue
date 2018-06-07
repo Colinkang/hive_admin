@@ -1,7 +1,6 @@
 <template>
   <div id="">
-    AI
-
+    控制
   </div>
 </template>
 <script>

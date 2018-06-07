@@ -1,48 +1,32 @@
 <template>
-    <div id="myChart" :style="{width: '250px', height: '300px'}"></div>
+    <div id="myChart" :style="{width: '100%', height: '100%'}"></div>
 </template>
 <script>
 import echarts from 'echarts'
 export default {
-    
+
 	name: 'mychart',
 	data() {
 		return {
 			msg: 'Welcome to Your Vue.js App',
 		};
 	},
-	mounted() {
-		this.drawLine();
-	},
+	// mounted() {
+	// 	this.drawLine();
+	// },
 	methods: {
-		drawLine() {
+		drawLine(obj) {
 			// 基于准备好的dom，初始化echarts实例
 			let myChart = echarts.init(document.getElementById('myChart'));
 			// 绘制图表
 			let option = {
 				tooltip: {
 					trigger: 'item',
-					formatter: '{a} <br/>{b}: {c} ({d}%)',
-				},
-				legend: {
-					orient: 'vertical',
-					x: 'left',
-					data: [
-						'直达',
-						'营销广告',
-						'搜索引擎',
-						'邮件营销',
-						'联盟广告',
-						'视频广告',
-						'百度',
-						'谷歌',
-						'必应',
-						'其他',
-					],
+					formatter: '',
 				},
 				series: [
 					{
-						name: '访问来源',
+						name: '总量',
 						type: 'pie',
 						selectedMode: 'single',
 						radius: [0, '30%'],
@@ -58,22 +42,16 @@ export default {
 							},
 						},
 						data: [
-							{ value: 335, name: '直达', selected: true },
-							{ value: 679, name: '营销广告' },
-							{ value: 1548, name: '搜索引擎' },
+							{ value: obj.protectionNum, name: '策略保护', selected: true },
+							{ value: obj.noProtectionNum, name: '非策略保护' },
 						],
 					},
 					{
-						name: '访问来源',
+						name: '总量',
 						type: 'pie',
 						radius: ['40%', '55%'],
 						label: {
 							normal: {
-								formatter: '{a|{a}}{abg|}\n{hr|}\n  {b|{b}：}{c}  {per|{d}%}  ',
-								backgroundColor: '#eee',
-								borderColor: '#aaa',
-								borderWidth: 1,
-								borderRadius: 4,
 								// shadowBlur:3,
 								// shadowOffsetX: 2,
 								// shadowOffsetY: 2,
@@ -112,14 +90,9 @@ export default {
 							},
 						},
 						data: [
-							{ value: 335, name: '直达' },
-							{ value: 310, name: '邮件营销' },
-							{ value: 234, name: '联盟广告' },
-							{ value: 135, name: '视频广告' },
-							{ value: 1048, name: '百度' },
-							{ value: 251, name: '谷歌' },
-							{ value: 147, name: '必应' },
-							{ value: 102, name: '其他' },
+							{ value: obj.normalBeeBoxNum, name: '正常' },
+							{ value: obj.abnormalBeeBoxNum, name: '异常' },
+							{ value: obj.offLineBeeBoxNum, name: '离线' },
 						],
 					},
 				],

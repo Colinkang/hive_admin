@@ -1,34 +1,49 @@
 <template>
 <div class="nav">
-  <el-menu default-active="0" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose" background-color="#404040" text-color="rgba(105, 105, 106)" active-text-color="rgb(105, 105, 106)" :collapse="collapse" :router="true">
-     <el-menu-item index="1" route="/hive">
-        <i class="el-icon-menu"></i>
-        <span slot="title"> 蜂箱</span>
-      </el-menu-item>
-     <el-menu-item index="2" route="/beekeeper">
-        <i class="el-icon-menu"></i>
-        <span slot="title"> 蜂农</span>
-      </el-menu-item>
-      <el-menu-item index="3" route="/organization">
-        <i class="el-icon-document"></i>
-        <span slot="title"> 组织</span>
-      </el-menu-item>
-      <el-menu-item index="4" route="/event">
-        <i class="el-icon-setting"></i>
-        <span slot="title"> 事件</span>
-      </el-menu-item>
-      <el-menu-item index="5" route="/ai">
-        <i class="el-icon-setting"></i>
-        <span slot="title"> AI</span>
-      </el-menu-item>
-      <el-menu-item index="6" route="/uav">
-        <i class="el-icon-setting"></i>
+  <el-menu default-active="0" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose" background-color="#404040" text-color="rgba(105, 105, 106)" a ctive-text-color="rgb(105, 105, 106)" :collapse="collapse" :router="true">
+    <el-menu-item index="0" route="/beebox">
+      <span class="nav-text">
+        <i class="iconfont icon-boxxiangzi"></i>
+        <span slot="title">蜂箱</span>
+      </span>
+    </el-menu-item>
+    <el-menu-item index="1" route="/beefarmer">
+      <span class="nav-text">
+        <i class="iconfont icon-wo"></i>
+        <span slot="title">蜂农</span>
+      </span>
+    </el-menu-item>
+    <el-menu-item index="2" route="/organization">
+      <span class="nav-text">
+        <i class="iconfont icon-renshu"></i>
+        <span slot="title">组织</span>
+      </span>
+    </el-menu-item>
+    <el-menu-item index="3" route="/event">
+      <span class="nav-text">
+        <i class="iconfont icon-event"></i>
+        <span slot="title">事件</span>
+      </span>
+    </el-menu-item>
+    <el-menu-item index="4" route="/ai">
+      <span class="nav-text">
+        <i class="iconfont icon-rengongzhineng"></i>
+        <span slot="title">AI</span>
+      </span>
+    </el-menu-item>
+    <el-menu-item index="5" route="/dron">
+      <span class="nav-text">
+        <i class="iconfont icon-UAV"></i>
         <span slot="title">无人机</span>
-      </el-menu-item>
-      <el-menu-item index="7" route="/management">
-        <i class="el-icon-setting"></i>
-        <span slot="title"> 管理</span>
-      </el-menu-item>
+      </span>
+    </el-menu-item>
+    <el-menu-item index="6" route="/control">
+      <span class="nav-text">
+        <i class="iconfont icon-guanli2"></i>
+        <span slot="title">管理</span>
+      </span>
+    </el-menu-item>
+
   </el-menu>
 </div>
 </template>
@@ -58,13 +73,14 @@ export default {
 </script>
 <style lang="" scoped>
 .nav {
-  background-color:rgb(26,26,26);
+  background-color: #0b1b36;
   z-index: 1111;
 }
 
 .el-menu-vertical-demo:not(.el-menu--collapse) {
-  width: 160px;
+  width: 200px;
   min-height: 900px;
+  color: white;
 }
 
 .el-submenu {
@@ -77,6 +93,30 @@ export default {
 
 .iconfont {
   font-size: 14px;
-  color: rgb(105,105,106);
+}
+
+.el-menu-item {
+  height: 50px;
+  line-height: 50px;
+}
+.is-active::after {
+
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: #769e21;
+  left: 0;
+
+}
+
+.is-active .nav-text {
+  position: absolute;
+  z-index: 111;
+  color: white;
+}
+
+.nav-text {
+  color: white;
 }
 </style>

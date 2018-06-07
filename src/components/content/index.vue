@@ -1,6 +1,6 @@
 <template>
-  <div class="content">
-    
+  <div class="my-content">
+
     <router-view></router-view>
   </div>
 </template>
@@ -13,9 +13,10 @@ export default {
 }
 </script>
 <style lang="" scoped>
-.content{
+.my-content{
   width: 100%;
-  min-height: 900px;
-  /* background-color:rgb(94,95,95);  */
+  height: 100%;
+  overflow: scroll;
+  background-color:#162f46
 }
 </style>

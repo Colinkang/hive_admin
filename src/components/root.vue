@@ -29,6 +29,10 @@ import NNav from '../components/nav/index';
 import FFooter from '../components/footer/index';
 import LoginPage from './LoginPage/index.vue';
 import {
+  IS_LOGIN
+} from '../common/localStorageKey';
+import LocalStore from '../common/localStore';
+import {
   post
 } from '../common/post';
 export default {
@@ -55,24 +59,20 @@ export default {
     }
   },
   mounted() {
-    console.log(444)
-    //检查登录状态
-    // let result = post('/manager/token');
-    // result.then((res) => {
-    //   if (res.data.code === '1004') {
-    //     this.isLogin = false
-    //   } else {
-    //     this.isLogin=true
-    //   }
-    // })
-    this.isLogin=true
+    let isLogin = LocalStore.getItem(IS_LOGIN)
+    this.isLogin=isLogin
+    if(!isLogin){
+      this.$router.push({
+        path:'/'
+      })
+    }
   }
 }
 </script>
 <style >
 .hello {
   width: 100%;
-  min-height: 100%;
+  height: 100%;
 }
 
 .el-header {
@@ -87,11 +87,12 @@ export default {
 .el-aside {
   overflow: visible;
   min-height: 900px;
-  background-color: #404040;
+  background-color: #0b1b36;
 }
 
 .el-menu {
-  border-right: 1px solid #404040;
+  border: 1px solid #0b1b36;
+  background: #0b1b36 !important
 }
 .login-page{
   position: fixed;
@@ -115,5 +116,17 @@ export default {
   text-indent: 10px;
   margin-bottom: 10px;
   padding-bottom: 5px;
+}
+.el-main{
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+
+}
+.el-container{
+  height: 100%;
+}
+.el-menu-item{
+  background: #0b1b36 !important
 }
 </style>

@@ -1,334 +1,515 @@
 <template>
-    <div class="hive-total">
-        <div class="hive-top">
-            <div class="hive-control-btn">
-                <hiveadd ref="hive"></hiveadd>
-                <span><i class="iconfont icon-add"></i>
-                  <el-button type="text" @click="hiveShow">添加</el-button>
-                </span>
-                <span><i class="iconfont icon-069delete"></i>
-                  <el-button type="text" @click="delete1">删除</el-button>
-                </span>
-                <span><i class="iconfont icon-shuaxin1"></i>
-                  <el-button type="text" @click="delete1">刷新</el-button>
-                </span>
-            </div>
-            <div class="hive-top-input">
-                <el-input size="mini" placeholder="请输入查询内容" 
-                v-model="search" 
-                clearable
-                prefix-icon="el-icon-search"
-                ></el-input>   
-            </div>
+<div class="box">
+  <div class="section-left">
+    <table border="0">
+      <tr>
+        <th>封箱ID</th>
+        <th>温度</th>
+        <th>湿度</th>
+        <th>重量</th>
+        <th>压强</th>
+        <th>状态</th>
+        <th>电量</th>
+      </tr>
+      <tr v-for="(item) in hiveList" :key='item.boxId' @click="slectThisRow(item.boxId)">
+        <td>{{item.boxId?item.boxId:'-'}}</td>
+        <td>{{item.temperature}}</td>
+        <td>{{item.humidity}}</td>
+        <td>{{item.gravity}}</td>
+        <td>{{item.airPressure}}</td>
+        <td>{{item.status}}</td>
+        <td>{{item.battery}}</td>
+      </tr>
+    </table>
+  </div>
+  <div class="section-right">
+    <div class="detail-box">
+      <div class="section-title">
+        蜂箱信息
+      </div>
+      <div class="dtail-row">
+        <div class="detail-col">
+          蜂箱ID:
+          <changeble-input :value="boxId" @change='info_search'></changeble-input>
         </div>
-        <div class="hive-content">
-          <div class="hive-left">    
-            <div class="hive-list">
-                <el-row class="hive-list-header">
-                    <el-col :span="4">蜂箱ID</el-col>
-                    <el-col :span="3">温度</el-col>
-                    <el-col :span="3">湿度</el-col>
-                    <el-col :span="3">重量</el-col>
-                    <el-col :span="3">压强</el-col>
-                    <el-col :span="3">电量</el-col>
-                    <el-col :span="3">状态</el-col>
-                </el-row>
-                <el-row class="hive-list-row" v-for="item in hiveList" :key="item.id">
-                    <el-col :span="3">{{item.username?item.username:'-'}}</el-col>
-                    <el-col :span="6">{{item.tel?item.tel:'-'}}</el-col>
-                    <el-col :span="6">{{item.referral?item.referral:'-'}}</el-col>
-                    <el-col :span="6">{{item.status?item.status:'-'}}</el-col>
-                </el-row>
-            </div>
-          </div>
-          <div class="hive-right">
-            <div class="hive-overview-pie-info-foldline-map">
-                <div class="hive-overview-pie-info-foldline">
-                    <div class="hive-overview-pie">
-                        <div class="hive-overview">
-                            <el-row>
-                                <el-col>总览</el-col>
-                            </el-row>
-                            <el-row>
-                                <!-- <el-col :span="8">总量</el-col>
-                                <el-col :span="4"></el-col> -->
-                                <el-col :span="3">正常</el-col>
-                                <el-col :span="3">{{online}}</el-col>
-                            </el-row>
-                            <el-row>
-                                <!-- <el-col :span="8">正在运行</el-col>
-                                <el-col :span="4"></el-col> -->
-                                <el-col :span="3">异常</el-col>
-                                <el-col :span="3">{{exception}}</el-col>
-                            </el-row>
-                            <el-row>
-                                <el-col :span="3">离线</el-col>
-                                <el-col :span="3">{{offline}}</el-col>
-                                <!-- <el-col :span="8">策略保护</el-col>
-                                <el-col :span="4"></el-col> -->
-                            </el-row>
-                        </div>
-                        <div class="hive-pie">
-                            <echartspie></echartspie>
-                        </div>
-                    </div>
-                    <div class="hive-info">
-                         <el-row>
-                                <el-col :span="6">蜂箱信息</el-col>
-                                <el-col :span="6"></el-col>
-                              
-                            </el-row>
-                             <el-row>
-                                <el-col :span="6">出厂批次</el-col>
-                                <el-col :span="6"></el-col>
-                                <el-col :span="8">产商</el-col>
-                                <el-col :span="4"></el-col>
-                            </el-row>
-                             <el-row>
-                                <el-col :span="6">生产日期</el-col>
-                                <el-col :span="6"></el-col>
-                                <el-col :span="8">状态</el-col>
-                                <el-col :span="4"></el-col>
-                            </el-row>
-                    </div>
-                    <div class="hive-foldline">
-                        <fold></fold>
-                    </div>
-                </div>
-                <div class="hive-map">
-                    <map1></map1>
-                </div>
-            </div>
-            <div class="hive-group">
-                <div class="hive-group-add">
-                    名称
-               <el-input v-model="groupname"></el-input>
-                 条件 
-                 <el-input v-model="condition"></el-input>
-                 参数 
-                 <el-input v-model="params"></el-input>
-                <el-button type="primary">主要按钮</el-button>
-                 <div class="hive-condition-list">
-                   
-                <el-row class="hive-condition-list-header">
-                    <el-col :span="8">蜂箱ID</el-col>
-                    <el-col :span="8">温度</el-col>
-                    <el-col :span="8">湿度</el-col>
-                </el-row>
-                <el-row class="hive-condition-list-row" v-for="item in hiveConditionList" :key="item.id">
-                    <el-col :span="3">{{item.username?item.username:'-'}}</el-col>
-                    <el-col :span="6">{{item.tel?item.tel:'-'}}</el-col>
-                    <el-col :span="6">{{item.referral?item.referral:'-'}}</el-col>
-                </el-row>
-                </div>
-                </div>
-                <div class="hive-group-list">
-                   
-                <el-row class="hive-group-list-header">
-                    <el-col :span="8">蜂箱ID</el-col>
-                    <el-col :span="8">温度</el-col>
-                    <el-col :span="8">湿度</el-col>
-                </el-row>
-                <el-row class="hive-group-list-row" v-for="item in hiveGroupList" :key="item.id">
-                    <el-col :span="3">{{item.username?item.username:'-'}}</el-col>
-                    <el-col :span="6">{{item.tel?item.tel:'-'}}</el-col>
-                    <el-col :span="6">{{item.referral?item.referral:'-'}}</el-col>
-                </el-row>
-                </div>
-            </div>
-          </div>
+        <div class="detail-col">
+          出厂批次: {{batchNo}}
         </div>
+        <div class="detail-col">
+          厂商:{{manufacturer}}
+        </div>
+      </div>
+      <div class="dtail-row">
+        <div class="detail-col">
+          蜂箱定位:{{lat}},{{lng}}
+        </div>
+        <div class="detail-col">
+          生产日期:{{productionDate}}
+        </div>
+        <div class="detail-col">
+          状态:{{status}}
+        </div>
+      </div>
     </div>
+    <div class="chart-box">
+      <div class="section-title">
+        历史数据折线图
+      </div>
+      <div style="text-align:left;padding-left:20px;margin-top:10px;">
+        <el-date-picker size='mini' v-model="date" @change="dateChange" value-format="YYYY-MM-dd" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
+        </el-date-picker>
+      </div>
+      <div class="chart-line">
+        <fold refs="fold"></fold>
+      </div>
+
+    </div>
+    <div class="overview">
+      <div class="overview-chart">
+        <div class="overview-chart-left">
+          <div class="overview-chart-left-row">
+            <div class="section-title">
+              总览
+            </div>
+            <div class="overview-row">
+              <div class="overview-row-left">
+                数量：111
+              </div>
+              <div class="overview-row-right">
+                正常
+              </div>
+            </div>
+            <div class="overview-row">
+              <div class="overview-row-left">
+                正在运行：111
+              </div>
+              <div class="overview-row-right">
+                异常
+              </div>
+            </div>
+            <div class="overview-row">
+              <div class="overview-row-left">
+                离线
+              </div>
+              <div class="overview-row-right">
+                策略维护
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="overview-chart-right">
+          <echartspie ref="hive"></echartspie>
+        </div>
+      </div>
+      <div class="id-select">
+        <id-select @change="idSelectSearch"></id-select>
+      </div>
+    </div>
+  </div>
+  <!-- <div class="hive-left">
+    <el-table :data="hiveList" border style="width: 100%" max-height="600px" @current-change="handleCurrentChange">
+      <el-table-column prop="boxId" label="蜂箱ID" width="70">
+      </el-table-column>
+      <el-table-column prop="temperature" label="温度" width="70">
+      </el-table-column>
+      <el-table-column prop="humidity" label="湿度" width="70">
+      </el-table-column>
+      <el-table-column prop="gravity" label="重量" width="70">
+      </el-table-column>
+      <el-table-column prop="airPressure" label="压强" width="70">
+      </el-table-column>
+      <el-table-column prop="status" label="状态" width="70">
+      </el-table-column>
+      <el-table-column prop="battery" label="电量" width="70">
+      </el-table-column>
+    </el-table>
+  </div>
+  <div class="hive-right">
+    <div class="hive-info">
+      <el-row>
+        蜂箱信息
+      </el-row>
+      <el-row>
+        <el-col :span="6">蜂箱ID</el-col>
+        <el-col :span="3">
+          <el-input v-model="boxId" @keyup.native.enter="info_search"></el-input>
+        </el-col>
+        <el-col :span="3">出厂批次</el-col>
+        <el-col :span="3">{{batchNo}}</el-col>
+        <el-col :span="3">产商</el-col>
+        <el-col :span="4">{{manufacturer}}</el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="6">蜂箱定位</el-col>
+        <el-col :span="6"></el-col>
+        <el-col :span="3">生产日期</el-col>
+        <el-col :span="5">{{productionDate}}</el-col>
+        <el-col :span="3">状态</el-col>
+        <el-col :span="3">{{status}}</el-col>
+      </el-row>
+    </div>
+    <div class="block">
+      <span class="demonstration">选择时间</span>
+      <el-date-picker v-model="date" type="datetimerange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
+      </el-date-picker>
+      <el-button type="primary" icon="el-icon-search" @click="foldsearch">搜索</el-button>
+    </div>
+    <div class="hive-foldline">
+
+      <fold refs="fold"></fold>
+    </div>
+    <div class="hive-overview-pie">
+      <div class="hive-overview">
+        <el-row>
+          <el-col :span="8">总览</el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="5">总量</el-col>
+          <el-col :span="3">{{totalBeeBoxNum}}</el-col>
+          <el-col :span="3">策略保护</el-col>
+          <el-col :span="3">{{protectionNum}}</el-col>
+          <el-col :span="5">非策略保护</el-col>
+          <el-col :span="4">{{noProtectionNum}}</el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="5">正常</el-col>
+          <el-col :span="3">{{normalBeeBoxNum}}</el-col>
+          <el-col :span="3">异常</el-col>
+          <el-col :span="3">{{abnormalBeeBoxNum}}</el-col>
+          <el-col :span="5">离线</el-col>
+          <el-col :span="4">{{offLineBeeBoxNum}}</el-col>
+        </el-row>
+      </div>
+      <div class="hive-pie">
+        <echartspie ref="hive"></echartspie>
+      </div>
+      <div>
+        <el-input placeholder="请输入蜂箱ID" v-model="hive_like_id">
+          <i slot="prefix" class="el-input__icon el-icon-search"></i>
+        </el-input>
+      </div>
+    </div>
+  </div> -->
+</div>
 </template>
 
 <script>
-import { post } from '../../common/post.js';
+import { get, post } from '../../common/post.js';
 import echartspie from './echarts.vue';
 import fold from './fold.vue';
-import map1 from './map.vue';
-import hiveadd from './hiveadd';
+import moment from 'moment';
+import ChangebleInput from '../../baseCom/ChangebleInput';
+import IdSelect from '../../baseCom/IdSelect';
 export default {
 	components: {
 		echartspie,
 		fold,
-		map1,
-		hiveadd,
+		ChangebleInput,
+		IdSelect,
 	},
 	data() {
 		return {
 			hiveList: [],
-			search: '',
-			offline: 0,
-			online: 0,
-			exception: 0,
-			groupname: '',
-			condition: '',
-			params: '',
-			hiveGroupList: [],
-            hiveConditionList:[]
+			hive_like_id: '',
+			abnormalBeeBoxNum: '',
+			noProtectionNum: '',
+			normalBeeBoxNum: '',
+			offLineBeeBoxNum: '',
+			protectionNum: '',
+			// runningBeeBoxNum: stat.runningBeeBoxNum,
+			totalBeeBoxNum: '',
+			date: '',
+			boxId: '',
+			lat: '',
+			lng: '',
+			batchNo: '',
+			manufacturer: '',
+			productionDate: '',
+			status: '',
+			id: '',
+			date: '',
 		};
 	},
-	created: {},
+	created: function() {
+		this.getHiveList();
+	},
+
 	methods: {
-		hiveShow() {
-			this.$refs.hive.dialogShow();
-		},
-		getTableData() {
+    slectThisRow(id){
+    //  this.idChange(id)
+    },
+		// 返回单个box的信息
+		idChange(boxId) {
+			// console.log(id)
 			let _this = this;
-			let result = post('', {});
-			result.then(res => {});
+			let result = post('/getBeeBoxSensorDate', { beeBoxId: boxId });
+			result.then(res => {
+				let data = res.data.data;
+				if (res.data.responseCode === '000035') {
+				} else if (res.data.responseCode === '000000') {
+					_this.batchNo = data.batchNo;
+					_this.manufacturer = data.manufacturer;
+					_this.productionDate = date.productionDate;
+				}
+			});
 		},
-		add() {
+
+		// 日期搜索时，获取相关数据，关闭定时器，必须先选择table中某一行
+		dateChange(date) {
+			//时间选择
+			console.log(1111, date[0], date[1]);
 			let _this = this;
-			let result = post('', {});
-			result.then(res => {});
+			let beginDate = new Date(date[0]).getTime();
+			let endDate = new Date(date[1]).getTime();
+			let boxId = _this.boxId;
+			console.log(beginDate, endDate, boxId);
+			let result = post('/getChartSensorData', {
+				beginDate: beginDate,
+				endDate: endDate,
+				beeBoxId: boxId,
+			});
+			result.then(function(res) {
+				console.log(456, res.data);
+			});
 		},
-		delete1() {
+		// 输入蜂箱ID，获取蜂箱信息
+		info_search(boxId) {
 			let _this = this;
-			let result = post('/', {});
-			result.then(res => {});
+			let result = post('/getBeeBox', {
+				beeBoxId: boxId,
+			});
+			result.then(function(res) {
+				console.log(123456, res);
+				let data = res.data.data;
+				console.log(data, 123);
+				_this.batchNo = data.batchNo;
+				_this.manufacturer = data.manufacturer;
+				_this.productionDate = moment(data.productionDate).format('YYYY-MM-DD');
+				if (data.status === 0) _this.status = '正在运行';
+				else if (data.status === 2) _this.status = '异常';
+        else if (data.status === 3) _this.status = '离线';
+        _this.lat =data.lat;
+        _this.lng = data.lng;
+			});
+		},
+		handleCurrentChange(val) {
+      console.log(99999,val);
+			// this.currentRow = val;
+			this.boxId = val.boxId;
+			this.lat = val.lat;
+			this.lng = val.lng;
+		},
+		// 获取初始页面的数据table，以及策略保护和非策略保护数据
+		getHiveList() {
+			let _this = this;
+			let result = get('/getAllBeeBoxSensorData', null);
+			result.then(function(res) {
+				// console.log(res);
+				if (res.data.responseCode) {
+					let data = res.data.data.latestSensorData;
+					let stat = res.data.data;
+					_this.abnormalBeeBoxNum = stat.abnormalBeeBoxNum;
+					_this.noProtectionNum = stat.noProtectionNum;
+					_this.normalBeeBoxNum = stat.normalBeeBoxNum;
+					_this.offLineBeeBoxNum = stat.offLineBeeBoxNum;
+					_this.protectionNum = stat.protectionNum;
+					// runningBeeBoxNum: stat.runningBeeBoxNum,
+					_this.totalBeeBoxNum = stat.totalBeeBoxNum;
+					let obj = {
+						abnormalBeeBoxNum: stat.abnormalBeeBoxNum,
+						noProtectionNum: stat.noProtectionNum,
+						normalBeeBoxNum: stat.normalBeeBoxNum,
+						offLineBeeBoxNum: stat.offLineBeeBoxNum,
+						protectionNum: stat.protectionNum,
+						// runningBeeBoxNum: stat.runningBeeBoxNum,
+						totalBeeBoxNum: stat.totalBeeBoxNum,
+					};
+					_this.$refs.hive.drawLine(obj);
+					for (let obj of data) {
+						console.log(obj);
+						if (obj.boxId) {
+							obj.temperature = obj.temperature || '-';
+							obj.humidity = obj.humidity || '-';
+							obj.gravity = obj.gravity || '-';
+							obj.airPressure = obj.airPressure || '-';
+							if (obj.status === 0) obj.status = '正在运行';
+							else if (obj.status === 2) obj.status = '异常';
+							else if (obj.status === 3) obj.status = '离线';
+							obj.battery = obj.battery || '-';
+						}
+					}
+					_this.hiveList = data;
+					if(data.length>0){
+
+          }
+				}
+			});
+		},
+
+		idSelectSearch(id) {
+			console.log(11119, id);
+			let result = post('/beeBoxSearch', {
+				keyword: '1',
+			});
+			result.then(res => {
+				console.log(result);
+			});
+		},
+		// 点击table中的某一行开始轮询获取相关数据，放入折线图中,开始搜索后则关闭该轮询
+		clickBoxId() {
+			setInterval(function() {
+				let result = post('/getBeeBoxSensorDate', {
+					beeBoxId: 'boxid',
+				});
+				result.then(res => {
+					console.log(res);
+				});
+			}, 3 * 3600);
 		},
 	},
 };
 </script>
 
 <style scoped>
-.hive-total {
-	width: 100%;
-	height: 100%;
-}
-
-.hive-left {
-	width: 30%;
-	height: 100%;
-}
-.hive-right {
-	width: 70%;
-	height: 100%;
-}
-
-.hive-content {
-	width: 100%;
-	height: 40%;
-	display: flex;
-}
-
-.hive-list {
-	width: 100%;
-	height: 80%;
-}
-
-.hive-list-header {
-	/* width: 100%;
-	height: 10%; */
-	border-bottom: 1px solid #ccc;
-	background-color: white;
-	margin-top: 0px;
-	height: 30px;
-	line-height: 30px;
-}
-
-.hive-list-row {
-	height: 100px;
-	line-height: 100px;
-	border-bottom: 1px solid #ccc;
-	font-size: 14px;
-}
-
-.hive-overview-pie-info-foldline-map {
-	width: 100%;
-	height: 600px;
-	display: flex;
-}
-.hive-overview-pie-info-foldline {
-	width: 50%;
-	height: 600px;
-}
-.hive-map {
-	width: 50%;
-	height: 100%;
-}
-.hive-overview-pie {
-	width: 100%;
-	height: 300px;
-	display: flex;
-}
-.hive-overview {
-	width: 50%;
-	height: 300px;
-}
-.hive-overview .el-row {
-	text-align: left;
-	font-size: 15px;
-	height: 30px;
-	line-height: 30px;
-}
-
-.hive-overview .el-col {
-	text-indent: 20px;
-	width: 50%;
-}
-.hive-pie {
-	width: 50%;
-	height: 248;
-}
-
-.hive-info {
-	width: 100%;
-	height: 100px;
-}
-
-.hive-foldline {
-	width: 100%;
-	height: 200px;
-}
-
-.hive-group {
-	width: 100%;
-	height: auto;
-	display: flex;
-}
-
-.hive-group-add {
-	width: 50%;
-	height: 100%;
-}
-
-.hive-group-list {
-	width: 50%;
-	height: 100%;
-}
-
-.hive-top {
-	width: 100%;
-	height: 50px;
-	background-color: blue;
+.box {
 	position: relative;
-	color: white;
-}
-.hive-control-btn {
-	position: absolute;
-	left: 0;
-	top: 0;
-	height: 50px;
-	line-height: 50px;
+	width: 100%;
+	height: 100%;
+	overflow: scroll;
+	display: flex;
 }
 
-.hive-control-btn span {
-	margin-left: 10px;
+.section-left {
+	position: relative;
+	width: 42%;
+	height: 100%;
+	overflow: scroll;
+	padding-bottom: 20px;
+	background: white;
 }
 
-.hive-control-btn span:hover {
+.section-right {
+	width: 55%;
+	height: 100%;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+table {
+	border-collapse: collapse;
+	width: 100%;
+}
+
+table tr:hover {
 	cursor: pointer;
-	color: red;
+	background: #eee;
 }
 
-.hive-top-input {
-	position: absolute;
-	height: 50px;
-	line-height: 40px;
-	width: 200px;
-	right: 15px;
-	margin-top: 5px;
+table,
+th,
+td {
+	border: 1px solid #f9bb3c;
+	font-size: 14px;
+	height: 25px;
+	line-height: 25px;
+}
+
+table tr th {
+	width: 14.28%;
+}
+
+.detail-box {
+	position: relative;
+	height: auto;
+	width: 100%;
+	color: #daac52;
+	border: 1px solid #746c5e;
+}
+
+.section-title {
+	width: 100%;
+	text-align: left;
+	text-indent: 20px;
+	margin-top: 10px;
+}
+
+.dtail-row {
+	width: 90%;
+	margin-left: 20px;
+	margin-top: 10px;
+	display: flex;
+	align-items: center;
+	font-size: 12px;
+	margin-bottom: 10px;
+}
+
+.detail-col {
+	width: 33%;
+	text-align: left;
+}
+
+.chart-box {
+	position: relative;
+	color: #daac52;
+	height: 450px;
+	border: 1px solid #746c5e;
+	width: 100%;
+	margin-top: 20px;
+}
+
+.overview {
+	position: relative;
+	width: 100%;
+	color: #daac52;
+	height: 270px;
+	border: 1px solid #746c5e;
+	margin-top: 20px;
+	display: flex;
+}
+
+.chart-line {
+	width: 100%;
+	margin-top: 30px;
+	height: 330px;
+}
+
+.overview-chart {
+	width: 65%;
+	height: 100%;
+	display: flex;
+}
+
+.id-select {
+	width: 34%;
+	height: 100%;
+}
+
+.overview-chart-left {
+	width: 45%;
+	height: 100%;
+  font-size: 14px;
+}
+
+.overview-chart-right {
+	width: 55%;
+	height: 100%;
+}
+
+.overview-row {
+	width: 100%;
+	display: flex;
+	margin-top: 30px;
+}
+
+.overview-row-left {
+	width: 65%;
+	text-align: left;
+	text-indent: 20px;
+}
+
+.overview-row-right {
+	text-align: left;
+	text-indent: 20px;
+	width: 35%;
 }
 </style>

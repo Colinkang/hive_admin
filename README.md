@@ -1,6 +1,6 @@
-# hive-admin
+# hive-web
 
-> hive
+> hive-web
 
 ## Build Setup
 
