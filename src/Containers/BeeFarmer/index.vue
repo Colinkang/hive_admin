@@ -89,121 +89,133 @@
 </template>
 <script>
 export default {
-  name: "",
-  data: () => ({
-    list: [
-      1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15
-    ]
-  })
-}
+	name: '',
+	data() {
+		return {
+			list: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+		};
+  },
+  methods:{
+    //创建蜂农 编辑蜂农
+
+    //显示列表页
+
+    //搜索列表页
+
+    // 删除蜂农
+
+    // 刷新列表页
+
+  }
+};
 </script>
 <style lang="" scoped>
 .container {
-  width: calc(100%-18px);
-  margin-top: 40px;
-  margin-left: 10px;
-  margin-right: 10px;
-  background: #15232f;
-  border: 1px solid #235978;
-  color: white;
-  padding-bottom: 100px;
+	width: calc(100%-18px);
+	margin-top: 40px;
+	margin-left: 10px;
+	margin-right: 10px;
+	background: #15232f;
+	border: 1px solid #235978;
+	color: white;
+	padding-bottom: 100px;
 }
 
 .form-row {
-  text-align: left;
-  font-size: 14px;
-
+	text-align: left;
+	font-size: 14px;
 }
 
 .title {
-  display: inline-block;
-  margin-top: 10px;
-  margin-left: 10px;
-  font-size: 17px;
+	display: inline-block;
+	margin-top: 10px;
+	margin-left: 10px;
+	font-size: 17px;
 }
 
 .form-row-section {
-  display: flex;
+	display: flex;
 }
 
 .input-section-left {
-  width: 65%;
-  height: 160px;
+	width: 65%;
+	height: 160px;
 }
 
 .input-section-right {
-  width: 35%;
-  height: 160px;
-  border-left: 2px solid white;
+	width: 35%;
+	height: 160px;
+	border-left: 2px solid white;
 }
 
 .sent-code {
-  font-size: 13px;
-  color: #135f99;
+	font-size: 13px;
+	color: #135f99;
 }
 
 .sent-code:hover {
-  color: white;
-  cursor: pointer;
+	color: white;
+	cursor: pointer;
 }
 
 .input-item {
-  display: inline-block;
-  margin-top: 10px;
+	display: inline-block;
+	margin-top: 10px;
 }
 
 .sure-btn {
-  width: 80px;
-  height: 30px;
-  margin-left: 20px;
-  margin-top: 20px;
-  text-align: center;
-  line-height: 30px;
-  background: #40557b;
-  color: white;
+	width: 80px;
+	height: 30px;
+	margin-left: 20px;
+	margin-top: 20px;
+	text-align: center;
+	line-height: 30px;
+	background: #40557b;
+	color: white;
 }
 
 .list-box {
-  width: 100%;
-  height: 500px;
-  margin-top: 30px;
+	width: 100%;
+	height: 500px;
+	margin-top: 30px;
 }
 
 .header {
-  border-collapse: collapse;
-  width: 100%;
+	border-collapse: collapse;
+	width: 100%;
 }
 
 .header table,
 .header th {
-  border: none;
-  font-size: 13px;
+	border: none;
+	font-size: 13px;
 }
 
 .header td {
-  background: #c3bfc1;
-  border: 1px solid white;
-  font-size: 14px;
-  height: 25px;
-  line-height: 25px;
-  text-align: center;
-  font-size: 12px;
-  color: black;
-  max-width: 100px;
-  overflow: hidden;
+	background: #c3bfc1;
+	border: 1px solid white;
+	font-size: 14px;
+	height: 25px;
+	line-height: 25px;
+	text-align: center;
+	font-size: 12px;
+	color: black;
+	max-width: 100px;
+	overflow: hidden;
 }
 
-.header tr th {}
+.header tr th {
+}
 
 .header {
-  color: white;
+	color: white;
 }
-.icon-span{
-  float: right;
-  font-size: 12px;
-  margin-right: 20px;
+.icon-span {
+	float: right;
+	font-size: 12px;
+	margin-right: 20px;
 }
-.icon-span i{
-  font-size: 13px;
+.icon-span i {
+	font-size: 13px;
 }
 </style>

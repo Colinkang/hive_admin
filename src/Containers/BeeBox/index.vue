@@ -163,7 +163,7 @@
               </div>
               <div class="canshu" style="text-align:right">
                 <span style="margin-right:20px"><i class="iconfont icon-add"></i>添加</span>
-                <span <i class="iconfont icon-069delete"></i>删除</span>
+                <span> <i class="iconfont icon-069delete"></i>删除</span>
 
               </div>
             </div>
@@ -236,15 +236,34 @@ export default {
 	},
 
 	methods: {
+    // 获取蜂箱列表信息  总览信息  饼图信息  地图信息
 		getHiveList() {
 			let result = post('/getBeeBoxes', null);
 			result.then(res => {
 				console.log(111, res);
 			});
-		},
+    },
+    // 点击列表某行获取蜂箱信息，并将该行标记颜色
 		slectThisRow(id) {
 			//  this.idChange(id)
-		},
+    },
+    // 获取折线图的数据，并将数据显示在折线图上
+    getFold(){
+
+    }
+    // 添加到编组列表
+
+    //显示已有条件列表
+
+    // 显示编组信息列表
+
+    // 删除现有组列表
+
+    //刷新现有组列表
+
+    //显示已有条件列表
+
+    //搜索框用来查找蜂箱列表
 	},
 };
 </script>
