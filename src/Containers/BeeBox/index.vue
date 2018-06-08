@@ -2,7 +2,7 @@
   <div class="outer-box">
     <div class="hive-top">
             <div class="hive-control-btn">
-                
+
                 <span><i class="iconfont icon-add"></i>
                   <el-button type="text" >添加</el-button>
                 </span>
@@ -168,7 +168,7 @@
               </div>
             </div>
             <div class="form-row">
-              <textarea name="name" rows="8" ></textarea>
+              <div class="exit-rule" ></div>
             </div>
             <div class="form-row">
               筛选结果
@@ -508,9 +508,12 @@ table tr th {
   background: #0b1b36;
   color: white;
 }
-textarea{
+.exit-rule{
   width: 100%;
   height: 150px;
+  color: black;
+  background: white
+
 }
 .group-table{
   height: 305px;

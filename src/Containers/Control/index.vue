@@ -12,10 +12,10 @@
 
         <span class="input-item" style="margin-left:20px;"><label>邮箱 <input style="width:120px;"/></label></span>
         <span class="input-item" style="margin-left:20px;"><label>联系电话 <input style="width:120px;"/></label><span class="sent-code">发送短信验证码</span></span>
-
-        <span class="input-item" style="margin-left:20px;"><label>地址 <input style="width:30s0px;"/></label></span>
+        <span class="input-item" style="margin-left:20px;"><label>验证码 <input style="width:70px;"/></label></span>
+        <span class="input-item" style="margin-left:20px;"><label>地址 <input style="width:250px;"/></label></span>
         <span class="input-item" style="font-size:17px;margin-left:20px">类型</span>
-        <span  class="input-item" style="margin-left:20px">
+        <span class="input-item" style="margin-left:20px">
           <div class="">
             <el-checkbox v-model="checked" style="font-size:15px;color:white">蜂农管理</el-checkbox>
 
@@ -25,7 +25,7 @@
             <el-radio v-model="radio" label="2" >管理</el-radio>
           </div>
         </span>
-        <span  class="input-item" style="margin-left:20px">
+        <span class="input-item" style="margin-left:20px">
           <div class="">
             <el-checkbox v-model="checked" style="font-size:15px;color:white">蜂箱管理</el-checkbox>
           </div>
@@ -34,7 +34,7 @@
             <el-radio v-model="radio1" label="2" >管理</el-radio>
           </div>
         </span>
-        <span  class="input-item" style="margin-left:20px">
+        <span class="input-item" style="margin-left:20px">
           <div class="">
             <el-checkbox v-model="checked" style="font-size:15px;color:white">事件管理</el-checkbox>
           </div>
@@ -43,7 +43,7 @@
             <el-radio v-model="radio2" label="2" >管理</el-radio>
           </div>
         </span>
-        <span  class="input-item" style="margin-left:20px">
+        <span class="input-item" style="margin-left:20px">
           <div class="">
             <el-checkbox v-model="checked" style="font-size:15px;color:white">管理员管理</el-checkbox>
           </div>
@@ -52,7 +52,7 @@
             <el-radio v-model="radio3" label="2" >管理</el-radio>
           </div>
         </span>
-        <span  class="input-item" style="margin-left:20px">
+        <span class="input-item" style="margin-left:20px">
           <div class="">
             <el-checkbox v-model="checked" style="font-size:15px;color:white">组织管理</el-checkbox>
           </div>
@@ -139,13 +139,13 @@ export default {
     list: [
       1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15
     ],
-    checked:true,
-    radio:1,
-    radio1:2,
-    radio2:1,
-    radio3:1,
-    radio4:2,
-    radio5:1
+    checked: true,
+    radio: 1,
+    radio1: 2,
+    radio2: 1,
+    radio3: 1,
+    radio4: 2,
+    radio5: 1
   })
 }
 </script>
@@ -252,19 +252,21 @@ export default {
 .header {
   color: white;
 }
-.icon-span{
+
+.icon-span {
   float: right;
   font-size: 12px;
   margin-right: 20px;
 }
-.icon-span i{
+
+.icon-span i {
   font-size: 13px;
 }
-.el-radio{
+
+.el-radio {
   font-size: 12px;
   margin-left: 0px;
-  color:white;
+  color: white;
 
 }
-
 </style>
