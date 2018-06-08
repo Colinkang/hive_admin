@@ -128,7 +128,37 @@ export default {
       1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15
     ],
     checked: true
-  })
+  }),
+  methods:{
+    //创建组织 编辑组织
+    createOrg(){
+
+    },
+    //搜索组织
+    searchOrg(){
+
+    },
+    //获取组织列表 刷新组织列表
+    getOrgList(){
+
+    },
+    //删除组织列表
+    deleteOrgList(){
+
+    },
+
+    //获取组织下的蜂农列表 刷新
+    getOrgFarmerList(){
+
+    },
+    //删除组织下的蜂农列表
+    deleteOrgFarmerList(){
+
+    },
+    //
+
+    
+  }
 }
 </script>
 <style lang="" scoped>

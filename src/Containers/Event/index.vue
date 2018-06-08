@@ -163,7 +163,31 @@ export default {
   methods: {
     selectModule(selected) {
       this.selected = selected
+    },
+    //创建预警规则
+    createWarmRule(){
+      let _this = this;
+    },
+    //获取预警规则列表  刷新已有规则
+    getWarnList(){
+      let _this = this;
+    },
+
+    //删除已有规则
+    deleteWarnRule(){
+
+    },
+
+    // 历史预警列表
+    historyWarnList(){
+
+    },
+
+    //历史预警列表搜索
+    historyWarnSearch(){
+      
     }
+
   }
 }
 </script>

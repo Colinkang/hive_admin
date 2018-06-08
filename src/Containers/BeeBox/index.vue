@@ -254,18 +254,19 @@ export default {
 		// 获取折线图的数据，并将数据显示在折线图上
 		getFold() {},
 		// 添加到编组列表
-
+		addToGroup() {},
 		//显示已有条件列表
 
-		// 显示编组信息列表
+		// 显示编组信息列表 //刷新现有组列表
+		getGroupList() {},
 
 		// 删除现有组列表
-
-		//刷新现有组列表
+		deleteGroupList() {},
 
 		//显示已有条件列表
-
+		getTermList() {},
 		//搜索框用来查找蜂箱列表
+		searchBoxList() {},
 	},
 };
 </script>

@@ -94,20 +94,21 @@ export default {
 		return {
 			list: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
 		};
-  },
-  methods:{
-    //创建蜂农 编辑蜂农
+	},
+	methods: {
+		//创建蜂农 编辑蜂农
+		createFarm() {},
 
-    //显示列表页
+		//显示列表页  // 刷新列表页
+		getFarmerList() {},
 
-    //搜索列表页
+		//搜索列表页
+		searchFarmerList() {},
 
-    // 删除蜂农
-
-    // 刷新列表页
-  }
+		// 删除蜂农
+		deleteFarmerList() {},
+	},
 };
-
 </script>
 <style lang="" scoped>
 .container {
@@ -146,8 +147,8 @@ export default {
 	width: 35%;
 	height: 160px;
 	border-left: 2px solid white;
-  width: 70%;
-  height: 160px;
+	width: 70%;
+	height: 160px;
 }
 
 /* .input-section-right {
@@ -220,14 +221,13 @@ export default {
 	color: white;
 }
 
-
 .icon-span {
-  float: right;
-  font-size: 12px;
-  margin-right: 20px;
+	float: right;
+	font-size: 12px;
+	margin-right: 20px;
 }
 
 .icon-span i {
-  font-size: 13px;
+	font-size: 13px;
 }
 </style>

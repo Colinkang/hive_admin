@@ -1,13 +1,13 @@
 <template>
 <div class="container">
   <div class="form-row">
-    <span class="title">组织</span>
+    <span class="title">管理</span>
   </div>
   <div class="form-row form-row-section">
     <div class="input-section-left">
       <div class="form-row">
-        <span style="margin-left:20px;margin-top:10px;display:block">创建组织</span>
-        <span class="input-item" style="margin-left:20px;"><label>组织名称 <input style="width:120px;"/></label></span>
+        <span style="margin-left:20px;margin-top:10px;display:block">创建管理员</span>
+        <span class="input-item" style="margin-left:20px;"><label>姓名 <input style="width:120px;"/></label></span>
         <span class="input-item" style="margin-left:20px;"><label>合作社 <input style="width:120px;"/></label></span>
 
         <span class="input-item" style="margin-left:20px;"><label>邮箱 <input style="width:120px;"/></label></span>
@@ -93,11 +93,14 @@
         <th style="border:none;width:3%;text-align:center">
           <el-checkbox v-model="checked"></el-checkbox>
         </th>
-        <th>组织ID<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
-        <th>组织名称<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
-        <th>联系人<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
+        <th>管理员ID<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
+        <th>登录名<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
+        <th>姓名<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
+        <th>管理员类型<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
         <th>成员数量<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
         <th>创建时间<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
+        <th>修改时间<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
+         <th>合作社</th>
         <th>邮箱</th>
         <th>联系电话</th>
         <th>地址</th>
@@ -115,6 +118,9 @@
         <td>6</td>
         <td>7</td>
         <td>022222222222222222222222222222222222222222222222222222</td>
+        <td>2</td>
+        <td>2</td>
+        <td>2</td>
         <td>2</td>
 
       </tr>
@@ -146,7 +152,29 @@ export default {
     radio3: 1,
     radio4: 2,
     radio5: 1
-  })
+  }),
+  methods:{
+    // 创建管理员  //编辑管理员
+    createManager(){
+
+    },
+    //模糊搜索管理员
+    searchManager(){
+
+    },
+    //获取管理员列表  刷新管理员
+    getManagerList(){
+
+    },
+    // 删除管理员
+    deleteManager(){
+
+    }
+    //管理员排序
+
+   
+
+  }
 }
 </script>
 <style lang="" scoped>
