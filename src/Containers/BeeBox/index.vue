@@ -2,15 +2,15 @@
   <div class="outer-box">
     <div class="hive-top">
             <div class="hive-control-btn">
-                <hiveadd ref="hive"></hiveadd>
+
                 <span><i class="iconfont icon-add"></i>
-                  <el-button type="text" @click="hiveShow">添加</el-button>
+                  <el-button type="text" >添加</el-button>
                 </span>
                 <span><i class="iconfont icon-069delete"></i>
-                  <el-button type="text" @click="delete1">删除</el-button>
+                  <el-button type="text" >删除</el-button>
                 </span>
                 <span><i class="iconfont icon-shuaxin1"></i>
-                  <el-button type="text" @click="delete1">刷新</el-button>
+                  <el-button type="text" >刷新</el-button>
                 </span>
             </div>
             <div class="hive-top-input">
@@ -168,7 +168,7 @@
               </div>
             </div>
             <div class="form-row">
-              <textarea name="name" rows="8" ></textarea>
+              <div class="exit-rule" ></div>
             </div>
             <div class="form-row">
               筛选结果
@@ -234,36 +234,38 @@ export default {
 	created: function() {
 		this.getHiveList();
 	},
+	created: function() {},
 
 	methods: {
-    // 获取蜂箱列表信息  总览信息  饼图信息  地图信息
+		// 获取蜂箱列表信息  总览信息  饼图信息  地图信息
 		getHiveList() {
 			let result = post('/getBeeBoxes', null);
 			result.then(res => {
 				console.log(111, res);
 			});
-    },
-    // 点击列表某行获取蜂箱信息，并将该行标记颜色
+		},
 		slectThisRow(id) {
 			//  this.idChange(id)
-    },
-    // 获取折线图的数据，并将数据显示在折线图上
-    getFold(){
+		},
+		// 点击列表某行获取蜂箱信息，并将该行标记颜色
+		slectThisRow(id) {
+			//  this.idChange(id)
+		},
+		// 获取折线图的数据，并将数据显示在折线图上
+		getFold() {},
+		// 添加到编组列表
 
-    }
-    // 添加到编组列表
+		//显示已有条件列表
 
-    //显示已有条件列表
+		// 显示编组信息列表
 
-    // 显示编组信息列表
+		// 删除现有组列表
 
-    // 删除现有组列表
+		//刷新现有组列表
 
-    //刷新现有组列表
+		//显示已有条件列表
 
-    //显示已有条件列表
-
-    //搜索框用来查找蜂箱列表
+		//搜索框用来查找蜂箱列表
 	},
 };
 </script>

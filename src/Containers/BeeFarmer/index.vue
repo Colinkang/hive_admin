@@ -45,7 +45,7 @@
         <th style="border:none;width:3%;text-align:center">
           <el-checkbox v-model="checked"></el-checkbox>
         </th>
-        <th>蜂农id<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
+        <th>蜂农ID<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
         <th>登录名</th>
         <th>姓名</th>
         <th>蜂箱数量<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
@@ -105,9 +105,9 @@ export default {
     // 删除蜂农
 
     // 刷新列表页
-
   }
 };
+
 </script>
 <style lang="" scoped>
 .container {
@@ -146,7 +146,16 @@ export default {
 	width: 35%;
 	height: 160px;
 	border-left: 2px solid white;
+  width: 70%;
+  height: 160px;
 }
+
+/* .input-section-right {
+  width: 30%;
+  height: 160px;
+  border-left: 2px solid white;
+>>>>>>> b6e309c8bd113e4a9c64474b324e507e8a3ec76c
+} */
 
 .sent-code {
 	font-size: 13px;
@@ -210,12 +219,15 @@ export default {
 .header {
 	color: white;
 }
+
+
 .icon-span {
-	float: right;
-	font-size: 12px;
-	margin-right: 20px;
+  float: right;
+  font-size: 12px;
+  margin-right: 20px;
 }
+
 .icon-span i {
-	font-size: 13px;
+  font-size: 13px;
 }
 </style>
