@@ -57,7 +57,7 @@
         <th>地址</th>
         <th>状态</th>
       </tr>
-      <tr v-for="item in list">
+      <tr v-for="item in list" :key="item.id">
         <td style="border:none;width:3%;text-align:center;background:none">
           <el-checkbox v-model="checked"></el-checkbox>
         </td>
@@ -88,6 +88,7 @@
 </div>
 </template>
 <script>
+import { get, post } from '../../common/post.js';
 export default {
 	name: '',
 	data() {
@@ -97,16 +98,51 @@ export default {
 	},
 	methods: {
 		//创建蜂农 编辑蜂农
-		createFarm() {},
+		createFarmer() {
+			let result = post('/api/alterBeeFarmer', {
+				name: '',
+				address: '',
+				mobile: '',
+				password: '',
+				organizationId: '',
+				email: '',
+			});
+			result.then(res => {});
+
+			let r = post('/api/alterBeeFarmer', {
+				id: 1,
+				name: 1,
+				username: '',
+				address: '',
+				createDate: '',
+				updateDate: '',
+				password: '',
+				organizationId: '',
+				email: '',
+				status: '',
+				firstTimeLogin: '',
+				beeBoxNum: '',
+			});
+			r.then(res => {});
+		},
 
 		//显示列表页  // 刷新列表页
-		getFarmerList() {},
+		getFarmerList() {
+			let result = post('/api/getPageFarmers', {
+				pageNo: 1,
+				pageSize: 10,
+			});
+		},
 
 		//搜索列表页
 		searchFarmerList() {},
 
 		// 删除蜂农
-		deleteFarmerList() {},
+		deleteFarmerList() {
+			let result = post('/api/deleteFarmers', {
+				ids: [],
+			});
+		},
 	},
 };
 </script>

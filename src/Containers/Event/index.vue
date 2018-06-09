@@ -153,6 +153,7 @@
 </div>
 </template>
 <script>
+import { get, post } from '../../common/post.js';
 export default {
   name: "",
   data: () => ({

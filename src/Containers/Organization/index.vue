@@ -24,7 +24,6 @@
       <div class="form-row">
         <span style="margin-left:20px;margin-top:10px;display:block">搜索</span>
         <span class="input-item" style="margin-left:20px;"><label>关键字 <input style="width:140px;"/></label></span>
-
       </div>
       <div class="form-row">
         <div class="sure-btn">
@@ -49,7 +48,7 @@
           <th>管理员</th>
           <th>成员数量</th>
         </tr>
-        <tr v-for="item in list">
+        <tr v-for="item in list" :key="item.id">
           <td style="border:none;width:3%;text-align:center;background:none">
             <el-checkbox v-model="checked"></el-checkbox>
           </td>
@@ -94,7 +93,7 @@
           <th>联系电话</th>
           <th>地址</th>
         </tr>
-        <tr v-for="item in list">
+        <tr v-for="item in list" :key="item.key">
           <td style="border:none;width:3%;text-align:center;background:none">
             <el-checkbox v-model="checked"></el-checkbox>
           </td>
@@ -106,9 +105,6 @@
           <td>4</td>
           <td>5</td>
           <td>5</td>
-
-
-
         </tr>
       </table>
       <div class="form-row" style="margin-top:20px">
@@ -121,187 +117,198 @@
 </div>
 </template>
 <script>
+import { get, post } from '../../common/post.js';
 export default {
-  name: "",
-  data: () => ({
-    list: [
-      1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15
-    ],
-    checked: true
-  }),
-  methods:{
-    //创建组织 编辑组织
-    createOrg(){
+	name: '',
+	data: () => ({
+		list: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+		checked: true,
+	}),
+	methods: {
+		//创建组织 编辑组织
+		createOrg() {
+			let result = post('/api/alterOrganization', {
+				id: '',
+				organizationName: '',
+				email: '',
+				memberNum: '',
+				contactName: '',
+				contactPhone: '',
+				createDate: '',
+				updateDate: '',
+				status: '',
+				address: '',
+				adminId: '',
+			});
+		},
+		//搜索组织
+		searchOrg() {},
+		//获取组织列表 刷新组织列表
+		getOrgList() {
+			let result = get('/api/getAllOrganizations', null);
+		},
+		//删除组织列表
+		deleteOrgList() {
+			let result = post('/api/deleteOrganizations', { ids: [] });
+		},
 
-    },
-    //搜索组织
-    searchOrg(){
-
-    },
-    //获取组织列表 刷新组织列表
-    getOrgList(){
-
-    },
-    //删除组织列表
-    deleteOrgList(){
-
-    },
-
-    //获取组织下的蜂农列表 刷新
-    getOrgFarmerList(){
-
-    },
-    //删除组织下的蜂农列表
-    deleteOrgFarmerList(){
-
-    },
-    //
-
-    
-  }
-}
+		//获取组织下的蜂农列表 刷新
+		getOrgFarmerList() {
+			let result = post('/api/getOrganizationBeeFarmers', {
+				organizationId: '',
+			});
+		},
+		//删除组织下的蜂农列表
+		deleteOrgFarmerList() {
+			let result = post('/api/deleteFarmers', {
+				ids: '',
+			});
+		},
+		//
+	},
+};
 </script>
 <style lang="" scoped>
 .container {
-  width: calc(100%-18px);
-  margin-top: 40px;
-  margin-left: 10px;
-  margin-right: 10px;
-  background: #15232f;
-  border: 1px solid #235978;
-  color: white;
-  padding-bottom: 10px;
+	width: calc(100%-18px);
+	margin-top: 40px;
+	margin-left: 10px;
+	margin-right: 10px;
+	background: #15232f;
+	border: 1px solid #235978;
+	color: white;
+	padding-bottom: 10px;
 }
 
 .form-row {
-  text-align: left;
-  font-size: 14px;
-
+	text-align: left;
+	font-size: 14px;
 }
 
 .title {
-  display: inline-block;
-  margin-top: 10px;
-  margin-left: 10px;
-  margin-bottom: 20px;
-  font-size: 17px;
+	display: inline-block;
+	margin-top: 10px;
+	margin-left: 10px;
+	margin-bottom: 20px;
+	font-size: 17px;
 }
 
 .form-row-section {
-  display: flex;
+	display: flex;
 }
 
 .input-section-left {
-  width: 65%;
-  height: 160px;
+	width: 65%;
+	height: 160px;
 }
 
 .input-section-right {
-  width: 35%;
-  height: 160px;
-  border-left: 2px solid white;
+	width: 35%;
+	height: 160px;
+	border-left: 2px solid white;
 }
 
 .sent-code {
-  font-size: 13px;
-  color: #135f99;
+	font-size: 13px;
+	color: #135f99;
 }
 
 .sent-code:hover {
-  color: white;
-  cursor: pointer;
+	color: white;
+	cursor: pointer;
 }
 
 .input-item {
-  display: inline-block;
-  margin-top: 10px;
+	display: inline-block;
+	margin-top: 10px;
 }
 
 .sure-btn {
-  width: 80px;
-  height: 30px;
-  margin-left: 20px;
-  margin-top: 20px;
-  text-align: center;
-  line-height: 30px;
-  background: #40557b;
-  color: white;
+	width: 80px;
+	height: 30px;
+	margin-left: 20px;
+	margin-top: 20px;
+	text-align: center;
+	line-height: 30px;
+	background: #40557b;
+	color: white;
 }
 
 .list-box {
-  width: 100%;
-  height: 500px;
-  margin-top: 30px;
+	width: 100%;
+	height: 500px;
+	margin-top: 30px;
 }
 
 .header {
-  border-collapse: collapse;
-  width: 100%;
+	border-collapse: collapse;
+	width: 100%;
 }
 
 .header table,
 .header th {
-  border: none;
-  font-size: 13px;
+	border: none;
+	font-size: 13px;
 }
 
 .header td {
-  background: #c3bfc1;
-  border: 1px solid white;
-  font-size: 14px;
-  height: 25px;
-  line-height: 25px;
-  text-align: center;
-  font-size: 12px;
-  color: black;
-  max-width: 100px;
-  overflow: hidden;
+	background: #c3bfc1;
+	border: 1px solid white;
+	font-size: 14px;
+	height: 25px;
+	line-height: 25px;
+	text-align: center;
+	font-size: 12px;
+	color: black;
+	max-width: 100px;
+	overflow: hidden;
 }
 
-.header tr th {}
+.header tr th {
+}
 
 .header {
-  color: white;
+	color: white;
 }
 
 .icon-span {
-  float: right;
-  font-size: 12px;
-  margin-right: 20px;
+	float: right;
+	font-size: 12px;
+	margin-right: 20px;
 }
 
 .icon-span i {
-  font-size: 13px;
+	font-size: 13px;
 }
 
 .list-container {
-  width: 100%;
-  display: flex;
-  margin-top: 20px;
+	width: 100%;
+	display: flex;
+	margin-top: 20px;
 }
 
 .list-left {
-  height: 900px;
-  margin-left: 10px;
-  background: #2c4261;
-  padding: 10px;
-  width: 30%;
+	height: 900px;
+	margin-left: 10px;
+	background: #2c4261;
+	padding: 10px;
+	width: 30%;
 }
 
 .list-right {
-  width: 70%;
-  height: 900px;
-  margin-left: 10px;
-  margin-right: 10px;
-  background: #0b1b36;
-  padding: 10px;
+	width: 70%;
+	height: 900px;
+	margin-left: 10px;
+	margin-right: 10px;
+	background: #0b1b36;
+	padding: 10px;
 }
-.farmer-span{
-  margin-left: 20px;
-  display: inline-block;
-  min-width: 100px;
-  margin-top: 10px;
-  margin-bottom: 10px;
-  color:#5c5466
+.farmer-span {
+	margin-left: 20px;
+	display: inline-block;
+	min-width: 100px;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	color: #5c5466;
 }
 </style>

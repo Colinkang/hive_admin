@@ -101,63 +101,6 @@
     </div>
   </div>
 </div>
-<!-- <div class="global">
-        <div class="global-map">
-
-        </div>
-        <div class="global-content">
-           <div class ="map-hive">
-                 <el-row>
-                   <el-col :span="12">蜂箱ID</el-col>
-                   <el-col :span="12">
-                       <el-input v-model="boxId"></el-input>
-                   </el-col>
-                 </el-row>
-                  <el-row>
-                   <el-col :span="12">蜂箱定位</el-col>
-                   <el-col :span="12">
-                      <el-input v-model="boxPosition"></el-input>
-                   </el-col>
-                 </el-row>
-
-           </div>
-           <div class ="map-hive-real" >
-               <el-row>
-                  实时数据
-              </el-row>
-              <el-row>
-                   <el-col :span="12"><div ></div></el-col>
-                   <el-col :span="12"><div >{{1234}}</div></el-col>
-              </el-row>
-              <el-row>
-                   <el-col :span="12"><div ></div></el-col>
-                   <el-col :span="12"><div >{{1234}}</div></el-col>
-              </el-row>
-              <el-row>
-                   <el-col :span="12"><div ></div></el-col>
-                   <el-col :span="12"><div >{{1234}}</div></el-col>
-              </el-row>
-              <el-row>
-                   <el-col :span="12"><div ></div></el-col>
-                   <el-col :span="12"><div >{{1234}}</div></el-col>
-              </el-row>
-              <el-row>
-                   <el-col :span="12"><div ></div></el-col>
-                   <el-col :span="12"><div >{{1234}}</div></el-col>
-              </el-row>
-              <el-row>
-                   <el-col :span="12"><div ></div></el-col>
-                   <el-col :span="12"><div >{{1234}}</div></el-col>
-              </el-row>
-           </div>
-           <div class ="map-hive-search">
-             <el-row>
-                   <el-col :span="12"><div >姓名</div></el-col>
-                   <el-col :span="12"><div >{{1234}}</div></el-col>
-              </el-row>
-           </div>
-        </div>
-    </div> -->
 </template>
 <script>
 import {
@@ -207,38 +150,6 @@ export default {
 };
 </script>
 <style>
-/* The container of BaiduMap must be set width & height. */
-
-/* .map {
-	width: 60%;
-	height: 500px;
-}
-.global {
-	background-color: rgb(26, 26, 26);
-	width: 100%;
-	height: 900px;
-	display: flex;
-}
-.global-map {
-	margin-left: 10px;
-	margin-top: 30px;
-	width: 100%;
-	height: 00px;
-}
-.map-hive {
-	width: 200px;
-	height: 200px;
-}
-.map-hive-real {
-	width: 200px;
-	height: 200px;
-}
-.map-hive-search {
-	width: 200px;
-	height: 200px;
-} */
-
-/* 我的样式 */
 
 .map-box {
   position: relative;

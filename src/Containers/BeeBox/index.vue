@@ -237,9 +237,16 @@ export default {
 	created: function() {},
 
 	methods: {
-		// 获取蜂箱列表信息  总览信息  饼图信息  地图信息
+		// 获取蜂箱列表信息 蜂箱信息  地图信息
 		getHiveList() {
-			let result = post('/getBeeBoxes', null);
+			let result = post('/api/getBeeBoxes', null);
+			result.then(res => {
+				console.log(111, res);
+			});
+		},
+		//获取饼图信息 总览信息
+		getPai() {
+			let result = post('/api/getOverviewData', null);
 			result.then(res => {
 				console.log(111, res);
 			});
@@ -252,16 +259,38 @@ export default {
 			//  this.idChange(id)
 		},
 		// 获取折线图的数据，并将数据显示在折线图上
-		getFold() {},
+		getFold() {
+			let result = post('/api//getBeeBoxSensorData', {
+				beeBoxIds: 'beeBoxIds;', //所有信息
+			});
+			result.then(res => {
+				console.log(111, res);
+			});
+		},
 		// 添加到编组列表
-		addToGroup() {},
+		addToGroup() {
+			let result = post('/api/saveGroupBeeBox', {
+				beeBoxGroup: {
+					id: 1,
+					groupName: '',
+					beeBoxNum: 1,
+				},
+			});
+			result.then(res => {});
+		},
 		//显示已有条件列表
 
 		// 显示编组信息列表 //刷新现有组列表
-		getGroupList() {},
+		getGroupList() {
+			let result = post('/api/getGroups', null);
+			result.then(res => {});
+		},
 
 		// 删除现有组列表
-		deleteGroupList() {},
+		deleteGroupList() {
+			let result = post('/api/deleteGroups', { ids: [] });
+			result.then(res => {});
+		},
 
 		//显示已有条件列表
 		getTermList() {},
