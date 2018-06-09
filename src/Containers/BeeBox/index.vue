@@ -4,7 +4,7 @@
             <div class="hive-control-btn">
 
                 <span><i class="iconfont icon-add"></i>
-                  <el-button type="text" >添加</el-button>
+                  <el-button type="text" @click="toSomePage('/addbeebox')">添加</el-button>
                 </span>
                 <span><i class="iconfont icon-069delete"></i>
                   <el-button type="text" >删除</el-button>
@@ -229,6 +229,7 @@ export default {
 		return {
 			hiveList: [1, 2, 3, 4, 5, 6, 7, 8, 8, 98, 7, 6, 5, 1, 3, 4, 5, 5],
 			checked: true,
+      search:''
 		};
 	},
 	created: function() {
@@ -237,6 +238,11 @@ export default {
 	created: function() {},
 
 	methods: {
+    toSomePage(path){
+      this.$router.push({
+        path:path
+      })
+    },
 		// 获取蜂箱列表信息 蜂箱信息  地图信息
 		getHiveList() {
 			let result = post('/api/getBeeBoxes', null);

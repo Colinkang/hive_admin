@@ -18,6 +18,7 @@
       </div>
       <div class="line-height margin-top">
         <el-checkbox v-model="checked" class="remenber-login">记住密码</el-checkbox>
+        <span class="sent-code" style="margin-left:20px;" @click="showChangeCode=true">忘记密码</span>
       </div>
       <div class="line-height margin-top">
         <button type="success" class="btn" @click="checkLoin">登录</button>
@@ -32,6 +33,7 @@
     </div>
 
   </div>
+  <change-code v-if="showChangeCode" @hide="showChangeCode=false"></change-code>
 
 </div>
 </template>
@@ -48,6 +50,7 @@ import {
 } from '../../common/localStorageKey';
 import LocalStore from '../../common/localStore';
 import updatepwd from './updatepwd';
+import ChangeCode from './ChangeCode.vue'
 export default {
   name: '',
   data: () => ({
@@ -56,10 +59,12 @@ export default {
     text: '',
     account: '',
     password: '',
-    checked: false
+    checked: false,
+    showChangeCode:false
   }),
   components: {
-    updatepwd
+    updatepwd,
+    ChangeCode
   },
   methods: {
     checkLoin() {
@@ -196,5 +201,13 @@ input::-webkit-input-placeholder {
 
 .remenber-login {
   color:white;
+}
+.sent-code{
+  color: #346cac
+
+}
+.sent-code:hover{
+  color: rgb(122, 122, 122);
+  cursor: pointer;
 }
 </style>

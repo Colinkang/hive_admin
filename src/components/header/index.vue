@@ -8,7 +8,7 @@
        <router-link to="/beekeeper/info"><i class="iconfont icon-user"></i>{{account}}</router-link>
     </span>
     <span>
-        <router-link to="/beekeeper/changepwd">修改</router-link>
+        <router-link to="/admindetail" >修改</router-link>
     </span>
     <span @click="logout">
       退出
@@ -21,13 +21,20 @@
 <script>
 import { HIVE_API_TOKEN, HIVE_USER_NAME ,IS_LOGIN} from '../../common/localStorageKey';
 import LocalStore from '../../common/localStore';
+
 export default {
+
 	name: '',
 	data: () => ({
 		collapse: false,
 		account: '111',
 	}),
 	methods: {
+    showAdminDetail(){
+      this.$route.push({
+        path:'admindetail'
+      })
+    },
 		changeCollapse() {
 			this.collapse = !this.collapse;
 			this.$emit('change-collapse', this.collapse);
