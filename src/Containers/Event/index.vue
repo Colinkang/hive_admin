@@ -155,206 +155,211 @@
 <script>
 import { get, post } from '../../common/post.js';
 export default {
-  name: "",
-  data: () => ({
-    selected: 2,
-    checked: true,
-    input21: ''
-  }),
-  methods: {
-    selectModule(selected) {
-      this.selected = selected
-    },
-    //创建预警规则
-    createWarmRule(){
-      let _this = this;
-    },
-    //获取预警规则列表  刷新已有规则
-    getWarnList(){
-      let _this = this;
-    },
+	name: '',
+	data: () => ({
+		selected: 2,
+		checked: true,
+		input21: '',
+	}),
+	methods: {
+		selectModule(selected) {
+			this.selected = selected;
+		},
+		//创建预警规则
+		createWarmRule() {
+			let _this = this;
+			let result = post('/api', {});
+		},
+		//获取预警规则列表  刷新已有规则
+		getWarnList() {
+			let _this = this;
+			let result = get('/api/');
+		},
 
-    //删除已有规则
-    deleteWarnRule(){
+		//删除已有规则
+		deleteWarnRule() {
+			let _this = this;
+			let result = post('/api');
+      result.then(res=>{
 
-    },
+      });
+		},
 
-    // 历史预警列表
-    historyWarnList(){
+		// 历史预警列表
+		historyWarnList() {
+			let _this = this;
+			let result = get('/api/');
+			result.then(res => {});
+		},
 
-    },
-
-    //历史预警列表搜索
-    historyWarnSearch(){
-      
-    }
-
-  }
-}
+		//历史预警列表搜索
+		historyWarnSearch() {
+			let _this = this;
+			let result = post('/api/', {});
+		},
+	},
+};
 </script>
 <style lang="" scoped>
 .container {
-  width: 100%;
-  display: flex;
-  color: #32354d;
+	width: 100%;
+	display: flex;
+	color: #32354d;
 }
 
 .section-left {
-  width: 44%;
-  min-height: 800px;
-  margin-left: 1px;
-  padding: 10px;
-  padding-top: 30px;
+	width: 44%;
+	min-height: 800px;
+	margin-left: 1px;
+	padding: 10px;
+	padding-top: 30px;
 }
 
 .section-right {
-  width: 54%;
-  min-height: 800px;
-  margin-left: 10px;
-  margin-right: 10px;
-  padding: 10px;
-  padding-top: 40px;
+	width: 54%;
+	min-height: 800px;
+	margin-left: 10px;
+	margin-right: 10px;
+	padding: 10px;
+	padding-top: 40px;
 }
 
 ul {
-  width: 100%;
-  height: 30px;
-  text-align: center;
-  display: flex;
-  margin: 0;
-  padding: 0;
-
+	width: 100%;
+	height: 30px;
+	text-align: center;
+	display: flex;
+	margin: 0;
+	padding: 0;
 }
 
-
 li {
-  width: 33%;
-  list-style: none;
-  color: white;
-  border: 1px solid #181d62;
-  background: #3d5277;
-  line-height: 30px;
-  height: 30px;
+	width: 33%;
+	list-style: none;
+	color: white;
+	border: 1px solid #181d62;
+	background: #3d5277;
+	line-height: 30px;
+	height: 30px;
 }
 
 li:hover {
-  cursor: pointer;
-  background: #b4b9c4;
-  border-bottom: none;
-  color: black;
+	cursor: pointer;
+	background: #b4b9c4;
+	border-bottom: none;
+	color: black;
 }
 
 .selected {
-  background: #dde5f4;
-  border-bottom: none;
-  color: black;
+	background: #dde5f4;
+	border-bottom: none;
+	color: black;
 }
 
 .rule-box {
-  width: calc(100%-2px);
-  height: 212px;
-  margin-top: -1px;
-  background: #dde5f4;
-  border: 1px solid #162f46;
-
+	width: calc(100%-2px);
+	height: 212px;
+	margin-top: -1px;
+	background: #dde5f4;
+	border: 1px solid #162f46;
 }
 
 .form-row {
-  text-align: left;
+	text-align: left;
 }
 
 .title {
-  margin-left: 20px;
-  margin-top: 20px;
-  display: inline-block;
-  font-size: 17px;
+	margin-left: 20px;
+	margin-top: 20px;
+	display: inline-block;
+	font-size: 17px;
 }
 
 .input-item {
-  display: inline-block;
-  margin-top: 10px;
+	display: inline-block;
+	margin-top: 10px;
 }
 
 .sure-btn {
-  width: 80px;
-  height: 30px;
-  margin-left: 20px;
-  margin-top: 20px;
-  text-align: center;
-  line-height: 30px;
-  background: #40557b;
-  color: white;
+	width: 80px;
+	height: 30px;
+	margin-left: 20px;
+	margin-top: 20px;
+	text-align: center;
+	line-height: 30px;
+	background: #40557b;
+	color: white;
 }
 
 .iconfont:hover {
-  color: rgb(125, 125, 125);
-  cursor: pointer;
+	color: rgb(125, 125, 125);
+	cursor: pointer;
 }
 
 .tiaojian,
 .canshu {
-  width: 49%;
-  display: inline-block;
-  color: #cdcacf;
+	width: 49%;
+	display: inline-block;
+	color: #cdcacf;
 }
 
 .sure-btn {
-  width: 80px;
-  height: 30px;
-  text-align: center;
-  line-height: 30px;
-  background: #0b1b36;
-  color: white;
+	width: 80px;
+	height: 30px;
+	text-align: center;
+	line-height: 30px;
+	background: #0b1b36;
+	color: white;
 }
 
 .exit-rule {
-  width: 100%;
-  height: 410px;
-  color: black;
-  background: white
+	width: 100%;
+	height: 410px;
+	color: black;
+	background: white;
 }
 
 .group-table {
-  height: 600px;
-  background: #e8f0f9;
-  overflow: scroll;
-  color: white;
-  margin-top: 20px;
+	height: 600px;
+	background: #e8f0f9;
+	overflow: scroll;
+	color: white;
+	margin-top: 20px;
 }
 
 table {
-  border-collapse: collapse;
-  width: 100%;
+	border-collapse: collapse;
+	width: 100%;
 }
 
 table tr:hover {
-  cursor: pointer;
-  background: #eee;
+	cursor: pointer;
+	background: #eee;
 }
 
 table,
 th,
 td {
-  border: 1px solid #d3d7db;
-  font-size: 14px;
-  height: 25px;
-  line-height: 25px;
-  text-align: center;
-  color: black;
+	border: 1px solid #d3d7db;
+	font-size: 14px;
+	height: 25px;
+	line-height: 25px;
+	text-align: center;
+	color: black;
 }
 
 table tr th {
-  width: 14.28%;
+	width: 14.28%;
 }
 
 .icon-span {
-  float: right;
-  font-size: 12px;
-  margin-right: 20px;
-  color: white;
+	float: right;
+	font-size: 12px;
+	margin-right: 20px;
+	color: white;
 }
 
 .icon-span i {
-  font-size: 13px;
+	font-size: 13px;
 }
 </style>
