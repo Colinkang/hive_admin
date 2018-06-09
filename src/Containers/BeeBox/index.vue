@@ -3,7 +3,7 @@
     <div class="hive-top">
             <div class="hive-control-btn">
                 <span><i class="iconfont icon-add"></i>
-                  <el-button type="text" >添加</el-button>
+                  <el-button type="text" @click="toSomePage('/addbeebox')">添加</el-button>
                 </span>
                 <span><i class="iconfont icon-069delete"></i>
                   <el-button type="text" >删除</el-button>
@@ -55,26 +55,26 @@
                     </div>
                     <div class="overview-row">
                       <div class="overview-row-left">
-                        数量：
+                        数量: {{pai.totalBeeBoxNum}}
                       </div>
                       <div class="overview-row-right">
-                        正常
+                        正常:{{pai.normalBeeBoxNum}}
                       </div>
                     </div>
                     <div class="overview-row">
                       <div class="overview-row-left">
-                        正在运行：
+                        策略维护:{{pai.protectionNum}}
                       </div>
                       <div class="overview-row-right">
-                        异常
+                        异常:{{ pai.abnormalBeeBoxNum }}
                       </div>
                     </div>
                     <div class="overview-row">
                       <div class="overview-row-left">
-                        离线
+                        非策略维护:{{pai.noProtectionNum}}
                       </div>
                       <div class="overview-row-right">
-                        策略维护
+                        离线:{{pai.offLineBeeBoxNum}}
                       </div>
                     </div>
                   </div>
@@ -91,24 +91,24 @@
               </div>
               <div class="dtail-row">
                 <div class="detail-col">
-                  蜂箱ID:123
+                  蜂箱ID:{{beeBoxInfo.beeBoxId}}
                 </div>
                 <div class="detail-col">
-                  出厂批次: 111
+                  出厂批次: {{beeBoxInfo.batchNo}}
                 </div>
                 <div class="detail-col">
-                  厂商:111
+                  厂商:{{beeBoxInfo.manufacturer}}
                 </div>
               </div>
               <div class="dtail-row">
                 <div class="detail-col">
-                  蜂箱定位:22
+                  蜂箱定位:{{beeBoxInfo.lat,beeBoxInfo.lng}}
                 </div>
                 <div class="detail-col">
-                  生产日期:111
+                  生产日期:{{beeBoxInfo.productionDate}}
                 </div>
                 <div class="detail-col">
-                  状态:111
+                  状态:{{beeBoxInfo.status}}
                 </div>
               </div>
             </div>
@@ -222,44 +222,82 @@
 
 <script>
 import { get, post } from '../../common/post.js';
+import moment from 'moment';
 export default {
 	components: {},
 	data() {
 		return {
 			hiveList: [1, 2, 3, 4, 5, 6, 7, 8, 8, 98, 7, 6, 5, 1, 3, 4, 5, 5],
-      beeBoxInfo:{},
+			beeBoxInfo: {
+				beeBoxId: '',
+				batchNo: '',
+				manufacturer: '',
+				lat: '',
+				lng: '',
+				productionDate: '',
+				status: '',
+			},
+			pai: {},
 			checked: true,
+			search: '',
 		};
 	},
 	created: function() {
-		this.getHiveList();
+		// this.getBeeBoxInfo();
+		// this.getPai();
 	},
 	methods: {
-		//获取默认信息
+		//获取蜂箱默认信息
 		getBeeBoxInfo() {
+			let result = get('/getBeeBoxes', null);
 			result.then(res => {
 				console.log(111, res);
 				if (res.data.responseCode === '000000') {
 					let data = res.data.data;
-					this.hiveList = data;
-					console.log(this.hiveList);
+					if (data.length > 0) {
+						this.beeBoxInfo.beeBoxId = data[0].id;
+						this.beeBoxInfo.batchNo = data[0].batchNo;
+						this.beeBoxInfo.manufacturer = data[0].manufacturer;
+						this.beeBoxInfo.lat = data[0].lat;
+						this.beeBoxInfo.lng = data[0].lng;
+						this.beeBoxInfo.productionDate = moment(data[0].productionDate).format('YYYY-MM-DD');
+						// 将值赋值给列表
+						if (data[0].status === 0) this.beeBoxInfo.status = '正在运行';
+						else if (data[0].status === 2) this.beeBoxInfo.status = '异常';
+						else if (data[0].status === 3) this.beeBoxInfo.status = '离线';
+					}
 				}
+			});
+		},
+
+		toSomePage(path) {
+			this.$router.push({
+				path: path,
 			});
 		},
 		// 获取蜂箱列表信息 蜂箱信息  地图信息
 		getHiveList() {
-			let result = get('/getBeeBoxes', null);
+			let result = post('/getBeeBoxSensorData', {
+				beeBoxIds: 'beeBoxIds;',
+			});
 		},
 		//获取饼图信息 总览信息
 		getPai() {
-			let result = post('/getOverviewData', null);
+			let result = get('/getOverviewData', null);
 			result.then(res => {
-				console.log(111, res);
+				if (res.data.responseCode === '000000') {
+					let data = res.data.data;
+					this.pai.abnormalBeeBoxNum = data.abnormalBeeBoxNum;
+					this.pai.noProtectionNum = data.noProtectionNum;
+					this.pai.normalBeeBoxNum = data.normalBeeBoxNum;
+					this.pai.offLineBeeBoxNum = data.offLineBeeBoxNum;
+					this.pai.protectionNum = data.protectionNum;
+					this.pai.totalBeeBoxNum = data.totalBeeBoxNum;
+					console.log(12334, this.pai);
+				}
 			});
 		},
-		slectThisRow(id) {
-			//  this.idChange(id)
-		},
+
 		// 点击列表某行获取蜂箱信息，并将该行标记颜色
 		slectThisRow(id) {
 			//  this.idChange(id)

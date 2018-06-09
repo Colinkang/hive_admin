@@ -13,6 +13,8 @@ import Event from '../Containers/Event/index.vue'
 import AI from '../Containers/AI/index.vue'
 import Drone from '../Containers/Drone/index.vue'
 import Control from '../Containers/Control/index.vue'
+import AddBeeBox from '../Containers/BeeBox/add.vue'
+import AdminDetail from '../Containers/AdminDetail/index.vue'
 
 
 Vue.use(Router)
@@ -52,6 +54,16 @@ export default new Router({
         {
             path:'control',
             component:Control
+        }
+        ,
+        {
+            path:'addbeebox',
+            component:AddBeeBox
+        }
+        ,
+        {
+            path:'admindetail',
+            component:AdminDetail
         }
       ]
     }
