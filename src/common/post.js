@@ -1,6 +1,6 @@
 import axios from 'axios';
 import {HIVE_API_TOKEN} from './localStorageKey'
-import {HIVE_HOST} from './host'
+import {HIVE_HOST,HIVE_HOST_1} from './host'
 import localStore from './localStore'
 
 export function postLogin(url,params){
@@ -22,6 +22,20 @@ export function post(url,params){
     let result = axios({
        method:'post',
        url:HIVE_HOST+url,
+       data:params,
+       //  contentType:false,
+       processData:false,
+       headers:{
+           "token":localStore.getItem(HIVE_API_TOKEN),
+           'content-type': 'application/json'
+       }
+    });
+    return result;
+}
+export function post1(url,params){
+    let result = axios({
+       method:'post',
+       url:HIVE_HOST_1+url,
        data:params,
        //  contentType:false,
        processData:false,
