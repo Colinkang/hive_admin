@@ -5,13 +5,13 @@
       蜂箱ID
     </el-col>
     <el-col :span="5">
-      <el-input size="small"  placeholder="请输入内容"></el-input size="small">
+      <el-input size="small"  placeholder="请输入内容" v-model="beeBox.id"></el-input>
     </el-col>
     <el-col :span="3" :offset="3">
       所属蜂农ID
     </el-col>
     <el-col :span="5">
-      <el-input size="small"  placeholder="请输入内容"></el-input size="small">
+      <el-input size="small"  placeholder="请输入内容" v-model="beeBox.farmerId"></el-input>
     </el-col>
   </el-row>
   <el-row class="form-row">
@@ -19,16 +19,16 @@
       出厂批次
     </el-col>
     <el-col :span="5">
-      <el-input size="small"  placeholder="请输入内容"></el-input size="small">
+      <el-input size="small"  placeholder="请输入内容" v-model="beeBox.batchNo"></el-input>
     </el-col>
     <el-col :span="3" :offset="3">
       手机号码
     </el-col>
     <el-col :span="5">
-      <el-input size="small"  placeholder="请输入内容"></el-input size="small">
+      <el-input size="small"  placeholder="请输入内容" v-model="beeBox.mobile"></el-input>
     </el-col>
     <el-col :span="4">
-      <span class="sent-code">发送验证码</span>
+      <span class="sent-code" @click="sendCode">发送验证码</span>
     </el-col>
   </el-row>
   <el-row class="form-row">
@@ -36,13 +36,13 @@
       生产日期
     </el-col>
     <el-col :span="5">
-      <el-input size="small"  placeholder="请输入内容"></el-input size="small">
+      <el-input size="small"  placeholder="请输入内容" v-model="beeBox.entryDate"></el-input>
     </el-col>
     <el-col :span="3" :offset="3">
       验证码
     </el-col>
     <el-col :span="5">
-      <el-input size="small"  placeholder="请输入内容"></el-input size="small">
+      <el-input size="small"  placeholder="请输入内容" v-model="beeBox.code"></el-input>
     </el-col>
 
   </el-row>
@@ -51,7 +51,7 @@
       厂商
     </el-col>
     <el-col :span="5">
-      <el-input size="small"  placeholder="请输入内容"></el-input size="small">
+      <el-input size="small"  placeholder="请输入内容" v-model="beeBox.manufacturer"></el-input>
     </el-col>
     <el-col :span="3" :offset="3">
       状态
@@ -67,39 +67,94 @@
       <el-button type="primary" @click="save">保存</el-button>
     </el-col>
   </el-row>
+  <el-row class="line-height margin-top" v-if="showAlert">
+        <el-col :span="24">
+          <el-alert :title="text" :type="status==='wrong'?'error':'success'">
+          </el-alert>
+        </el-col>
+      </el-row>
 </div>
 </template>
 <script>
+import { get, post } from '../../common/post.js';
 export default {
-  name: "",
-  data: () => ({
-    radio:1
-  }),
-  methods:{
-    save(){
-      //保存成功后
-      this.$router.push({
-        path:'/beebox'
-      })
-    }
-  }
-}
+	name: '',
+	data: () => ({
+		showAlert: false,
+		text: '',
+		status: '',
+		radio: '',
+		beeBox: {
+			id: '',
+			farmerId: '',
+			manufacturer: '',
+			productionDate: '',
+			batchNo: '',
+			status: '',
+			entryDate: '',
+			mobile: '',
+			code: '',
+		},
+	}),
+	methods: {
+		save() {
+			let result = post('/alterBeeBox', {
+				id: this.beeBox.id,
+				farmerId: this.beeBox.farmerId,
+				manufacturer: this.beeBox.manufacturer,
+				productionDate: this.beeBox.productionDate,
+				batchNo: this.beeBox.batchNo,
+				status: this.beeBox.status,
+				entryDate: this.beeBox.entryDate,
+				mobile: this.beeBox.mobile,
+				code: this.beeBox.code,
+			});
+			result.then(res => {
+        this.showAlert = true;
+        console.log(112,res)
+				if (res.data.responseCode === '000000') {
+					this.status = 'success';
+					this.text = '添加成功';
+					this.$router.push({
+						path: '/beebox',
+					});
+				} else {
+					this.status = 'error';
+					this.text = '添加失败';
+				}
+			});
+			//保存成功后
+		},
+		sendCode() {
+			let result = post('/adminSMSService', {
+				mobile: this.beeBox.mobile,
+				userName: 'hello',
+				registerFlag: 1,
+				messageType: 2298872,
+			});
+			result.then(res => {
+				if (res.data.responseCode === '000000') {
+            
+				}
+			});
+		},
+	},
+};
 </script>
 <style lang="" scoped>
 .container {
-  color: white;
+	color: white;
 }
-.form-row{
-  height: 40px;
-  line-height: 40px;
-  margin-top: 20px;
+.form-row {
+	height: 40px;
+	line-height: 40px;
+	margin-top: 20px;
 }
-.sent-code{
-  color: rgb(50, 66, 222);
-
+.sent-code {
+	color: rgb(50, 66, 222);
 }
-.sent-code:hover{
-  color: rgb(122, 122, 122);
-  cursor: pointer;
+.sent-code:hover {
+	color: rgb(122, 122, 122);
+	cursor: pointer;
 }
 </style>

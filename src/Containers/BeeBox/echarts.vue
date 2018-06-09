@@ -2,9 +2,8 @@
     <div id="myChart" :style="{width: '100%', height: '100%'}"></div>
 </template>
 <script>
-import echarts from 'echarts'
+import echarts from 'echarts';
 export default {
-
 	name: 'mychart',
 	data() {
 		return {
@@ -16,6 +15,7 @@ export default {
 	// },
 	methods: {
 		drawLine(obj) {
+			console.log(111111, obj);
 			// 基于准备好的dom，初始化echarts实例
 			let myChart = echarts.init(document.getElementById('myChart'));
 			// 绘制图表

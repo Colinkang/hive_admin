@@ -33,13 +33,13 @@
             <th>电量</th>
           </tr>
           <tr v-for="(item) in hiveList" :key="item.boxId" @click="slectThisRow(item.boxId)">
-            <td>{{item}}</td>
-            <td>{{item}}</td>
-            <td>2</td>
-            <td>3</td>
-            <td>3</td>
-            <td>3</td>
-            <td>3</td>
+            <td>{{item.boxId}}</td>
+            <td>{{item.temperature}}</td>
+            <td>{{item.humidity}}</td>
+            <td>{{item.gravity}}</td>
+            <td>{{item.airPressure}}</td>
+            <td>{{item.status}}</td>
+            <td>{{item.battery}}</td>
           </tr>
         </table>
       </div>
@@ -80,7 +80,7 @@
                   </div>
                 </div>
                 <div class="overview-chart-right">
-                  这里显示饼图
+                  <echartspie ref="hive1"></echartspie>
                 </div>
               </div>
 
@@ -91,33 +91,37 @@
               </div>
               <div class="dtail-row">
                 <div class="detail-col">
-                  蜂箱ID:{{beeBoxInfo.beeBoxId}}
+                  蜂箱ID: {{beeBoxInfo.beeBoxId}}
                 </div>
                 <div class="detail-col">
-                  出厂批次: {{beeBoxInfo.batchNo}}
+                  出厂批次:  {{beeBoxInfo.batchNo}}
                 </div>
                 <div class="detail-col">
-                  厂商:{{beeBoxInfo.manufacturer}}
+                  厂商: {{beeBoxInfo.manufacturer}}
                 </div>
               </div>
               <div class="dtail-row">
                 <div class="detail-col">
-                  蜂箱定位:{{beeBoxInfo.lat,beeBoxInfo.lng}}
+                  蜂箱定位: {{beeBoxInfo.lat,beeBoxInfo.lng}}
                 </div>
                 <div class="detail-col">
-                  生产日期:{{beeBoxInfo.productionDate}}
+                  生产日期:  {{beeBoxInfo.productionDate}}
                 </div>
                 <div class="detail-col">
-                  状态:{{beeBoxInfo.status}}
+                  状态:  {{beeBoxInfo.status}}
                 </div>
               </div>
             </div>
             <div class="line-chart-box">
-              这里显示曲线图
+              <fold ref="fool"></fold>
             </div>
           </div>
           <div class="section-right-top-right">
-            这里显示地图
+            <baidu-map style="width:100%;height:100%" center="北京">
+							<bm-marker :position="{lng: 116.404, lat: 39.915}" :dragging="true">
+
+							</bm-marker>
+						</baidu-map>
           </div>
         </div>
         <div class="section-right-bottom">
@@ -135,10 +139,12 @@
                   条件
                 </div>
                 <select style="width:90%;">
-                  <option value ="volvo">Volvo</option>
-                  <option value ="saab">Saab</option>
-                  <option value="opel">Opel</option>
-                  <option value="audi">Audi</option>
+                  <option value ="id">ID</option>
+                  <option value ="beeFarmer">蜂农</option>
+                  <option value="manufacturer">制造商</option>
+                  <option value="batchNo">批次</option>
+									<option value="productionDate">生产日期</option>
+									<option value="position">地理位置</option>
                 </select>
               </div>
               <div class="canshu">
@@ -180,29 +186,13 @@
             <div class="form-row group-table">
               <table border="0" style="border:none">
                 <tr style="border:none;background:#40577f;color:white">
-                  <th style="border:none;width:25%;color:white"><el-checkbox v-model="checked">名称<i class="iconfont icon-duibi" style="font-size:12px"></i></el-checkbox></th>
-                  <th style="border:none;width:25%;color:white">蜂箱数量<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
-                  <th style="border:none;width:50%;color:white">备注</th>
+                  <th style="border:none;width:50%;color:white"><el-checkbox v-model="checked">名称<i class="iconfont icon-duibi" style="font-size:12px"></i></el-checkbox></th>
+                  <th style="border:none;width:50%;color:white">蜂箱数量<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
+                  <!-- <th style="border:none;width:50%;color:white">备注</th> -->
                 </tr>
-                <tr >
-                  <td style="width:25%;">-</td>
-                  <td style="width:25%;">1</td>
-                  <td style="width:50%;">2</td>
-                </tr>
-                <tr >
-                  <td style="width:25%;">-</td>
-                  <td style="width:25%;">1</td>
-                  <td style="width:50%;">2</td>
-                </tr>
-                <tr >
-                  <td style="width:25%;">-</td>
-                  <td style="width:25%;">1</td>
-                  <td style="width:50%;">2</td>
-                </tr>
-                <tr >
-                  <td style="width:25%;">-</td>
-                  <td style="width:25%;">1</td>
-                  <td style="width:50%;">2</td>
+								 <tr v-for="(item) in groupList" :key="item.id" @click="slectThisGroupRow(item.id)">
+										<td style="width:50%;">{{item.groupName}}</td>
+										<td style="width:50%;">{{item.beeBoxNum}}</td>
                 </tr>
               </table>
             </div>
@@ -222,12 +212,17 @@
 
 <script>
 import { get, post } from '../../common/post.js';
+import echartspie from './echarts.vue';
+import fold from './fold.vue';
 import moment from 'moment';
 export default {
-	components: {},
+	components: {
+		echartspie,
+		fold,
+	},
 	data() {
 		return {
-			hiveList: [1, 2, 3, 4, 5, 6, 7, 8, 8, 98, 7, 6, 5, 1, 3, 4, 5, 5],
+			hiveList: [],
 			beeBoxInfo: {
 				beeBoxId: '',
 				batchNo: '',
@@ -240,16 +235,30 @@ export default {
 			pai: {},
 			checked: true,
 			search: '',
+			fold: {
+				temperature: [],
+				humidity: [],
+				gravity: [],
+				airPressure: [],
+				battery: [],
+				date: [],
+			},
+			termList: [],
+			term: { name: '', condition: '', value: '' },
+			groupList: [],
 		};
 	},
 	created: function() {
-		// this.getBeeBoxInfo();
-		// this.getPai();
+		this.getBeeBoxInfo();
+		this.getPai();
+		this.getHiveList();
+		this.getFold();
+		this.getGroupList();
 	},
 	methods: {
 		//获取蜂箱默认信息
 		getBeeBoxInfo() {
-			let result = get('/getBeeBoxes', null);
+			let result = post('/getBeeBoxes', { keywords: '' });
 			result.then(res => {
 				console.log(111, res);
 				if (res.data.responseCode === '000000') {
@@ -277,8 +286,21 @@ export default {
 		},
 		// 获取蜂箱列表信息 蜂箱信息  地图信息
 		getHiveList() {
-			let result = post('/getBeeBoxSensorData', {
-				beeBoxIds: 'beeBoxIds;',
+			let result = get('/getAllBeeBoxSensorData', null);
+			result.then(res => {
+				console.log(1111, res);
+				if (res.data.responseCode === '000000') {
+					let data = res.data.data;
+					// 将值赋值给列表
+					for (let obj of data) {
+						if (obj.status === 0) obj.status = '正在运行';
+						else if (obj.status === 2) obj.status = '异常';
+						else if (obj.status === 3) obj.status = '离线';
+					}
+					this.hiveList = data;
+					console.log(122, this.hiveList);
+					// 画扇形图
+				}
 			});
 		},
 		//获取饼图信息 总览信息
@@ -294,6 +316,7 @@ export default {
 					this.pai.protectionNum = data.protectionNum;
 					this.pai.totalBeeBoxNum = data.totalBeeBoxNum;
 					console.log(12334, this.pai);
+					this.$refs.hive1.drawLine(this.pai);
 				}
 			});
 		},
@@ -305,9 +328,21 @@ export default {
 		// 获取折线图的数据，并将数据显示在折线图上
 		getFold() {
 			let result = post('/getBeeBoxSensorData', {
-				beeBoxIds: 'beeBoxIds;', //所有信息
+				beeBoxIds: [1], //所有信息
 			});
 			result.then(res => {
+				if (res.data.responseCode === '000000') {
+					let data = res.data.data;
+					for (let d of data) {
+						this.fold.temperature.push(d.temperature);
+						this.fold.humidity.push(d.humidity);
+						this.fold.gravity.push(d.gravity);
+						this.fold.airPressure.push(d.airPressure);
+						this.fold.battery.push(d.battery);
+						this.fold.date.push(moment(data.createDate).format('YYYY-MM-DD hh:mm'));
+					}
+					this.$refs.fool.drawFoldLine(this.fold);
+				}
 				console.log(111, res);
 			});
 		},
@@ -322,20 +357,32 @@ export default {
 			});
 			result.then(res => {});
 		},
-		//显示已有条件列表
 
 		// 显示编组信息列表 //刷新现有组列表
 		getGroupList() {
-			let result = post('/getGroups', null);
-			result.then(res => {});
+			let result = get('/getGroups', null);
+			result.then(res => {
+				if (res.data.responseCode === '000000') {
+					console.log(1111, res);
+					let data = res.data.data;
+					this.groupList = data;
+				}
+			});
 		},
 
 		// 删除现有组列表
 		deleteGroupList() {
-			let result = post('/deleteGroups', { ids: [] });
+			let result = post('/deleteGroups', { ids: [1] });
 			result.then(res => {});
 		},
-
+		// 添加到已有条件列表
+		addToTermList() {
+			this.termList.push({
+				name: this.term.name,
+				condition: this.term.condition,
+				value: this.term.value,
+			});
+		},
 		//显示已有条件列表
 		getTermList() {},
 		//搜索框用来查找蜂箱列表
