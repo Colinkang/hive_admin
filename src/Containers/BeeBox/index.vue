@@ -2,7 +2,6 @@
   <div class="outer-box">
     <div class="hive-top">
             <div class="hive-control-btn">
-
                 <span><i class="iconfont icon-add"></i>
                   <el-button type="text" >添加</el-button>
                 </span>
@@ -34,8 +33,8 @@
             <th>电量</th>
           </tr>
           <tr v-for="(item) in hiveList" :key="item.boxId" @click="slectThisRow(item.boxId)">
-            <td>-</td>
-            <td>1</td>
+            <td>{{item}}</td>
+            <td>{{item}}</td>
             <td>2</td>
             <td>3</td>
             <td>3</td>
@@ -56,7 +55,7 @@
                     </div>
                     <div class="overview-row">
                       <div class="overview-row-left">
-                        数量：111
+                        数量：
                       </div>
                       <div class="overview-row-right">
                         正常
@@ -64,7 +63,7 @@
                     </div>
                     <div class="overview-row">
                       <div class="overview-row-left">
-                        正在运行：111
+                        正在运行：
                       </div>
                       <div class="overview-row-right">
                         异常
@@ -228,25 +227,32 @@ export default {
 	data() {
 		return {
 			hiveList: [1, 2, 3, 4, 5, 6, 7, 8, 8, 98, 7, 6, 5, 1, 3, 4, 5, 5],
+      beeBoxInfo:{},
 			checked: true,
 		};
 	},
 	created: function() {
 		this.getHiveList();
 	},
-	created: function() {},
-
 	methods: {
-		// 获取蜂箱列表信息 蜂箱信息  地图信息
-		getHiveList() {
-			let result = post('/api/getBeeBoxes', null);
+		//获取默认信息
+		getBeeBoxInfo() {
 			result.then(res => {
 				console.log(111, res);
+				if (res.data.responseCode === '000000') {
+					let data = res.data.data;
+					this.hiveList = data;
+					console.log(this.hiveList);
+				}
 			});
+		},
+		// 获取蜂箱列表信息 蜂箱信息  地图信息
+		getHiveList() {
+			let result = get('/getBeeBoxes', null);
 		},
 		//获取饼图信息 总览信息
 		getPai() {
-			let result = post('/api/getOverviewData', null);
+			let result = post('/getOverviewData', null);
 			result.then(res => {
 				console.log(111, res);
 			});
@@ -260,7 +266,7 @@ export default {
 		},
 		// 获取折线图的数据，并将数据显示在折线图上
 		getFold() {
-			let result = post('/api//getBeeBoxSensorData', {
+			let result = post('/getBeeBoxSensorData', {
 				beeBoxIds: 'beeBoxIds;', //所有信息
 			});
 			result.then(res => {
@@ -269,7 +275,7 @@ export default {
 		},
 		// 添加到编组列表
 		addToGroup() {
-			let result = post('/api/saveGroupBeeBox', {
+			let result = post('/saveGroupBeeBox', {
 				beeBoxGroup: {
 					id: 1,
 					groupName: '',
@@ -282,13 +288,13 @@ export default {
 
 		// 显示编组信息列表 //刷新现有组列表
 		getGroupList() {
-			let result = post('/api/getGroups', null);
+			let result = post('/getGroups', null);
 			result.then(res => {});
 		},
 
 		// 删除现有组列表
 		deleteGroupList() {
-			let result = post('/api/deleteGroups', { ids: [] });
+			let result = post('/deleteGroups', { ids: [] });
 			result.then(res => {});
 		},
 
