@@ -1,13 +1,13 @@
 <template>
 <div class="nav">
   <el-menu default-active="0" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose" background-color="#404040" text-color="rgba(105, 105, 106)" a ctive-text-color="rgb(105, 105, 106)" :collapse="collapse" :router="true">
-    <el-menu-item index="0" route="/beebox">
+    <el-menu-item index="0" route="/beebox" v-if="right.indexOf('1')>-1">
       <span class="nav-text">
         <i class="iconfont icon-boxxiangzi"></i>
         <span slot="title">蜂箱</span>
       </span>
     </el-menu-item>
-    <el-menu-item index="1" route="/beefarmer">
+    <el-menu-item index="1" route="/beefarmer" v-if="right.indexOf('2')>-1">
       <span class="nav-text">
         <i class="iconfont icon-wo"></i>
         <span slot="title">蜂农</span>
@@ -48,6 +48,8 @@
 </div>
 </template>
 <script>
+import { HIVE_ADMIN_RIGHTS} from '../../common/localStorageKey';
+import LocalStore from '../../common/localStore';
 export default {
   props: {
     collapse: {
@@ -55,7 +57,9 @@ export default {
       default: false
     }
   },
-  data: () => ({}),
+  data: () => ({
+    right:[]
+  }),
   methods: {
     toRoutePage(route) {
       this.$router.push({
@@ -68,6 +72,12 @@ export default {
     handleClose(key, keyPath) {
       //console.log(key, keyPath);
     }
+  },
+  mounted() {
+    //do something after mounting vue instance
+    let adminRight = LocalStore.getItem(HIVE_ADMIN_RIGHTS)
+    this.right=adminRight.split(',')
+
   }
 };
 </script>

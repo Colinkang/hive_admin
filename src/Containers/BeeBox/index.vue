@@ -140,45 +140,9 @@
               <span>名称</span>
               <input type="text" name="" value="" class="name-input">
             </div>
-            <div class="form-row">
-              <div class="tiaojian">
-                <div class="">
-                  条件
-                </div>
-                <select style="width:90%;">
-                  <option value ="id">ID</option>
-                  <option value ="beeFarmer">蜂农</option>
-                  <option value="manufacturer">制造商</option>
-                  <option value="batchNo">批次</option>
-									<option value="productionDate">生产日期</option>
-									<option value="position">地理位置</option>
-                </select>
-              </div>
-              <div class="canshu">
-                <div class="">
-                  参数
-                </div>
-                <input type="text" name="" value="" style="width:90%">
-              </div>
-            </div>
-            <div class="form-row">
-                <div class="sure-btn">
-                    确认
-                </div>
-            </div>
-            <div class="form-row">
-              <div class="tiaojian">
-                <div class="">
-                  已有条件
-                </div>
+            <props-select></props-select>
 
-              </div>
-              <div class="canshu" style="text-align:right">
-                <span style="margin-right:20px"><i class="iconfont icon-add"></i>添加</span>
-                <span> <i class="iconfont icon-069delete"></i>删除</span>
-
-              </div>
-            </div>
+            
             <div class="form-row">
               <div class="exit-rule" ></div>
             </div>
@@ -221,11 +185,13 @@
 import { get, post } from '../../common/post.js';
 import echartspie from './echarts.vue';
 import fold from './fold.vue';
+import PropsSelect from './PropsSlect.vue'
 import moment from 'moment';
 export default {
 	components: {
 		echartspie,
 		fold,
+    PropsSelect
 	},
 	data() {
 		return {
@@ -290,6 +256,7 @@ export default {
 				}
 			});
 		},
+
 
 		toSomePage(path) {
 			this.$router.push({
@@ -679,6 +646,10 @@ table tr th {
 	line-height: 30px;
 	background: #0b1b36;
 	color: white;
+}
+.sure-btn:hover{
+  background: #1a335e;
+  cursor: pointer;
 }
 textarea {
 	width: 100%;

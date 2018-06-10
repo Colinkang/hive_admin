@@ -4,10 +4,10 @@
     <span class="title">蜂农</span>
   </div>
   <div class="form-row form-row-section">
-    <div class="input-section-left">
-      <div class="form-row">
+    <div class="input-section-left" v-if="false">
+      <div class="form-row" >
         <span style="margin-left:20px;margin-top:10px;display:block">创建蜂农</span>
-        <span class="input-item" style="margin-left:20px;"><label>姓名 <input style="width:120px;" v-model="creatFramerData.name"/></label></span>
+        <span class="input-item" style="margin-left:20px;"><label>姓名 <input style="width:120px;" v-model="creatFramerData.name" /></label></span>
         <span class="input-item" style="margin-left:20px"><label>组织
             <select style="width:120px;" v-model="creatFramerData.organizationId">
             	<option v-for="organizationList in organizationLists" :key="organizationList.id" :value="organizationList.id">{{organizationList.organizationName}}</option>
@@ -333,22 +333,17 @@ export default {
 .input-section-left {
 	width: 65%;
 	height: 160px;
+  border-right: 2px solid white;
 }
 
 .input-section-right {
 	width: 35%;
 	height: 160px;
-	border-left: 2px solid white;
+
 	width: 70%;
 	height: 160px;
 }
 
-/* .input-section-right {
-  width: 30%;
-  height: 160px;
-  border-left: 2px solid white;
->>>>>>> b6e309c8bd113e4a9c64474b324e507e8a3ec76c
-} */
 
 .sent-code {
 	font-size: 13px;
