@@ -200,7 +200,7 @@ export default {
 		},
 		//显示列表页  // 刷新列表页
 		getFarmerList(page) {
-			this.currentPage = 2
+			this.currentPage = 1
 			let result = post('/getPageFarmers', {
 				pageNo: page,
 				pageSize: 10,

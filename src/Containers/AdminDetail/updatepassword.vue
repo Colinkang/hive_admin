@@ -52,7 +52,28 @@
           </el-col>
 
         </el-row>
-    
+        <!-- <el-row class="form-row">
+          <el-col :span="3" >
+            联系电话
+          </el-col>
+          <el-col :span="5">
+            1234567876543
+          </el-col>
+          <el-col :span="4">
+            <span class="sent-code">修改</span>
+          </el-col>
+
+
+        </el-row> -->
+        <!-- <el-row class="form-row">
+          <el-col :span="3">
+            组织
+          </el-col>
+          <el-col :span="5">
+            组织
+          </el-col>
+
+        </el-row> -->
         <el-row class="form-row">
           <el-col :span="4">
             <el-button type="primary" @click="save">确认修改</el-button>
@@ -142,7 +163,6 @@ export default {
 </script>
 <style lang="" scoped>
 .container {
-	position: fixed;
 	top: 0;
 	left: 0;
 	width: 100%;

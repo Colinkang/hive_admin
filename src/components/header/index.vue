@@ -5,10 +5,10 @@
   <div class="user-control">
     <span>
 
-       <router-link to="/beekeeper/info"><i class="iconfont icon-user"></i>{{account}}</router-link>
+       <router-link to="/admindetail"><i class="iconfont icon-user"></i>{{account}}</router-link>
     </span>
     <span>
-        <router-link to="/admindetail" >修改</router-link>
+        <router-link to="/updatepwd" >修改密码</router-link>
     </span>
     <span @click="logout">
       退出

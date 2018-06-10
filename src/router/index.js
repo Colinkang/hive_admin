@@ -15,57 +15,62 @@ import Drone from '../Containers/Drone/index.vue'
 import Control from '../Containers/Control/index.vue'
 import AddBeeBox from '../Containers/BeeBox/add.vue'
 import AdminDetail from '../Containers/AdminDetail/index.vue'
+import AdminDetailUpdatePwd from '../Containers/AdminDetail/updatepassword.vue'
 
 
 Vue.use(Router)
 
 export default new Router({
-  routes: [
-    {
-      path: '/',
-      name: 'content',
-      component: content,
-      redirect: '/beebox',
-      children: [
+    routes: [
         {
-            path:'beebox',
-            component:BeeBox
-        },
-        {
-            path:'beefarmer',
-            component:BeeFarmer
-        },
-        {
-            path:'organization',
-            component:Organization
-        },
-        {
-            path:'event',
-            component:Event
-        },
-        {
-            path:'ai',
-            component:AI
-        },
-        {
-            path:'dron',
-            component:Drone
-        },
-        {
-            path:'control',
-            component:Control
+            path: '/',
+            name: 'content',
+            component: content,
+            redirect: '/beebox',
+            children: [
+                {
+                    path: 'beebox',
+                    component: BeeBox
+                },
+                {
+                    path: 'beefarmer',
+                    component: BeeFarmer
+                },
+                {
+                    path: 'organization',
+                    component: Organization
+                },
+                {
+                    path: 'event',
+                    component: Event
+                },
+                {
+                    path: 'ai',
+                    component: AI
+                },
+                {
+                    path: 'dron',
+                    component: Drone
+                },
+                {
+                    path: 'control',
+                    component: Control
+                }
+                ,
+                {
+                    path: 'addbeebox',
+                    component: AddBeeBox
+                }
+                ,
+                {
+                    path: 'admindetail',
+                    component: AdminDetail
+                },
+                {
+                    path: 'updatepwd',
+                    component: AdminDetailUpdatePwd
+                }
+            ]
         }
-        ,
-        {
-            path:'addbeebox',
-            component:AddBeeBox
-        }
-        ,
-        {
-            path:'admindetail',
-            component:AdminDetail
-        }
-      ]
-    }
-  ]
+    ]
 })
