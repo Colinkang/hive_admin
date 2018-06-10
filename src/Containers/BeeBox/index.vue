@@ -5,13 +5,20 @@
                 <span><i class="iconfont icon-add"></i>
                   <el-button type="text" @click="toSomePage('/addbeebox')">添加</el-button>
                 </span>
-                <span><i class="iconfont icon-069delete"></i>
+                <span><i class="iconfont icon-069delete" @click="deleteBeeBox"></i>
                   <el-button type="text" >删除</el-button>
                 </span>
                 <span><i class="iconfont icon-shuaxin1"></i>
                   <el-button type="text" >刷新</el-button>
                 </span>
+									<el-row class="line-height margin-top" v-if="showAlert">
+									<el-col :span="24">
+										<el-alert :title="text" :type="deletestatus==='wrong'?'error':'success'">
+									</el-alert>
+                 </el-col>
+                </el-row>
             </div>
+
             <div class="hive-top-input">
                 <el-input size="mini" placeholder="请输入查询内容"
                 v-model="search"
@@ -246,6 +253,10 @@ export default {
 			termList: [],
 			term: { name: '', condition: '', value: '' },
 			groupList: [],
+			clickBeeBoxId: '',
+			deletestatus: '',
+			showAlert: false,
+			text: '',
 		};
 	},
 	created: function() {
@@ -263,6 +274,7 @@ export default {
 				console.log(111, res);
 				if (res.data.responseCode === '000000') {
 					let data = res.data.data;
+					console.log(88888,data);
 					if (data.length > 0) {
 						this.beeBoxInfo.beeBoxId = data[0].id;
 						this.beeBoxInfo.batchNo = data[0].batchNo;
@@ -303,6 +315,21 @@ export default {
 				}
 			});
 		},
+
+		//删除蜂箱
+		deleteBeeBox() {
+			if (this.clickBeeBoxId === '') {
+				this.showAlert = true;
+				this.deletestatus = 'wrong';
+				this.text = '请先点击要删除的行';
+				return;
+			}
+			let result = post('/', {});
+			result.then(res => {
+				if (res.data.responseCode === '000000') {
+				}
+			});
+		},
 		//获取饼图信息 总览信息
 		getPai() {
 			let result = get('/getOverviewData', null);
@@ -324,6 +351,8 @@ export default {
 		// 点击列表某行获取蜂箱信息，并将该行标记颜色
 		slectThisRow(id) {
 			//  this.idChange(id)
+			console.log('99999',id);
+			this.clickBeeBoxId = id;
 		},
 		// 获取折线图的数据，并将数据显示在折线图上
 		getFold() {

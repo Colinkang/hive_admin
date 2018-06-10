@@ -3,13 +3,13 @@
     <div class="detail-box">
       <div class="section-top">
         <el-row style="font-size:25px;top:70px">修改密码</el-row>
-        <el-row style="font-size:14px;top:80px">管理员：张三三</el-row>
-        <el-row style="font-size:14px;top:90px">管理员ID：张三三</el-row>
+        <el-row style="font-size:14px;top:80px"></el-row>
+        <el-row style="font-size:14px;top:90px"></el-row>
       </div>
       <div class="">
         <el-row class="form-row">
           <el-col :span="3">
-            旧登录密码
+            登录用户名
           </el-col>
           <el-col :span="5">
             <el-input size="mini"  placeholder="请输入内容"></el-input>

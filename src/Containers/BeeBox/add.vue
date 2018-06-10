@@ -5,7 +5,7 @@
       蜂箱ID
     </el-col>
     <el-col :span="5">
-      <el-input size="small"  placeholder="请输入内容" v-model="beeBox.id"></el-input>
+      <el-input size="small"  placeholder="请输入内容" v-model="beeBox.beeBoxNo"></el-input>
     </el-col>
     <el-col :span="3" :offset="3">
       所属蜂农ID
@@ -57,8 +57,8 @@
       状态
     </el-col>
     <el-col :span="5">
-      <el-radio v-model="radio" label="1">禁用</el-radio>
-      <el-radio v-model="radio" label="2">开启</el-radio>
+      <el-radio v-model="beeBox.status" label="1">禁用</el-radio>
+      <el-radio v-model="beeBox.status" label="2">开启</el-radio>
     </el-col>
 
   </el-row>
@@ -77,6 +77,7 @@
 </template>
 <script>
 import { get, post } from '../../common/post.js';
+import { Validate, beeBoxAddSchema } from '../../common/schema.js';
 export default {
 	name: '',
 	data: () => ({
@@ -85,10 +86,9 @@ export default {
 		status: '',
 		radio: '',
 		beeBox: {
-			id: '',
+			beeBoxNo: '',
 			farmerId: '',
 			manufacturer: '',
-			productionDate: '',
 			batchNo: '',
 			status: '',
 			entryDate: '',
@@ -98,26 +98,40 @@ export default {
 	}),
 	methods: {
 		save() {
-			let result = post('/alterBeeBox', {
-				id: this.beeBox.id,
+			let options = {
+				beeBoxNo: this.beeBox.beeBoxNo,
 				farmerId: this.beeBox.farmerId,
 				manufacturer: this.beeBox.manufacturer,
-				productionDate: this.beeBox.productionDate,
 				batchNo: this.beeBox.batchNo,
 				status: this.beeBox.status,
 				entryDate: this.beeBox.entryDate,
 				mobile: this.beeBox.mobile,
 				code: this.beeBox.code,
-			});
+			};
+			if (Validate(options, beeBoxAddSchema) !== null) {
+				this.showAlert = true;
+				this.status = 'error';
+        this.text = '字段都不能为空';
+        let _this = this;
+				setTimeout(function() {
+					_this.showAlert = false;
+				}, 3000);
+				return;
+			}
+			console.log(options);
+			let result = post('/alterBeeBox', options);
 			result.then(res => {
-        this.showAlert = true;
-        console.log(112,res)
+				this.showAlert = true;
+				console.log(112, res);
 				if (res.data.responseCode === '000000') {
 					this.status = 'success';
 					this.text = '添加成功';
 					this.$router.push({
 						path: '/beebox',
 					});
+				} else if (res.data.responseCode === '000110') {
+					this.status = 'error';
+					this.text = '蜂箱ID已经添加过了';
 				} else {
 					this.status = 'error';
 					this.text = '添加失败';
@@ -134,7 +148,6 @@ export default {
 			});
 			result.then(res => {
 				if (res.data.responseCode === '000000') {
-            
 				}
 			});
 		},
