@@ -19,11 +19,29 @@ const beeBoxAddSchema = Joi.object().keys({
     code: Joi.string().required(),
 })
 
+const beeFarmerAddSchema = Joi.object().keys({
+    name: Joi.string().max(10).required(),
+    organizationId: Joi.number().required(),
+    email: Joi.string().required(),
+    mobile: Joi.string().required(),
+    code: Joi.string().required(),
+    password: Joi.string().required(),
+    address: Joi.string().required(),
+})
 
+const organizeAddSchema = Joi.object().keys({
+    organizationName: Joi.string().max(10).required(),
+    contactName: Joi.string().max(10).required(),
+    email: Joi.string().required(),
+    mobile: Joi.string().required(),
+    address: Joi.string().required()
+})
 
 
 module.exports = {
     Validate,
     loginSchema,
-    beeBoxAddSchema
+    beeBoxAddSchema,
+    beeFarmerAddSchema,
+    organizeAddSchema
 };

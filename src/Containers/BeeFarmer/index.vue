@@ -7,20 +7,23 @@
     <div class="input-section-left">
       <div class="form-row">
         <span style="margin-left:20px;margin-top:10px;display:block">创建蜂农</span>
-        <span class="input-item" style="margin-left:20px;"><label>姓名 <input style="width:120px;" v-model="creatFramerData.name"/></label></span>
+        <span class="input-item" style="margin-left:20px;"><label>姓名 <input ref="name" :class="{ active : isEditStatus}" style="width:120px;" v-model="creatFramerData.name" value="creatFramerData.name"/></label></span>
         <span class="input-item" style="margin-left:20px"><label>组织
             <select style="width:120px;" v-model="creatFramerData.organizationId">
             	<option v-for="organizationList in organizationLists" :key="organizationList.id" :value="organizationList.id">{{organizationList.organizationName}}</option>
             </select></label></span>
-        <span class="input-item" style="margin-left:20px;"><label>邮箱 <input style="width:120px;" v-model="creatFramerData.email"/></label></span>
-        <span class="input-item" style="margin-left:20px;"><label>联系电话 <input style="width:120px;" v-model="creatFramerData.mobile"/></label><span class="sent-code" :class="{ active : codeStatus}" @click="sendVerifyCode">{{codeText}}</span></span>
-        <span class="input-item" style="margin-left:20px;"><label>验证码 <input style="width:50px;" v-model="creatFramerData.code"/></label></span>
-        <span class="input-item" style="margin-left:20px;"><label>密码 <input style="width:120px;" v-model="creatFramerData.password"/></label></span>
-        <span class="input-item" style="margin-left:20px;"><label>地址 <input style="width:350px;" v-model="creatFramerData.address"/></label></span>
+        <span class="input-item" style="margin-left:20px;"><label>邮箱 <input value="creatFramerData.email" style="width:120px;" v-model="creatFramerData.email"/></label></span>
+        <span class="input-item" style="margin-left:20px;"><label>联系电话 <input value="creatFramerData.mobile" style="width:120px;" v-model="creatFramerData.mobile"/></label><span class="sent-code" :class="{ active : codeStatus}" @click="sendVerifyCode">{{codeText}}</span></span>
+        <span class="input-item" style="margin-left:20px;"><label>验证码 <input value="creatFramerData.code" style="width:50px;" v-model="creatFramerData.code"/></label></span>
+        <span class="input-item" style="margin-left:20px;"><label>密码 <input value="creatFramerData.password" style="width:120px;" v-model="creatFramerData.password" type="password"/></label></span>
+        <span class="input-item" style="margin-left:20px;"><label>地址 <input value="creatFramerData.address" style="width:350px;" v-model="creatFramerData.address"/></label></span>
       </div>
       <div class="form-row">
         <div class="sure-btn" @click="createFarmer">
           确认
+        </div>
+        <div class="clear-btn" @click="clearFarmerInfo">
+          清空
         </div>
       </div>
     </div>
@@ -69,23 +72,24 @@
         <td>{{beeFarmerList.email}}</td>
         <td>{{beeFarmerList.mobile}}</td>
         <td>{{beeFarmerList.address}}</td>
-        <td>{{beeFarmerList.status}}</td>
+        <td>{{beeFarmerList.status | toBeeStatus}}</td>
       </tr>
     </table>
   </div>
   <div class="form-row">
     <el-button type="text" class="icon-span" @click="deleteFarmerList"><i class="iconfont icon-shuaxin1">删除</i></el-button>
-    <el-button type="text" class="icon-span" @click="getFarmerList"><i class="iconfont icon-shuaxin1">刷新</i></el-button>
+    <el-button type="text" class="icon-span" @click="getFarmerList(1)"><i class="iconfont icon-shuaxin1">刷新</i></el-button>
 
   </div>
   <div class="form-row" style="text-align:center">
-    <el-pagination small layout="prev, pager, next" :pagesize="10" @current-change="handleCurrentChange" :total="10*totalPageNo">
+    <el-pagination small layout="prev, pager, next" :pagesize="10" :current-page.sync="currentPage" @current-change="handleCurrentChange()" :total="10*totalPageNo">
     </el-pagination>
   </div>
 </div>
 </template>
 <script>
-import { get, post, post1} from '../../common/post.js';
+import { get, post } from '../../common/post.js';
+import { Validate, beeFarmerAddSchema } from '../../common/schema.js';
 export default {
 	name: '',
 	data() {
@@ -98,28 +102,95 @@ export default {
 				code:'',
 				password: '',
 				organizationId: '',
-				email: ''
-			},//创建表单数据
-			deleteIdArray:[],
-			deleteIdObject:{},
-			organizationLists:[],
-			checked:true,
-			codeText:'发送短信验证码',
-			codeStatus:false,
-			totalPageNo:1,
-			isIndeterminate:true,
-			checkAllStatus:false,
-			beeFarmerKeyWords:'',
-			statusList:[]
+				email: '',
+				beeBoxNum:0
+			},//创建蜂农表单数据
+			currentPage:1,
+			deleteIdArray:[],//需要删除数据的数组
+			deleteIdObject:{},//需要删除对象的数组
+			isEditStatus:false,//编辑的时候姓名的状态
+			organizationLists:[],//获取列表的对象
+			codeText:'发送短信验证码',//短信验证码按钮的字
+			codeStatus:false,//短信验证码按钮的状态
+			totalPageNo:1,//需要展示的多少也
+			checkAllStatus:false,//全选的状态
+			beeFarmerKeyWords:'',//搜索关键字
+			statusList:[]//按钮状态列表
 		};
 	},
 	methods: {
+		//点击列表显示的编辑蜂农信息
 		editBeeFarmer(id,index){
 			let BeeFarmerData = this.beeFarmerLists[index];
+			this.$refs.name.setAttribute("readonly","readonly");
+			this.isEditStatus = true;
 			console.log(BeeFarmerData);
 			this.creatFramerData = {
 				name: BeeFarmerData.name,
-				address: BeeFarmerData.name,
+				address: BeeFarmerData.address,
+				mobile: BeeFarmerData.mobile,
+				code:BeeFarmerData.code,
+				password: BeeFarmerData.password,
+				organizationId: BeeFarmerData.organizationId,
+				email: BeeFarmerData.email,
+				beeBoxNum: BeeFarmerData.beeBoxNum,
+				id:id,
+				username:BeeFarmerData.username
+			}
+		},
+		//创建蜂农 编辑蜂农
+		createFarmer() {
+			let options = {
+				name: this.creatFramerData.name,
+				organizationId: this.creatFramerData.organizationId,
+				email: this.creatFramerData.email,
+				mobile: this.creatFramerData.mobile,
+				code: this.creatFramerData.code,
+				password: this.creatFramerData.password,
+				address: this.creatFramerData.address,
+			};
+			if (Validate(options, beeFarmerAddSchema) !== null) {
+				this.$message({
+		          showClose: true,
+		          message: '字段不能为空',
+		          type: 'error'
+		        });
+				return;
+			}
+			let message = '创建';
+			if(this.creatFramerData.id !== undefined){
+				message = '修改'
+			}
+			let result = post('/alterBeeFarmer', this.creatFramerData);
+			result.then(res => {
+				// console.log(res);
+				if(res.data.responseCode === "000000"){
+					this.$message({
+			          showClose: true,
+			          message: message+'成功',
+			          type: 'success'
+			        });
+			        this.getFarmerList();
+				}else{
+					this.$message({
+			          showClose: true,
+			          message: message+'失败',
+			          type: 'error'
+			        });
+				}
+			});
+		},
+		//清空蜂农信息
+		clearFarmerInfo(){
+			this.$refs.name.removeAttribute("readonly");
+			this.isEditStatus = false;
+			if(this.creatFramerData.id !== undefined || this.creatFramerData.username !== undefined){
+				delete this.creatFramerData.id;
+				delete this.creatFramerData.username;
+			}
+			this.creatFramerData = {
+				name: '',
+				address: '',
 				mobile: '',
 				code:'',
 				password: '',
@@ -127,36 +198,11 @@ export default {
 				email: ''
 			}
 		},
-		//创建蜂农 编辑蜂农
-		createFarmer() {
-			let result = post('/alterBeeFarmer', this.creatFramerData);
-			result.then(res => {
-				console.log
-			});
-
-			let r = post('/alterBeeFarmer', {
-				id: 1,
-				name: 1,
-				username: '',
-				address: '',
-				createDate: '',
-				updateDate: '',
-				password: '',
-				organizationId: '',
-				email: '',
-				status: '',
-				firstTimeLogin: '',
-				beeBoxNum: '',
-			});
-			r.then(res => {
-
-			});
-		},
-
 		//显示列表页  // 刷新列表页
-		getFarmerList() {
+		getFarmerList(page) {
+			this.currentPage = 2
 			let result = post('/getPageFarmers', {
-				pageNo: 1,
+				pageNo: page,
 				pageSize: 10,
 			});
 			result.then(res=>{
@@ -170,27 +216,47 @@ export default {
 				console.log(this.totalPageNo);
 			})
 		},
-		handleCurrentChange(val){
+		//点击分页显示的数据信息
+		handleCurrentChange(){
 			this.checkAllStatus = false;
 			this.deleteId = [];
-			let result = post('/getPageFarmers', {
-				pageNo: val,
-				pageSize: 10,
-			});
-			result.then(res=>{
-				this.beeFarmerLists = res.data.data.beeFarmers
-				this.totalPageNo = res.data.data.totalPageNo
-				this.statusList.length = this.beeFarmerLists.length;
-				for(let i =0;i<this.statusList.length;i++){
-					this.statusList[i] = false
-				}
-				console.log(this.beeFarmerLists)
-			})
+			if(this.beeFarmerKeyWords===''){
+				let result = post('/getPageFarmers', {
+					pageNo: this.currentPage,
+					pageSize: 10,
+				});
+				result.then(res=>{
+					this.beeFarmerLists = res.data.data.beeFarmers
+					this.totalPageNo = res.data.data.totalPageNo
+					this.statusList.length = this.beeFarmerLists.length;
+					for(let i =0;i<this.statusList.length;i++){
+						this.statusList[i] = false
+					}
+				})
+			}else{
+				let result = post('/searchBeeFarmer', {
+					keyword: this.beeFarmerKeyWords,
+					pageNo: val,
+					pageSize: 10,
+				});
+				result.then(res => {
+					console.log(res);
+					this.beeFarmerLists = res.data.data.beeFarmers;
+					this.totalPageNo = res.data.data.totalPageNo;
+					this.statusList.length = this.beeFarmerLists.length;
+					for(let i =0;i<this.statusList.length;i++){
+						this.statusList[i] = false
+					}
+				});
+			}
 		},
 		// 删除蜂农
 		deleteFarmerList() {
 			for(let item in this.deleteIdObject){
 				this.deleteIdArray.push(item);
+			}
+			if(this.deleteIdArray.length ===0){
+				return false;
 			}
 			console.log(this.deleteIdArray)
 			this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
@@ -228,10 +294,6 @@ export default {
 				this.organizationLists = res.data.data
 			})
 		},
-		//创建蜂农
-		createFarmer(){
-			console.log(this.creatFramerData)
-		},
 		//发送验证码
 		sendVerifyCode() {
 			if(this.codeStatus)return
@@ -254,8 +316,10 @@ export default {
 				messageType: 2298872
 			});
 			result.then(res => {
+				console.log(res);
 			});
 		},
+		//点击全选的状态
 		changeAllStatus(val){
 			for(let i =0;i<this.statusList.length;i++){
 				this.statusList[i] = val
@@ -265,9 +329,10 @@ export default {
 					this.deleteIdObject[item.id] = val
 				})
 			}
-			console.log(this.deleteIdObject);
 		},
+		//单个点击的状态
 		changeStatus(index,val,id){
+			event.preventDefault();
 			if(val){
 				this.deleteIdObject[id] = val;
 			}else{
@@ -276,7 +341,6 @@ export default {
 			console.log(this.deleteIdObject);
 			if(!val){this.checkAllStatus = false};
 			if(this.statusList.toString().indexOf("false")<0){this.checkAllStatus = true};
-			console.log(this.statusList)
 		},
 		//搜索关键字
 		serachBeeFramerList(){
@@ -286,6 +350,7 @@ export default {
 				pageSize: 10,
 			});
 			result.then(res => {
+				console.log(res);
 				this.beeFarmerLists = res.data.data.beeFarmers;
 				this.totalPageNo = res.data.data.totalPageNo;
 				this.statusList.length = this.beeFarmerLists.length;
@@ -298,7 +363,17 @@ export default {
 	},
 	mounted(){
 		this.getAllOrganizations();
-		this.getFarmerList();
+		this.getFarmerList(1);
+	},
+	filters:{
+		toBeeStatus(data){
+			if(data === 1){
+				data = '在线';
+			}else{
+				data = '离线';
+			}
+			return data;
+		}
 	}
 };
 </script>
@@ -371,7 +446,7 @@ export default {
 	margin-top: 10px;
 }
 
-.sure-btn {
+.sure-btn,.clear-btn {
 	width: 80px;
 	height: 30px;
 	margin-left: 20px;
@@ -381,6 +456,7 @@ export default {
 	background: #40557b;
 	color: white;
 	cursor: pointer;
+	display:inline-block;
 }
 
 .list-box {
@@ -412,6 +488,7 @@ export default {
 	color: black;
 	max-width: 100px;
 	overflow: hidden;
+	cursor: pointer;
 }
 
 .header tr th {
@@ -431,6 +508,6 @@ export default {
 	font-size: 13px;
 }
 .active{
-	background-color:grey;
+	background-color:#a5a5a5;
 }
 </style>

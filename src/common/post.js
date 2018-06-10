@@ -32,20 +32,7 @@ export function post(url,params){
     });
     return result;
 }
-export function post1(url,params){
-    let result = axios({
-       method:'post',
-       url:HIVE_HOST_1+url,
-       data:params,
-       //  contentType:false,
-       processData:false,
-       headers:{
-           "token":localStore.getItem(HIVE_API_TOKEN),
-           'content-type': 'application/json'
-       }
-    });
-    return result;
-}
+
 
 export function get(url,params){
     let result = axios({

@@ -30,6 +30,7 @@ html,body{
 input{
   padding: 0;
   margin:0;
+  border:0;
 }
 .el-main{
   margin: 0;

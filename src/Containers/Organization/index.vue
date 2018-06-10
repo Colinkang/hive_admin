@@ -7,16 +7,18 @@
     <div class="input-section-left">
       <div class="form-row">
         <span style="margin-left:20px;margin-top:10px;display:block">创建组织</span>
-        <span class="input-item" style="margin-left:20px;"><label>组织名称 <input style="width:120px;"/></label></span>
-        <span class="input-item" style="margin-left:20px;"><label>联系人名称 <input style="width:120px;"/></label></span>
-
-        <span class="input-item" style="margin-left:20px;"><label>邮箱 <input style="width:120px;"/></label></span>
-        <span class="input-item" style="margin-left:20px;"><label>联系电话 <input style="width:120px;"/></label></span>
-        <span class="input-item" style="margin-left:20px;"><label>地址 <input style="width:350px;"/></label></span>
+        <span class="input-item" style="margin-left:20px;"><label>组织名称 <input v-model="organizeData.organizationName" style="width:120px;"/></label></span>
+        <span class="input-item" style="margin-left:20px;"><label>联系人名称 <input v-model="organizeData.contactName" style="width:120px;"/></label></span>
+        <span class="input-item" style="margin-left:20px;"><label>邮箱 <input v-model="organizeData.email" style="width:120px;"/></label></span>
+        <span class="input-item" style="margin-left:20px;"><label>联系电话 <input v-model="organizeData.mobile" style="width:120px;"/></label></span>
+        <span class="input-item" style="margin-left:20px;"><label>地址 <input v-model="organizeData.address" style="width:350px;"/></label></span>
       </div>
       <div class="form-row">
-        <div class="sure-btn">
+        <div class="sure-btn" @click="createOrg">
           确认
+        </div>
+        <div class="clear-btn" @click="clearOrg">
+          清空
         </div>
       </div>
     </div>
@@ -40,7 +42,7 @@
       <table border="0" class="header">
         <tr>
           <th style="border:none;width:3%;text-align:center">
-            <el-checkbox v-model="checked"></el-checkbox>
+            <el-checkbox v-model="organizeAllStatus" @change="changeAllOrganizeStatus(organizeAllStatus)"></el-checkbox>
           </th>
           <th>组织ID<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
           <th>组织名称<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
@@ -48,22 +50,20 @@
           <th>管理员</th>
           <th>成员数量</th>
         </tr>
-        <tr v-for="item in list" :key="item.id">
+        <tr v-for="(organizeList,index) in organizeLists" :key="organizeList.id" @click="getOrgFarmerList(organizeList.id,index)">
           <td style="border:none;width:3%;text-align:center;background:none">
-            <el-checkbox v-model="checked"></el-checkbox>
+            <el-checkbox v-model="organizeStatusList[index]" @change="changeOrganizeStatus(index,organizeStatusList[index],organizeList.id)"></el-checkbox>
           </td>
-          <td>1</td>
-          <td>2</td>
-          <td>3</td>
-          <td>4</td>
-          <td>5</td>
-
-
+          <td>{{organizeList.id}}</td> 
+          <td>{{organizeList.organizationName}}</td>
+          <td>{{organizeList.contactName}}</td>
+          <td>{{organizeList.adminId}}</td>
+          <td>{{organizeList.memberNum}}</td>
         </tr>
       </table>
       <div class="form-row" style="margin-top:20px">
         <span class="icon-span"><i class="iconfont icon-shuaxin1">删除</i> </span>
-        <span class="icon-span"><i class="iconfont icon-shuaxin1">刷新</i> </span>
+        <span class="icon-span"><i class="iconfont icon-shuaxin1" @click="getOrgList">刷新</i> </span>
 
       </div>
     </div>
@@ -82,7 +82,7 @@
       <table border="0" class="header">
         <tr>
           <th style="border:none;width:3%;text-align:center">
-            <el-checkbox v-model="checked"></el-checkbox>
+            <el-checkbox v-model="BeeFarmerAllStatus" @change="changeAllBeeFramerStatus(BeeFarmerAllStatus)"></el-checkbox>
           </th>
           <th>组织ID<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
           <th>组织名称<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
@@ -93,18 +93,18 @@
           <th>联系电话</th>
           <th>地址</th>
         </tr>
-        <tr v-for="item in list" :key="item.key">
-          <td style="border:none;width:3%;text-align:center;background:none">
-            <el-checkbox v-model="checked"></el-checkbox>
+        <tr v-for="(beeframerList,index) in beeframerLists" :key="beeframerList.id">
+          <td style="border:none;width:3%;text-align:center;background:none" >
+            <el-checkbox v-model="BeeFarmerStatusList[index]" @change="changeBeeFramerStatus(index,BeeFarmerStatusList[index],beeframerList.id)"></el-checkbox>
           </td>
-          <td>1</td>
-          <td>2</td>
-          <td>3</td>
-          <td>4</td>
-          <td>5</td>
-          <td>4</td>
-          <td>5</td>
-          <td>5</td>
+          <td>{{beeframerList.id}}</td>
+          <td>{{beeframerList.organizationName}}</td>
+          <td>{{beeframerList.username}}</td>
+          <td>{{beeframerList.beeBoxNum}}</td>
+          <td>{{beeframerList.createDate}}</td>
+          <td>{{beeframerList.email}}</td>
+          <td>{{beeframerList.mobile}}</td>
+          <td>{{beeframerList.address}}</td>
         </tr>
       </table>
       <div class="form-row" style="margin-top:20px">
@@ -118,54 +118,198 @@
 </template>
 <script>
 import { get, post } from '../../common/post.js';
+import { Validate, organizeAddSchema } from '../../common/schema.js';
 export default {
 	name: '',
-	data: () => ({
-		list: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
-		checked: true,
-	}),
+	data(){
+		return {
+			organizeData:{
+				organizationName:'',
+				contactName:'',
+				email:'',
+				mobile:'',
+				address:''
+			},
+			organizeLists: [],//组织列表
+			beeframerLists: [],//蜂农列表
+			organizeAllStatus: false,//组织全选状态
+			BeeFarmerAllStatus:false,//蜂农全选状态
+			organizeStatusList:[],//组织列表状态
+			BeeFarmerStatusList:[],//蜂农列表状态
+			deleteOrganizeIdArray:[],//需要删除组织数据的数组
+			deleteOrganizeIdObject:{},//需要删除组织对象的数组
+			deleteBeeFramerIdArray:[],//需要删除蜂农数据的数组
+			deleteBeeFramerIdObject:{},//需要删除蜂农对象的数组
+		}
+	},
 	methods: {
 		//创建组织 编辑组织
 		createOrg() {
-			let result = post('/api/alterOrganization', {
-				id: '',
-				organizationName: '',
-				email: '',
-				memberNum: '',
-				contactName: '',
-				contactPhone: '',
-				createDate: '',
-				updateDate: '',
-				status: '',
-				address: '',
-				adminId: '',
+			let message = '创建';
+			if(this.organizeData.id !== undefined){
+				message = '修改'
+			}
+			let result = post('/alterOrganization', this.organizeData);
+			result.then(res=>{
+				if(res.data.responseCode === "000000"){
+					this.$message({
+			          showClose: true,
+			          message: message+'成功',
+			          type: 'success'
+			        });
+			        this.getOrgList();
+		        }else{
+		        	this.$message({
+			          showClose: true,
+			          message: message+'失败',
+			          type: 'error'
+			        });
+		        }
 			});
+			// let options = {
+			// 	organizationName: this.organizeData.name,
+			// 	contactName: this.organizeData.contactName,
+			// 	email: this.organizeData.email,
+			// 	mobile: this.organizeData.mobile,
+			// 	address: this.organizeData.address
+			// };
+			// console.log(options);
+			// if (Validate(options, organizeAddSchema) !== null) {
+			// 	this.$message({
+		 //          showClose: true,
+		 //          message: '字段不能为空',
+		 //          type: 'error'
+		 //        });
+			// 	return;
+			// };
+		},
+		//清除蜂农
+		clearOrg(){
+			this.organizeData = {
+				organizationName:'',
+				contactName:'',
+				email:'',
+				mobile:'',
+				address:''
+			}
 		},
 		//搜索组织
 		searchOrg() {},
 		//获取组织列表 刷新组织列表
 		getOrgList() {
-			let result = get('/api/getAllOrganizations', null);
+			let result = get('/getAllOrganizations', null);
+			result.then(res=>{
+				this.organizeLists = res.data.data;
+				this.organizeStatusList.length = this.organizeLists.length;
+				for(let i =0;i<this.organizeStatusList.length; i++){
+					this.organizeStatusList[i] = false;
+				}
+				let result = post('/getOrganizationBeeFarmers', {
+					organizationId: this.organizeLists[0].id
+				});
+				result.then(res=>{
+					console.log(res);
+					this.beeframerLists = res.data.data;
+					for(let i =0;i<this.beeframerLists.length;i++){
+						this.BeeFarmerStatusList[i] = false;
+					}
+				});
+			});
 		},
 		//删除组织列表
 		deleteOrgList() {
-			let result = post('/api/deleteOrganizations', { ids: [] });
+			let result = post('/deleteOrganizations', { ids: [] });
 		},
 
 		//获取组织下的蜂农列表 刷新
-		getOrgFarmerList() {
-			let result = post('/api/getOrganizationBeeFarmers', {
-				organizationId: '',
+		getOrgFarmerList(id,index) {
+			console.log(this.organizeLists)
+			this.organizeData = {
+				organizationName:this.organizeLists[index].organizationName,
+				contactName:this.organizeLists[index].contactName,
+				email:this.organizeLists[index].email,
+				mobile:this.organizeLists[index].contactPhone,
+				address:this.organizeLists[index].address,
+				id:id,
+				beeBoxNum:this.organizeLists[index].beeBoxNum,
+				createDate:this.organizeLists[index].createDate,
+				firstTimeLogin:this.organizeLists[index].firstTimeLogin,
+				name:this.organizeLists[index].name,
+				organizationId:this.organizeLists[index].organizationId,
+				status:this.organizeLists[index].status,
+				updateDate:this.organizeLists[index].updateDate,
+				username:this.organizeLists[index].username,
+			};
+			console.log(this.organizeData);
+			let result = post('/getOrganizationBeeFarmers', {
+				organizationId: id
+			});
+			result.then(res=>{
+				console.log(res);
+				this.beeframerLists = res.data.data;
+				for(let i =0;i<this.beeframerLists.length;i++){
+					this.BeeFarmerStatusList[i] = false;
+				}
 			});
 		},
 		//删除组织下的蜂农列表
 		deleteOrgFarmerList() {
-			let result = post('/api/deleteFarmers', {
+			let result = post('/deleteFarmers', {
 				ids: '',
 			});
 		},
-		//
+		//组织全选状态
+		changeAllOrganizeStatus(val){
+			for(let i =0;i<this.organizeStatusList.length;i++){
+				this.organizeStatusList[i] = val
+			}
+			console.log(this.organizeStatusList);
+			if(val){
+				this.organizeLists.forEach((item,index)=>{
+					this.deleteOrganizeIdObject[item.id] = val
+				})
+			}
+		},
+		//组织单选状态
+		changeOrganizeStatus(index,val,id){
+			event.preventDefault();
+			if(val){
+				this.deleteOrganizeIdObject[id] = val;
+			}else{
+				delete this.deleteOrganizeIdObject[id];
+			}
+			console.log(this.deleteOrganizeIdObject);
+			if(!val){this.organizeAllStatus = false};
+			if(this.organizeStatusList.toString().indexOf("false")<0){this.organizeAllStatus = true};
+		},
+		//蜂农全选状态
+		changeAllBeeFramerStatus(val){
+			for(let i =0;i<this.BeeFarmerStatusList.length;i++){
+				this.BeeFarmerStatusList[i] = val
+			}
+			console.log(this.BeeFarmerStatusList);
+			if(val){
+				this.beeframerLists.forEach((item,index)=>{
+					this.deleteBeeFramerIdObject[item.id] = val
+				})
+			}
+		},
+		//蜂农单选状态
+		changeBeeFramerStatus(index,val,id){
+			event.preventDefault();
+			if(val){
+				this.deleteBeeFramerIdObject[id] = val;
+			}else{
+				delete this.deleteBeeFramerIdObject[id];
+			}
+			console.log(this.deleteBeeFramerIdObject);
+			if(!val){this.BeeFarmerAllStatus = false};
+			if(this.BeeFarmerStatusList.toString().indexOf("false")<0){this.BeeFarmerAllStatus = true};
+		}
 	},
+	mounted(){
+		this.getOrgList()
+	}
 };
 </script>
 <style lang="" scoped>
@@ -223,7 +367,7 @@ export default {
 	margin-top: 10px;
 }
 
-.sure-btn {
+.sure-btn,.clear-btn {
 	width: 80px;
 	height: 30px;
 	margin-left: 20px;
@@ -232,6 +376,8 @@ export default {
 	line-height: 30px;
 	background: #40557b;
 	color: white;
+	display:inline-block;
+	cursor: pointer;
 }
 
 .list-box {
@@ -249,6 +395,7 @@ export default {
 .header th {
 	border: none;
 	font-size: 13px;
+	height:40px;
 }
 
 .header td {
@@ -262,6 +409,7 @@ export default {
 	color: black;
 	max-width: 100px;
 	overflow: hidden;
+	cursor: pointer;
 }
 
 .header tr th {
@@ -275,6 +423,7 @@ export default {
 	float: right;
 	font-size: 12px;
 	margin-right: 20px;
+	cursor: pointer;
 }
 
 .icon-span i {
