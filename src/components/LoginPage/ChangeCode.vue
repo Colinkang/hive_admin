@@ -12,7 +12,7 @@
             旧登录密码
           </el-col>
           <el-col :span="5">
-            <el-input size="mini"  placeholder="请输入内容"></el-input size="mini">
+            <el-input size="mini"  placeholder="请输入内容"></el-input>
           </el-col>
 
         </el-row>
@@ -21,7 +21,7 @@
             新登录密码
           </el-col>
           <el-col :span="5">
-            <el-input size="mini"  placeholder="请输入内容"></el-input size="mini">
+            <el-input size="mini"  placeholder="请输入内容"></el-input>
           </el-col>
 
         </el-row>
@@ -30,7 +30,7 @@
             确认新登录密码
           </el-col>
           <el-col :span="5">
-            <el-input size="mini"  placeholder="请输入内容"></el-input size="mini">
+            <el-input size="mini"  placeholder="请输入内容"></el-input>
           </el-col>
 
         </el-row>
@@ -39,7 +39,7 @@
             手机号
           </el-col>
           <el-col :span="5">
-            <el-input size="mini"  placeholder="请输入内容"></el-input size="mini">
+            <el-input size="mini"  placeholder="请输入内容"></el-input>
           </el-col>
           <el-col :span="4">
             <span class="sent-code">发送短信获取验证码</span>
@@ -48,7 +48,7 @@
             验证码
           </el-col>
           <el-col :span="3">
-            <el-input size="mini"  placeholder="请输入内容"></el-input size="mini">
+            <el-input size="mini"  placeholder="请输入内容"></el-input>
           </el-col>
 
         </el-row>
