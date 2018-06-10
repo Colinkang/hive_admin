@@ -55,7 +55,7 @@
         <th>地址</th>
         <th>状态</th>
       </tr>
-      <tr v-for="(beeFarmerList,index) in beeFarmerLists" :key="beeFarmerList.id" @click="editBeeFarmer(beeFarmerList.id,index)">
+      <tr v-for="(beeFarmerList,index) in beeFarmerLists" :key="beeFarmerList.id" @click="editBeeFarmer(beeFarmerList.id,index)" :class="selectIndex===index?'selected':''">
         <td style="border:none;width:3%;text-align:center;background:none">
           	<el-checkbox v-model="statusList[index]" :key="beeFarmerList.id" @change="changeStatus(index,statusList[index],beeFarmerList.id)"></el-checkbox>
         </td>
@@ -110,7 +110,8 @@ export default {
 			isIndeterminate:true,
 			checkAllStatus:false,
 			beeFarmerKeyWords:'',
-			statusList:[]
+			statusList:[],
+      selectIndex:0
 		};
 	},
 	methods: {
@@ -427,5 +428,8 @@ export default {
 }
 .active{
 	background-color:grey;
+}
+.selected{
+  background: #ddd;
 }
 </style>
