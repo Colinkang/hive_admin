@@ -2,9 +2,9 @@
 <div class="container">
   <div class="section-left">
     <ul>
-      <li :class="selected===1?'selected':''" @click="selectModule(1)">AI模式</li>
+      <li :class="selected===1?'selected':''">AI模式</li>
       <li :class="selected===2?'selected':''" @click="selectModule(2)">人工模式</li>
-      <li :class="selected===3?'selected':''" @click="selectModule(3)">协作模式</li>
+      <li :class="selected===3?'selected':''">协作模式</li>
     </ul>
     <div class="rule-box">
       <div class="form-row">
@@ -136,7 +136,7 @@
         </table>
       </div>
       <div class="form-row" style="color: #cdcacf;">
-        {{ '共(' + eventList.length + ')' }}
+        {{ '共（' + eventList.length + '）' }}
       </div>
     </div>
   </div>
@@ -159,26 +159,16 @@
             <th style="border:none;width:25%;color:white">事件<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
             <th style="border:none;width:50%;color:white">处理方式</th>
           </tr>
-          <tr>
-            <td style="width:25%;">-</td>
-            <td style="width:25%;">1</td>
-            <td style="width:50%;">2</td>
-          </tr>
-          <tr>
-            <td style="width:25%;">-</td>
-            <td style="width:25%;">1</td>
-            <td style="width:50%;">2</td>
-          </tr>
-          <tr>
-            <td style="width:25%;">-</td>
-            <td style="width:25%;">1</td>
-            <td style="width:50%;">2</td>
+          <tr v-for="item in historyAlertList">
+            <td style="width:25%;">{{ formatDate(item.createDate) }}</td>
+            <td style="width:25%;">{{ item.event }}</td>
+            <td style="width:50%;">{{ item.handleWay }}</td>
           </tr>
         </table>
       </div>
       <div class="form-row">
-        <span style="color:white">共（2）</span>
-        <span class="icon-span"><i class="iconfont icon-shuaxin1">刷新</i> </span>
+        <span style="color:white">{{ '共（' + historyAlertList.length + '）' }}</span>
+        <span class="icon-span" @click="getHistoryAlertList"><i class="iconfont icon-shuaxin1">刷新</i> </span>
       </div>
     </div>
   </div>
@@ -188,6 +178,7 @@
 import { get, post } from '../../common/post.js';
 import { HIVE_ADMIN_ID } from '../../common/localStorageKey';
 import LocalStore from '../../common/localStore';
+import moment from 'moment';
 export default {
 	name: '',
 	data: () => ({
@@ -206,11 +197,13 @@ export default {
     eventsCheckedList: [],
     allEventsChecked: false,
     deleteEventsIdList: [],
+    historyAlertList: [],
 		input21: '',
   }),
   mounted() {
     this.getGroups();
     this.getEvents();
+    this.getHistoryAlertList();
   },
 	methods: {
     addRule() {
@@ -266,12 +259,18 @@ export default {
         this.groupList = res.data.data;
       });
     },
-    // 获取已有规则
-    getEvents() {
+    // 获取已有规则，刷新或删除后更新已有规则，1表示删除
+    getEvents(flag) {
       let result = get('/getEvents');
       result.then(res => {
         this.eventList = res.data.data;
+        // 赋值或更新勾选状态数组
         this.eventsCheckedList.length =  this.eventList.length;
+        for (let i = 0; i < this.eventList.length; i++) {
+          if (flag === 1 || !this.eventsCheckedList[i]) {
+            this.eventsCheckedList[i] = false;
+          }
+        }
       });
     },
     // 删除已有规则
@@ -281,15 +280,19 @@ export default {
         this.eventList.forEach(element => {
           this.deleteEventsIdList.push(element.id);
         })
-        return;
+      } else {
+        this.eventsCheckedList.forEach((element, index) => {
+          if (element) {
+            this.deleteEventsIdList.push(this.eventList[index].id);
+          }
+        });
       }
-      this.eventsCheckedList.forEach((element, index) => {
-        if (element) {
-          this.deleteEventsIdList.push(this.eventList[index].id);
-        }
+      let result = post('/deleteEvents', {
+        ids: this.deleteEventsIdList
       });
-      console.log('deleteEvents', this.deleteEventsIdList)
-      // let result = post('/deleteEvents', this.deleteEventsIdList);
+      result.then(res => {
+        this.getEvents(1);
+      })
     },
 		//创建预警规则
 		createWarmRule() {
@@ -306,27 +309,29 @@ export default {
       }
       );
       result.then(res => {
-        console.log('alterAlertRule', res)
+        // 刷新已有规则
+        this.getEvents();
       })
-		},
-		//获取预警规则列表  刷新已有规则
-		getWarnList() {
-			let _this = this;
-			let result = get('/api/');
 		},
 
 		// 历史预警列表
-		historyWarnList() {
+		getHistoryAlertList() {
 			let _this = this;
-			let result = get('/api/');
-			result.then(res => {});
+			let result = get('/getHistoryAlertEvents');
+			result.then(res => {
+        this.historyAlertList = res.data.data;
+      });
 		},
 
-		//历史预警列表搜索
+		// 搜索历史预警
 		historyWarnSearch() {
 			let _this = this;
 			let result = post('/api/', {});
-		},
+    },
+
+    formatDate(timestamp) {
+      return moment(timestamp).format('YYYY-MM-DD');
+    }
 	},
 };
 </script>
