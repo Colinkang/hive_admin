@@ -17,13 +17,18 @@ const beeBoxAddSchema = Joi.object().keys({
     entryDate: Joi.string().required(),
     mobile: Joi.string().required(),
     code: Joi.string().required(),
-})
+});
 
-
-
+const changeCodeSchema = Joi.object().keys({
+    username: Joi.string().required(),
+    newPassword: Joi.string().required(),
+    mobile: Joi.string().required(),
+    code: Joi.string().required()
+});
 
 module.exports = {
     Validate,
     loginSchema,
-    beeBoxAddSchema
+    beeBoxAddSchema,
+    changeCodeSchema
 };
