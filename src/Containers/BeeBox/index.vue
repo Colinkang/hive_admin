@@ -39,8 +39,8 @@
             <th>状态</th>
             <th>电量</th>
           </tr>
-          <tr v-for="(item) in hiveList" :key="item.boxId" @click="slectThisRow(item.boxId)">
-            <td>{{item.boxId}}</td>
+          <tr v-for="(item) in hiveList" :key="item.boxId" @click="slectThisRow(item.beeBoxNo)">
+            <td>{{item.beeBoxNo}}</td>
             <td>{{item.temperature}}</td>
             <td>{{item.humidity}}</td>
             <td>{{item.gravity}}</td>
@@ -226,7 +226,7 @@ export default {
 		};
 	},
 	created: function() {
-		this.getBeeBoxInfo();
+		// this.getBeeBoxInfo();
 		this.getPai();
 		this.getHiveList();
 		this.getFold();
@@ -234,13 +234,13 @@ export default {
 	},
 	methods: {
 		//获取蜂箱默认信息
-		getBeeBoxInfo() {
-			let result = post('/getBeeBoxes', { keywords: '' });
+		getBeeBoxInfo(beeBoxId) {
+			let result = post('/getBeeBoxes', { beeBoxId: beeBoxId });
 			result.then(res => {
-				console.log(111, res);
+				console.log(1119887, res);
 				if (res.data.responseCode === '000000') {
 					let data = res.data.data;
-					console.log(88888,data);
+					console.log(88888, data);
 					if (data.length > 0) {
 						this.beeBoxInfo.beeBoxId = data[0].id;
 						this.beeBoxInfo.batchNo = data[0].batchNo;
@@ -264,19 +264,22 @@ export default {
 			});
 		},
 		// 获取蜂箱列表信息 蜂箱信息  地图信息
-		getHiveList() {
-			let result = get('/getAllBeeBoxSensorData', null);
+		getHiveList(keyword) {
+			let result = post('/getAllBeeBoxSensorData', { keyword: keyword });
 			result.then(res => {
 				console.log(1111, res);
 				if (res.data.responseCode === '000000') {
 					let data = res.data.data;
 					// 将值赋值给列表
-					for (let obj of data) {
-						if (obj.status === 0) obj.status = '正在运行';
-						else if (obj.status === 2) obj.status = '异常';
-						else if (obj.status === 3) obj.status = '离线';
+					if (data.length > 0) {
+						for (let obj of data) {
+							if (obj.status === 0) obj.status = '正在运行';
+							else if (obj.status === 2) obj.status = '异常';
+							else if (obj.status === 3) obj.status = '离线';
+						}
+						this.hiveList = data;
 					}
-					this.hiveList = data;
+
 					console.log(122, this.hiveList);
 					// 画扇形图
 				}
@@ -318,28 +321,30 @@ export default {
 		// 点击列表某行获取蜂箱信息，并将该行标记颜色
 		slectThisRow(id) {
 			//  this.idChange(id)
-			console.log('99999',id);
+			console.log('99999', id);
 			this.clickBeeBoxId = id;
+			this.getBeeBoxInfo(id);
 		},
 		// 获取折线图的数据，并将数据显示在折线图上
 		getFold() {
 			let result = post('/getBeeBoxSensorData', {
-				beeBoxIds: [1], //所有信息
+				beeBoxNos: [1], //所有信息
 			});
 			result.then(res => {
 				if (res.data.responseCode === '000000') {
 					let data = res.data.data;
-					for (let d of data) {
-						this.fold.temperature.push(d.temperature);
-						this.fold.humidity.push(d.humidity);
-						this.fold.gravity.push(d.gravity);
-						this.fold.airPressure.push(d.airPressure);
-						this.fold.battery.push(d.battery);
-						this.fold.date.push(moment(data.createDate).format('YYYY-MM-DD hh:mm'));
+					if (data.length > 0) {
+						for (let d of data) {
+							this.fold.temperature.push(d.temperature);
+							this.fold.humidity.push(d.humidity);
+							this.fold.gravity.push(d.gravity);
+							this.fold.airPressure.push(d.airPressure);
+							this.fold.battery.push(d.battery);
+							this.fold.date.push(moment(data.createDate).format('YYYY-MM-DD hh:mm'));
+						}
+						this.$refs.fool.drawFoldLine(this.fold);
 					}
-					this.$refs.fool.drawFoldLine(this.fold);
 				}
-				console.log(111, res);
 			});
 		},
 		// 添加到编组列表
