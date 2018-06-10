@@ -77,7 +77,7 @@
     </table>
   </div>
   <div class="form-row">
-    <el-button type="text" class="icon-span" @click="deleteFarmerList"><i class="iconfont icon-shuaxin1">删除</i></el-button>
+    <el-button type="text" class="icon-span" @click="deleteFarmerList"><i class="iconfont icon-069delete">删除</i></el-button>
     <el-button type="text" class="icon-span" @click="getFarmerList(1)"><i class="iconfont icon-shuaxin1">刷新</i></el-button>
 
   </div>

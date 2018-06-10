@@ -146,10 +146,13 @@
     </div>
     <div class="form-row" style="text-align:left">
       <span class="input-item" style="margin-left:20px;color:white"><label>搜索 </label></span>
-      <span style="width:200px;display:inline-block;margin-right:30px">
-        <el-input size="mini" placeholder="请输入内容" prefix-icon="el-icon-search" v-model="input21">
+      <span style="width:250px;display:inline-block;margin-right:30px">
+        <el-input size="mini" placeholder="请输入内容" prefix-icon="el-icon-search" v-model="keyword">
         </el-input>
       </span>
+      <div class="sure-btn" @click="historyWarnSearch">
+        确认
+      </div>
       <div class="form-row group-table">
         <table border="0" style="border:none">
           <tr style="border:none;background:#40577f;color:white">
@@ -198,7 +201,7 @@ export default {
     allEventsChecked: false,
     deleteEventsIdList: [],
     historyAlertList: [],
-		input21: '',
+		keyword: '',
   }),
   mounted() {
     this.getGroups();
@@ -259,17 +262,15 @@ export default {
         this.groupList = res.data.data;
       });
     },
-    // 获取已有规则，刷新或删除后更新已有规则，1表示删除
-    getEvents(flag) {
+    // 获取已有规则，刷新或删除后更新已有规则
+    getEvents() {
       let result = get('/getEvents');
       result.then(res => {
         this.eventList = res.data.data;
-        // 赋值或更新勾选状态数组
+        // 重置勾选状态数组
         this.eventsCheckedList.length =  this.eventList.length;
-        for (let i = 0; i < this.eventList.length; i++) {
-          if (flag === 1 || !this.eventsCheckedList[i]) {
-            this.eventsCheckedList[i] = false;
-          }
+        for (let i = 0; i < this.eventsCheckedList.length; i++) {
+          this.eventsCheckedList[i] = false;
         }
       });
     },
@@ -291,7 +292,7 @@ export default {
         ids: this.deleteEventsIdList
       });
       result.then(res => {
-        this.getEvents(1);
+        this.getEvents();
       })
     },
 		//创建预警规则
@@ -316,7 +317,7 @@ export default {
 
 		// 历史预警列表
 		getHistoryAlertList() {
-			let _this = this;
+      this.keyword = '';
 			let result = get('/getHistoryAlertEvents');
 			result.then(res => {
         this.historyAlertList = res.data.data;
@@ -325,8 +326,13 @@ export default {
 
 		// 搜索历史预警
 		historyWarnSearch() {
-			let _this = this;
-			let result = post('/api/', {});
+      if (!this.keyword) return;
+			let result = post('/searchHistoryAlertEvents', {
+        keyword: this.keyword
+      });
+      result.then(res => {
+        this.historyAlertList = res.data.data;
+      })
     },
 
     formatDate(timestamp) {
@@ -440,6 +446,19 @@ li:hover {
 	color: black;
 	background: white;
   overflow: scroll;
+}
+
+.sure-btn {
+	width: 80px;
+	height: 28px;
+  float: right;
+  margin-top: 10px;
+  margin-right: 100px;
+	text-align: center;
+	line-height: 28px;
+	background: #40557b;
+	color: white;
+	cursor: pointer;
 }
 
 .group-table {

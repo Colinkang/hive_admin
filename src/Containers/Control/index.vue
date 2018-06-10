@@ -7,68 +7,68 @@
     <div class="input-section-left">
       <div class="form-row">
         <span style="margin-left:20px;margin-top:10px;display:block">创建管理员</span>
-        <span class="input-item" style="margin-left:20px;"><label>姓名 <input v-model="name" style="width:120px;"/></label></span>
+        <span class="input-item" style="margin-left:20px;"><label>姓名 <input v-model="managementParams.name" style="width:120px;"/></label></span>
         <span class="input-item" style="margin-left:20px;"><label>合作社   
-          <el-select v-model="organizationId" style="width:120px;" placeholder="请选择">
-              <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
-              </el-option>
-            </el-select></label>
+          <select v-model="managementParams.organizationId" style="width:120px;" placeholder="请选择">
+              <option
+                v-for="item in organizationLists"
+                :key="item.id"
+                :label="item.organizationName"
+                :value="item.id">
+              </option>
+            </select></label>
         </span>
-        <span class="input-item" style="margin-left:20px;"><label>邮箱 <input style="width:120px;"/></label></span>
-        <span class="input-item" style="margin-left:20px;"><label>联系电话 <input style="width:120px;"/></label><span class="sent-code">发送短信验证码</span></span>
-        <span class="input-item" style="margin-left:20px;"><label>验证码 <input style="width:70px;"/></label></span>
-        <span class="input-item" style="margin-left:20px;"><label>地址 <input style="width:250px;"/></label></span>
+        <span class="input-item" style="margin-left:20px;"><label>邮箱 <input v-model="managementParams.email" style="width:120px;"/></label></span>
+        <span class="input-item" style="margin-left:20px;"><label>联系电话 <input v-model="managementParams.mobile" style="width:120px;"/></label><span class="sent-code" :class="{ active : codeStatus}" @click="sendVerifyCode">{{ codeText }}</span></span>
+        <span class="input-item" style="margin-left:20px;"><label>验证码 <input v-model="managementParams.code" style="width:70px;"/></label></span>
+        <span class="input-item" style="margin-left:20px;"><label>密码 <input style="width:120px;" v-model="managementParams.password"/></label></span>
+        <span class="input-item" style="margin-left:20px;"><label>地址 <input v-model="managementParams.address" style="width:250px;"/></label></span>
         <span class="input-item" style="font-size:17px;margin-left:20px">类型</span>
         <span class="input-item" style="margin-left:20px">
           <div class="">
-            <el-checkbox v-model="checked" style="font-size:15px;color:white">蜂农管理</el-checkbox>
-
+            <el-checkbox v-model="beefarmerChecked" style="font-size:15px;color:white">蜂农管理</el-checkbox>
           </div>
           <div class="" style="margin-top:5px">
-            <el-radio v-model="radio" label="1" >只读</el-radio>
-            <el-radio v-model="radio" label="2" >管理</el-radio>
+            <el-radio v-model="beefarmerType" label="8" >只读</el-radio>
+            <el-radio v-model="beefarmerType" label="3" >管理</el-radio>
           </div>
         </span>
         <span class="input-item" style="margin-left:20px">
           <div class="">
-            <el-checkbox v-model="checked1" style="font-size:15px;color:white">蜂箱管理</el-checkbox>
+            <el-checkbox v-model="beeboxChecked" style="font-size:15px;color:white">蜂箱管理</el-checkbox>
           </div>
           <div class="" style="margin-top:5px">
-            <el-radio v-model="radio1" label="1" >只读</el-radio>
-            <el-radio v-model="radio1" label="2" >管理</el-radio>
+            <el-radio v-model="beeboxType" label="9" >只读</el-radio>
+            <el-radio v-model="beeboxType" label="4" >管理</el-radio>
           </div>
         </span>
         <span class="input-item" style="margin-left:20px">
           <div class="">
-            <el-checkbox v-model="checked2" style="font-size:15px;color:white">事件管理</el-checkbox>
+            <el-checkbox v-model="eventChecked" style="font-size:15px;color:white">事件管理</el-checkbox>
           </div>
           <div class="" style="margin-top:5px">
-            <el-radio v-model="radio2" label="1" >只读</el-radio>
-            <el-radio v-model="radio2" label="2" >管理</el-radio>
+            <el-radio v-model="eventType" label="10" >只读</el-radio>
+            <el-radio v-model="eventType" label="5" >管理</el-radio>
           </div>
         </span>
         <span class="input-item" style="margin-left:20px">
           <div class="">
-            <el-checkbox v-model="checked3" style="font-size:15px;color:white">管理员管理</el-checkbox>
+            <el-checkbox v-model="adminChecked" style="font-size:15px;color:white">管理员管理</el-checkbox>
           </div>
           <div class="" style="margin-top:5px">
-            <el-radio v-model="radio3" label="1" >只读</el-radio>
-            <el-radio v-model="radio3" label="2" >管理</el-radio>
+            <el-radio v-model="adminType" label="6" >只读</el-radio>
+            <el-radio v-model="adminType" label="1" >管理</el-radio>
           </div>
         </span>
         <span class="input-item" style="margin-left:20px">
           <div class="">
-            <el-checkbox v-model="checked4" style="font-size:15px;color:white">组织管理</el-checkbox>
+            <el-checkbox v-model="organizationChecked" style="font-size:15px;color:white">组织管理</el-checkbox>
           </div>
           <div class="" style="margin-top:5px">
-            <el-radio v-model="radio4" label="1" >只读</el-radio>
-            <el-radio v-model="radio4" label="2" >小组管理</el-radio>
-            <el-radio v-model="radio4" label="3" >无小组管理</el-radio>
-            <el-radio v-model="radio4" label="4" >高级管理</el-radio>
+            <el-radio v-model="organizationType" label="7" >只读</el-radio>
+            <el-radio v-model="managementParams.type" label="3" >小组管理</el-radio>
+            <el-radio v-model="managementParams.type" label="4" >无小组管理</el-radio>
+            <el-radio v-model="organizationType" label="2" >高级管理</el-radio>
           </div>
         </span>
       </div>
@@ -77,7 +77,7 @@
 
       </div>
       <div class="form-row">
-        <div class="sure-btn">
+        <div class="sure-btn" @click="createManager">
           确认
         </div>
       </div>
@@ -85,11 +85,10 @@
     <div class="input-section-right">
       <div class="form-row">
         <span style="margin-left:20px;margin-top:10px;display:block">搜索</span>
-        <span class="input-item" style="margin-left:20px;"><label>关键字 <input style="width:140px;"/></label></span>
-
+        <span class="input-item" style="margin-left:20px;"><label>关键字 <input v-model="keyword" style="width:140px;"/></label></span>
       </div>
       <div class="form-row">
-        <div class="sure-btn">
+        <div class="sure-btn" @click="searchManager(1)">
           确认
         </div>
       </div>
@@ -100,195 +99,279 @@
     <table border="0" class="header">
       <tr>
         <th style="border:none;width:3%;text-align:center">
-          <el-checkbox v-model="checked"></el-checkbox>
+          <el-checkbox v-model="checkAll" @change="checkAllChange"></el-checkbox>
         </th>
         <th>管理员ID<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
         <th>登录名</th>
         <th>姓名</th>
         <th>管理员类型<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
-        <th>成员数量<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
         <th>创建时间<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
         <th>修改时间<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
-         <th>合作社</th>
+        <th>合作社</th>
         <th>邮箱</th>
         <th>联系电话</th>
         <th>地址</th>
         <th>状态</th>
       </tr>
-      <tr v-for="item in list" :key="item.id">
+      <tr v-for="(item, index) in adminList" :key="item.id">
         <td style="border:none;width:3%;text-align:center;background:none">
-          <el-checkbox v-model="checked"></el-checkbox>
-           <!-- <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox>
-            <div style="margin: 15px 0;"></div> -->
-            <!-- <el-checkbox-group v-model="checkedCities" @change="handleCheckedCitiesChange">
-              <el-checkbox v-for="city in cities" :label="city" :key="city">{{city}}</el-checkbox>
-          </el-checkbox-group> -->
+          <el-checkbox v-model="checkList[index]" @change="checkedChange"></el-checkbox>
         </td>
-         
-        <td>1</td>
-        <td>2</td>
-        <td>3</td>
-        <td>4</td>
-        <td>5</td>
-        <td>6</td>
-        <td>7</td>
-        <td>022222222222222222222222222222222222222222222222222222</td>
-        <td>2</td>
-        <td>2</td>
-        <td>2</td>
-        <td>2</td>
-
+        <td>{{ item.id }}</td>
+        <td>{{ item.username }}</td>
+        <td>{{ item.name }}</td>
+        <td>{{ typeStrObj[item.type] }}</td>
+        <td>{{ formatDate(item.createDate) }}</td>
+        <td>{{ formatDate(item.updateDate) }}</td>
+        <td>{{ item.organizationName }}</td>
+        <td>{{ item.email }}</td>
+        <td>{{ item.mobile }}</td>
+        <td>{{ item.address }}</td>
+        <td>{{ item.status ? '在线' : '离线' }}</td>
       </tr>
     </table>
   </div>
   <div class="form-row">
-    <span class="icon-span"><i class="iconfont icon-shuaxin1">删除</i> </span>
-    <span class="icon-span"><i class="iconfont icon-shuaxin1">刷新</i> </span>
-
+    <el-button type="text" class="icon-span" @click="deleteManager"><i class="iconfont icon-069delete">删除</i></el-button>
+    <el-button type="text" class="icon-span" @click="handlePageChange(currentPageNo)"><i class="iconfont icon-shuaxin1">刷新</i></el-button>
   </div>
   <div class="form-row" style="text-align:center">
-    <el-pagination small layout="prev, pager, next" :total="50">
+    <el-pagination small layout="prev, pager, next" :pagesize="10" @current-change="handlePageChange" :total="10*totalPageNo">
     </el-pagination>
-
   </div>
 </div>
 </template>
 <script>
- const cityOptions = ['上海', '北京', '广州', '深圳'];
+import { get, post } from '../../common/post.js';
+import moment from 'moment';
 export default {
 	name: '',
 	data: () => ({
-		name: 'name',
-		mobile: 'mobile',
-		organizationId: '',
-		email: 'email',
-		type: 'type',
-		address: 'address',
-		rights: [],
-		list: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
-		checked: true,
-		radio: '1',
-		radio1: '1',
-		radio2: '1',
-		radio3: '1',
-		radio4: '1',
-		checked: false,
-		checked1: false,
-		checked2: false,
-		checked3: false,
-		checked4: false,
-
+		organizationLists: [],
+		adminList: [],
+		managementParams: {
+			name: '',
+			organizationId: '',
+			email: '',
+			mobile: '',
+			code: '',
+			password: '',
+			address: '',
+			rights: [],
+			type: '2'
+		},
+		codeText:'发送短信验证码',
+		codeStatus:false,
+		beefarmerChecked: false,
+		beefarmerType: '8',
+		beeboxChecked: false,
+		beeboxType: '9',
+		eventChecked: false,
+		eventType: '10',
+		adminChecked: false,
+		adminType: '6',
+		organizationChecked: false,
+		organizationType: '7',
+		type: 2,
+		typeStrObj: {
+			1: '超级管理员',
+			2: '高级管理员',
+			3: '小组管理员',
+			4: '无小组管理员',
+		},
 		checkAll: false,
-		checkedCities: ['上海', '北京'],
-		cities: cityOptions,
-		isIndeterminate: true,
-
-		options: [
-			{
-				value: '选项1',
-				label: '黄金糕',
-			},
-			{
-				value: '选项2',
-				label: '双皮奶',
-			},
-			{
-				value: '选项3',
-				label: '蚵仔煎',
-			},
-			{
-				value: '选项4',
-				label: '龙须面',
-			},
-			{
-				value: '选项5',
-				label: '北京烤鸭',
-			},
-		],
+		checkList: [],
+		deleteIdList: [],
+		keyword: '',
+		searchFlag: false,
+		currentPageNo: 1,
+		totalPageNo: 1,
 	}),
+	mounted() {
+		this.getAllOrganizations();
+		this.getManagerList(1);
+	},
 	methods: {
+    formatDate(timestamp) {
+      return moment(timestamp).format('YYYY-MM-DD');
+		},
+		getRights() {
+			this.managementParams.rights = [];
+			if (this.beefarmerChecked) {
+				this.managementParams.rights.push(this.beefarmerType);
+			}
+			if (this.beeboxChecked) {
+				this.managementParams.rights.push(this.beeboxType);
+			}
+			if (this.eventChecked) {
+				this.managementParams.rights.push(this.eventType);
+			}
+			if (this.adminChecked) {
+				this.managementParams.rights.push(this.adminType);
+			}
+			if (this.organizationChecked) {
+				this.managementParams.rights.push(this.organizationType);
+			}
+		},
+		// 获取合作社
+		getAllOrganizations(){
+			let result = get('/getAllOrganizations');
+			result.then(res => {
+				this.organizationLists = res.data.data
+			})
+		},
+    checkAllChange() {
+      if (this.checkAll) {
+        for (let i = 0; i < this.checkList.length; i++) {
+          this.checkList[i] = true;
+        }
+      } else {
+        for (let i = 0; i < this.checkList.length; i++) {
+          this.checkList[i] = false;
+        }
+      }
+    },
+    checkedChange() {
+      for (let i = 0; i < this.checkList.length; i++) {
+        if (!this.checkList[i]) {
+          this.checkAll = false;
+          return;
+        }
+      }
+      this.checkAll = true;
+    },
 		// 创建管理员  //编辑管理员
 		createManager() {
-			let result = post('/api/alterAdmin', {
-				name: 'name',
-				mobile: 'mobile',
-				organizationId: 'organizationId',
-				email: 'email',
-				type: 'type',
-				address: 'address',
-				rights: [],
+			this.getRights();
+			let result = post('/alterAdmin', this.managementParams);
+			result.then(res => {
+				this.getManagerList(this.currentPageNo);
 			});
-			result.then(res => {});
 		},
 		//模糊搜索管理员
-		searchManager() {
-			let result = post('/api/', {});
-			result.then(res => {});
+		searchManager(pageNo) {
+			if (!this.searchFlag) {
+				this.currentPageNo = 1;
+			}
+			let result = post('/searchAdmin', {
+				keyword: this.keyword,
+				pageNo: pageNo,
+				pageSize: 10
+			});
+			result.then(res => {
+				this.searchFlag = true;
+				this.adminList = res.data.data.admins;
+				this.currentPageNo = res.data.data.currentPageNo;
+				this.totalPageNo = res.data.data.totalPageNo;
+				// 重置勾选状态数组
+        this.checkList.length =  this.adminList.length;
+        for (let i = 0; i < this.checkList.length; i++) {
+          this.checkList[i] = false;
+        }
+			});
 		},
 		//获取管理员列表  刷新管理员
-		getManagerList() {
-			let result = post('/api/getPageAdmins', {
-				pageNo: 'pageNo',
-				pageSize: 'pageSize',
+		getManagerList(pageNo) {
+			this.checkAll = false;
+			this.searchFlag = false;
+			this.keyword = '';
+			let result = post('/getPageAdmins', {
+				pageNo: pageNo,
+				pageSize: 10,
 			});
-			result.then(res => {});
+			result.then(res => {
+				this.adminList = res.data.data.admins;
+				this.currentPageNo = res.data.data.currentPageNo;
+				this.totalPageNo = res.data.data.totalPageNo;
+				// 重置勾选状态数组
+        this.checkList.length =  this.adminList.length;
+        for (let i = 0; i < this.checkList.length; i++) {
+          this.checkList[i] = false;
+        }
+			});
+		},
+		handlePageChange(pageNo) {
+			console.log(111, pageNo)
+			if (this.searchFlag) {
+				this.searchManager(pageNo);
+			} else {
+				this.getManagerList(pageNo);
+			}
 		},
 		// 删除管理员
 		deleteManager() {
-			let result = post('/api/deleteAdmins', {
-				adminIds: [],
-			});
-			result.then(res => {});
+      this.deleteIdList.length = 0;
+      if (this.checkAll) {
+        this.adminList.forEach(element => {
+          this.deleteIdList.push(element.adminId);
+        })
+      } else {
+        this.checkList.forEach((element, index) => {
+          if (element) {
+            this.deleteIdList.push(this.adminList[index].id);
+          }
+        });
+      }
+      let result = post('/deleteAdmins', {
+        adminIds: this.deleteIdList
+      });
+      result.then(res => {
+        this.getManagerList(this.currentPageNo);
+      });
 		},
 		//管理员ID排序
 		idSort() {},
 		//管理员类型排序  先看是否已经排序，如排序则反向排序，否则由小到大排序
 		typeSort() {
 			let _this = this;
-			_this.list.sort(function(a, b) {
+			_this.adminList.sort(function(a, b) {
 				return b - a;
 			});
 		},
 		//成员数量排序
 		quantitySort() {
 			let _this = this;
-			_this.list.sort(function(a, b) {
+			_this.adminList.sort(function(a, b) {
 				return b - a;
 			});
 		},
 		//创建时间排序
 		createTimeSort() {
 			let _this = this;
-			_this.list.sort(function(a, b) {
+			_this.adminList.sort(function(a, b) {
 				return b - a;
 			});
 		},
 		//修改时间排序
 		modifyTimeSort() {
 			let _this = this;
-			_this.list.sort(function(a, b) {
+			_this.adminList.sort(function(a, b) {
 				return b - a;
 			});
 		},
 		// 发送短信验证码
 		sendVerifyCode() {
-			let result = post('/SMSService', {
-				mobile: 'mobile',
-				userName: 'userName',
-				messageType: 2298872,
+			if (this.codeStatus) return;
+			let leftTime = 60;
+			this.codeText = leftTime + 's';
+			this.codeStatus = true;
+			var timer = setInterval(() => {
+				leftTime--;
+				this.codeText = leftTime + 's';
+				if (leftTime === 0) {
+					this.codeStatus = false;
+					this.codeText = '发送短信验证码';
+					clearInterval(timer);
+				}
+			}, 1000);
+			let result = post('/adminSMSService', {
+				mobile: this.managementParams.mobile,
+				userName: this.managementParams.name,
+				registerFlag: 1,
+				messageType: 2298872
 			});
-			result.then(res => {});
-		},
-    // 获取
-
-		handleCheckAllChange(val) {
-			this.checkedCities = val ? cityOptions : [];
-			this.isIndeterminate = false;
-		},
-		handleCheckedCitiesChange(value) {
-			let checkedCount = value.length;
-			this.checkAll = checkedCount === this.cities.length;
-			this.isIndeterminate = checkedCount > 0 && checkedCount < this.cities.length;
+			result.then(res => {
+			});
 		},
 	},
 };
@@ -323,7 +406,7 @@ export default {
 
 .input-section-left {
 	width: 70%;
-	height: 200px;
+	height: 250px;
 }
 
 .input-section-right {
@@ -334,13 +417,21 @@ export default {
 
 .sent-code {
 	font-size: 13px;
-	color: #135f99;
+	color: #fff;
+	padding:2px 4px;
 	margin-left: 10px;
+	background-color:#40557b;
+	width:120px;
+	display:inline-block;
+	text-align:center;
 }
 
 .sent-code:hover {
 	color: white;
 	cursor: pointer;
+}
+.active{
+	background-color:grey;
 }
 
 .input-item {
@@ -358,12 +449,13 @@ export default {
 	line-height: 30px;
 	background: #40557b;
 	color: white;
+	cursor: pointer;
 }
 
 .list-box {
 	width: 100%;
-	height: 500px;
 	margin-top: 30px;
+	margin-bottom: 40px;
 }
 
 .header {
