@@ -9,15 +9,6 @@
       <div class="">
         <el-row class="form-row">
           <el-col :span="3">
-            登录用户名
-          </el-col>
-          <el-col :span="5">
-            <el-input size="mini" v-model.trim="fix.username"  placeholder="请输入内容"></el-input>
-          </el-col>
-
-        </el-row>
-        <el-row class="form-row">
-          <el-col :span="3">
             新登录密码
           </el-col>
           <el-col :span="5">
@@ -27,7 +18,7 @@
         </el-row>
         <el-row class="form-row">
           <el-col :span="3">
-            确认新登录密码
+            确认新密码
           </el-col>
           <el-col :span="5">
             <el-input size="mini" v-model.trim="fix.newPasswordConfirm"  placeholder="请输入内容"></el-input>
@@ -42,7 +33,7 @@
             <el-input size="mini" v-model.trim="fix.mobile"  placeholder="请输入内容"></el-input>
           </el-col>
           <el-col :span="4">
-            <span class="sent-code">发送短信获取验证码</span>
+            <span class="sent-code" @click="sendCode">发送短信验证码</span>
           </el-col>
           <el-col :span="3" >
             验证码
@@ -50,30 +41,7 @@
           <el-col :span="3">
             <el-input size="mini" v-model.trim="fix.code"  placeholder="请输入内容"></el-input>
           </el-col>
-
         </el-row>
-        <!-- <el-row class="form-row">
-          <el-col :span="3" >
-            联系电话
-          </el-col>
-          <el-col :span="5">
-            1234567876543
-          </el-col>
-          <el-col :span="4">
-            <span class="sent-code">修改</span>
-          </el-col>
-
-
-        </el-row> -->
-        <!-- <el-row class="form-row">
-          <el-col :span="3">
-            组织
-          </el-col>
-          <el-col :span="5">
-            组织
-          </el-col>
-
-        </el-row> -->
         <el-row class="form-row">
           <el-col :span="4">
             <el-button type="primary" @click="save">确认修改</el-button>
@@ -82,12 +50,6 @@
             <el-button type="default" @click="hive">取消</el-button>
           </el-col>
         </el-row>
-          <el-row class="line-height margin-top" v-if="changeCodeShowAlert">
-        <el-col :span="24">
-          <el-alert :title="text" :type="status==='wrong'?'error':'success'">
-          </el-alert>
-        </el-col>
-      </el-row>
       </div>
     </div>
 
@@ -96,6 +58,8 @@
 <script>
 import { get, post } from '../../common/post.js';
 import { Validate, changeCodeSchema } from '../../common/schema.js';
+import localStore from '../../common/localStore.js';
+import { HIVE_USER_NAME } from '../../common/localStorageKey.js';
 export default {
 	name: '',
 	data: () => ({
@@ -109,48 +73,58 @@ export default {
 		},
 	}),
 	methods: {
-		save() {
-			this.changeCodeShowAlert = true;
-			let input = {
-				username: this.fix.username,
-				newPassword: this.fix.newPassword,
+		sendCode() {
+			let options = {
 				mobile: this.fix.mobile,
-				code: this.fix.code,
+				userName: localStore.getItem(HIVE_USER_NAME),
+				messageType: 2298872,
+				registerFlag: 'hello',
 			};
+			console.log(options);
+			let result = post('/adminSMSService', options);
+			result.then(res => {
+				console.log(1234, res);
+				if (res.data.responseCode === '000000') {
+					console.log('获取验证码成功');
+				} else {
+					// this.$message('');
+				}
+			});
+		},
+		save() {
+			let input = {
+				username: localStore.getItem(HIVE_USER_NAME),
+				password: this.fix.newPassword,
+				mobile: this.fix.mobile,
+				smsCode: this.fix.code,
+			};
+			console.log(1111, input);
 			if (Validate(input, changeCodeSchema) !== null) {
-				this.status = 'wrong';
-				this.text = '输入项都不能为空';
-				setTimeout(() => {
-					this.changeCodeShowAlert = false;
-				}, 1000);
+				this.$message({
+					message: '输入都不能为空',
+					type: 'warning',
+				});
 			} else if (this.fix.newPassword !== this.fix.newPasswordConfirm) {
-				this.status = 'wrong';
-				this.text = '两次密码不一致';
-				setTimeout(() => {
-					this.changeCodeShowAlert = false;
-				}, 1000);
+				this.$message({
+					message: '两次密码不一致',
+					type: 'warning',
+				});
 			} else {
-				let result = post('/', {});
+				let result = post('/adminUpdatePassword', input);
 				result.then(res => {
+					console.log(1111, res);
 					if (res.data.responseCode === '000000') {
-						this.status = 'success';
-						this.text = '修改密码成功';
-						setTimeout(() => {
-							this.changeCodeShowAlert = false;
-						}, 1000);
-						this.fix = {
-							username: '',
-							newPassword: '',
-							newPasswordConfirm: '',
-							mobile: '',
-							code: '',
-						};
+						this.$message({
+							message: '修改密码成功',
+							type: 'success',
+						});
+					} else if (res.data.responseCode === '000033') {
+						this.$message({
+							message: '与注册时的手机号不一致',
+							type: 'warning',
+						});
 					} else {
-						this.status = 'wrong';
-						this.text = '修改密码失败';
-						setTimeout(() => {
-							this.changeCodeShowAlert = false;
-						}, 1000);
+						this.$message.error('修改密码失败');
 					}
 				});
 			}

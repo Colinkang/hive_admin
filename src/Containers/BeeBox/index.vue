@@ -2,28 +2,21 @@
   <div class="outer-box">
     <div class="hive-top">
             <div class="hive-control-btn">
-                <span><i class="iconfont icon-add"></i>
+                <span v-if="right.indexOf('9')===-1" ><i class="iconfont icon-add"></i>
                   <el-button type="text" @click="toSomePage('/addbeebox')">添加</el-button>
                 </span>
-                <span><i class="iconfont icon-069delete" @click="deleteBeeBox"></i>
-                  <el-button type="text" >删除</el-button>
+                <span><i class="iconfont icon-069delete"></i>
+                  <el-button type="text" @click="deleteBeeBox" >删除</el-button>
                 </span>
                 <span><i class="iconfont icon-shuaxin1"></i>
-                  <el-button type="text" >刷新</el-button>
+                  <el-button type="text" @click="getHiveList(null)">刷新</el-button>
                 </span>
-									<el-row class="line-height margin-top" v-if="showAlert">
-									<el-col :span="24">
-										<el-alert :title="text" :type="deletestatus==='wrong'?'error':'success'">
-									</el-alert>
-                 </el-col>
-                </el-row>
             </div>
-
             <div class="hive-top-input">
                 <el-input size="mini" placeholder="请输入查询内容"
                 v-model="search"
                 clearable
-                prefix-icon="el-icon-search"
+                prefix-icon="el-icon-search" 
                 ></el-input>
             </div>
         </div>
@@ -169,8 +162,10 @@
             </div>
             <div class="form-row">
               <span>共（2）</span>
-              <span class="icon-span"><i class="iconfont icon-shuaxin1">删除</i> </span>
-              <span class="icon-span"><i class="iconfont icon-shuaxin1">刷新</i> </span>
+              <span class="icon-span"><i class="iconfont icon-shuaxin1">
+								 <el-button type="text" @click="deleteGroupList" >删除</el-button></i> </span>
+              <span class="icon-span"><i class="iconfont icon-shuaxin1">
+								 <el-button type="text" @click="getGroupList" >刷新</el-button></i> </span>
             </div>
 
           </div>
@@ -182,16 +177,18 @@
 </template>
 
 <script>
+import { HIVE_ADMIN_RIGHTS } from '../../common/localStorageKey';
+import LocalStore from '../../common/localStore';
 import { get, post } from '../../common/post.js';
 import echartspie from './echarts.vue';
 import fold from './fold.vue';
-import PropsSelect from './PropsSlect.vue'
+import PropsSelect from './PropsSlect.vue';
 import moment from 'moment';
 export default {
 	components: {
 		echartspie,
 		fold,
-    PropsSelect
+		PropsSelect,
 	},
 	data() {
 		return {
@@ -220,43 +217,43 @@ export default {
 			term: { name: '', condition: '', value: '' },
 			groupList: [],
 			clickBeeBoxId: '',
-			deletestatus: '',
-			showAlert: false,
-			text: '',
+			right: '',
+			ids: [],
 		};
 	},
 	created: function() {
 		// this.getBeeBoxInfo();
 		this.getPai();
-		this.getHiveList();
+		this.getHiveList(null);
 		this.getFold();
 		this.getGroupList();
+		let adminRight = LocalStore.getItem(HIVE_ADMIN_RIGHTS);
+		this.right = adminRight.split(',');
 	},
 	methods: {
 		//获取蜂箱默认信息
 		getBeeBoxInfo(beeBoxId) {
-			let result = post('/getBeeBoxes', { beeBoxId: beeBoxId });
+			let result = post('/getBeeBox', { beeBoxId: beeBoxId });
 			result.then(res => {
 				console.log(1119887, res);
 				if (res.data.responseCode === '000000') {
 					let data = res.data.data;
 					console.log(88888, data);
-					if (data.length > 0) {
-						this.beeBoxInfo.beeBoxId = data[0].id;
-						this.beeBoxInfo.batchNo = data[0].batchNo;
-						this.beeBoxInfo.manufacturer = data[0].manufacturer;
-						this.beeBoxInfo.lat = data[0].lat;
-						this.beeBoxInfo.lng = data[0].lng;
-						this.beeBoxInfo.productionDate = moment(data[0].productionDate).format('YYYY-MM-DD');
+					if (data) {
+						this.beeBoxInfo.beeBoxId = data.id;
+						this.beeBoxInfo.batchNo = data.batchNo;
+						this.beeBoxInfo.manufacturer = data.manufacturer;
+						this.beeBoxInfo.lat = data.lat;
+						this.beeBoxInfo.lng = data.lng;
+						this.beeBoxInfo.productionDate = moment(data.productionDate).format('YYYY-MM-DD');
 						// 将值赋值给列表
-						if (data[0].status === 0) this.beeBoxInfo.status = '正在运行';
-						else if (data[0].status === 2) this.beeBoxInfo.status = '异常';
-						else if (data[0].status === 3) this.beeBoxInfo.status = '离线';
+						if (data.status === 0) this.beeBoxInfo.status = '正在运行';
+						else if (data.status === 2) this.beeBoxInfo.status = '异常';
+						else this.beeBoxInfo.status = '离线';
 					}
 				}
 			});
 		},
-
 
 		toSomePage(path) {
 			this.$router.push({
@@ -267,7 +264,7 @@ export default {
 		getHiveList(keyword) {
 			let result = post('/getAllBeeBoxSensorData', { keyword: keyword });
 			result.then(res => {
-				console.log(1111, res);
+				console.log(111167, res);
 				if (res.data.responseCode === '000000') {
 					let data = res.data.data;
 					// 将值赋值给列表
@@ -275,7 +272,7 @@ export default {
 						for (let obj of data) {
 							if (obj.status === 0) obj.status = '正在运行';
 							else if (obj.status === 2) obj.status = '异常';
-							else if (obj.status === 3) obj.status = '离线';
+							else obj.status = '离线';
 						}
 						this.hiveList = data;
 					}
@@ -289,14 +286,23 @@ export default {
 		//删除蜂箱
 		deleteBeeBox() {
 			if (this.clickBeeBoxId === '') {
-				this.showAlert = true;
-				this.deletestatus = 'wrong';
-				this.text = '请先点击要删除的行';
+				this.$message({
+					message: '请先点击列表选择要删除的蜂箱',
+					type: 'warning',
+				});
 				return;
 			}
-			let result = post('/', {});
+			this.ids.push(this.clickBeeBoxId);
+			let result = post('/deleteBeeBoxes', {
+				ids: this.ids,
+			});
 			result.then(res => {
+				console.log(2222, res);
 				if (res.data.responseCode === '000000') {
+					this.$message({
+						message: '删除蜂箱成功',
+						type: 'success',
+					});
 				}
 			});
 		},
@@ -374,7 +380,11 @@ export default {
 		// 删除现有组列表
 		deleteGroupList() {
 			let result = post('/deleteGroups', { ids: [1] });
-			result.then(res => {});
+			result.then(res => {
+				if(res.data.responseCode === '000000'){
+
+				}
+			});
 		},
 		// 添加到已有条件列表
 		addToTermList() {
@@ -652,9 +662,9 @@ table tr th {
 	background: #0b1b36;
 	color: white;
 }
-.sure-btn:hover{
-  background: #1a335e;
-  cursor: pointer;
+.sure-btn:hover {
+	background: #1a335e;
+	cursor: pointer;
 }
 textarea {
 	width: 100%;

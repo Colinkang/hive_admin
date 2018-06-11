@@ -36,7 +36,12 @@
       生产日期
     </el-col>
     <el-col :span="5">
-      <el-input size="small"  placeholder="请输入内容" v-model="beeBox.entryDate"></el-input>
+      <!-- <el-input size="small"  placeholder="请输入内容" v-model="beeBox.entryDate"></el-input> -->
+			 <el-date-picker size="small"
+         v-model="beeBox.entryDate"
+         type="date"
+         placeholder="选择日期" value-format="yyyy-MM-dd">
+    </el-date-picker>
     </el-col>
     <el-col :span="3" :offset="3">
       验证码
@@ -108,11 +113,12 @@ export default {
 				mobile: this.beeBox.mobile,
 				code: this.beeBox.code,
 			};
+			console.log(111,options)
 			if (Validate(options, beeBoxAddSchema) !== null) {
 				this.showAlert = true;
 				this.status = 'error';
-        this.text = '字段都不能为空';
-        let _this = this;
+				this.text = '字段都不能为空';
+				let _this = this;
 				setTimeout(function() {
 					_this.showAlert = false;
 				}, 3000);

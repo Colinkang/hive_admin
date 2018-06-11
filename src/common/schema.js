@@ -40,9 +40,9 @@ const organizeAddSchema = Joi.object().keys({
 
 const changeCodeSchema = Joi.object().keys({
     username: Joi.string().required(),
-    newPassword: Joi.string().required(),
+    password: Joi.string().required(),
     mobile: Joi.string().required(),
-    code: Joi.string().required()
+    smsCode: Joi.string().required()
 });
 
 module.exports = {
