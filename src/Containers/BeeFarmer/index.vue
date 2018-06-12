@@ -46,10 +46,10 @@
         <th style="border:none;width:3%;text-align:center">
           <el-checkbox v-model="checkAllStatus" @change="changeAllStatus(checkAllStatus)"></el-checkbox>
         </th>
-        <th>蜂农ID<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
+        <th @click="sortById">蜂农ID<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
         <th>登录名</th>
         <th>姓名</th>
-        <th>蜂箱数量<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
+        <th @click="sortByBeeBoxNum">蜂箱数量<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
         <th>创建时间<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
         <th>修改时间<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
         <th>合作社</th>
@@ -90,6 +90,7 @@
 <script>
 import { get, post } from '../../common/post.js';
 import { Validate, beeFarmerAddSchema } from '../../common/schema.js';
+import { sortBy } from '../../common/utils.js';
 export default {
 	name: '',
 	data() {
@@ -115,10 +116,19 @@ export default {
 			totalPageNo:1,//需要展示的多少也
 			checkAllStatus:false,//全选的状态
 			beeFarmerKeyWords:'',//搜索关键字
-			statusList:[]//按钮状态列表
+			statusList:[],//按钮状态列表
+			sortStatus:true,//默认从小到大
+			idArray:[],//获取蜂农组织id的数组
+			beeFarmerSortList:[]//排序后的数据
 		};
 	},
 	methods: {
+		sortById(){
+			this.beeFarmerLists = sortBy('id',this.statusList,this.checkAllStatus,[],this.beeFarmerLists,true)
+		},
+		sortByBeeBoxNum(){
+			this.beeFarmerLists = sortBy('beeBoxNum',this.statusList,this.checkAllStatus,[],this.beeFarmerLists,true)
+		},
 		//点击列表显示的编辑蜂农信息
 		editBeeFarmer(id,index){
 			let BeeFarmerData = this.beeFarmerLists[index];
@@ -170,7 +180,7 @@ export default {
 			          message: message+'成功',
 			          type: 'success'
 			        });
-			        this.getFarmerList();
+			        this.getFarmerList(1);
 				}else{
 					this.$message({
 			          showClose: true,
@@ -200,13 +210,14 @@ export default {
 		},
 		//显示列表页  // 刷新列表页
 		getFarmerList(page) {
-			this.currentPage = 1
+			this.beeFarmerLists = [];
+			this.currentPage = 1;
+			this.beeFarmerKeyWords = '';
 			let result = post('/getPageFarmers', {
 				pageNo: page,
 				pageSize: 10,
 			});
 			result.then(res=>{
-				console.log(res);
 				this.beeFarmerLists = res.data.data.beeFarmers;
 				this.totalPageNo = res.data.data.totalPageNo;
 				this.statusList.length = this.beeFarmerLists.length;
@@ -252,6 +263,7 @@ export default {
 		},
 		// 删除蜂农
 		deleteFarmerList() {
+			this.deleteIdArray = [];
 			for(let item in this.deleteIdObject){
 				this.deleteIdArray.push(item);
 			}
@@ -265,17 +277,22 @@ export default {
 				type: 'warning',
 				center: true
 	        }).then(() => {
-				this.$message({
-					type: 'success',
-					message: '删除成功!'
-				});
 				console.log(this.deleteId);
 				let result = post('/deleteFarmers', {
 					ids: this.deleteIdArray,
 				});
 				result.then(res=>{
 					if(res.data.responseCode==="000000"){
+						this.$message({
+							type: 'success',
+							message: '删除成功!'
+						});
 						this.getFarmerList();
+					}else{
+						this.$message({
+							type: 'error',
+							message: '删除错误!'
+						});
 					}
 					console.log(res)
 				})
@@ -367,8 +384,10 @@ export default {
 	},
 	filters:{
 		toBeeStatus(data){
-			if(data === 1){
+			if(data === 0){
 				data = '在线';
+			}else if(data === 2){
+				data = '异常';
 			}else{
 				data = '离线';
 			}
@@ -475,6 +494,7 @@ export default {
 	height:40px;
 	border: none;
 	font-size: 13px;
+	cursor: pointer;
 }
 
 .header td {

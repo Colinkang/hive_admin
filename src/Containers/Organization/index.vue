@@ -61,10 +61,9 @@
           <td>{{organizeList.memberNum}}</td>
         </tr>
       </table>
-      <div class="form-row" style="margin-top:20px">
-        <span class="icon-span"><i class="iconfont icon-shuaxin1">删除</i> </span>
-        <span class="icon-span"><i class="iconfont icon-shuaxin1" @click="getOrgList">刷新</i> </span>
-
+      <div class="form-row fr" style="margin-top:20px">
+        <el-button type="text" class="icon-span" @click="getOrgList"><i class="iconfont icon-shuaxin1">刷新</i></el-button>
+        <el-button type="text" class="icon-span" @click="deleteOrgList"><i class="iconfont icon-069delete">删除</i> </el-button>
       </div>
     </div>
     <div class="list-right">
@@ -107,9 +106,9 @@
           <td>{{beeframerList.address}}</td>
         </tr>
       </table>
-      <div class="form-row" style="margin-top:20px">
-        <span class="icon-span"><i class="iconfont icon-shuaxin1">删除</i> </span>
-        <span class="icon-span"><i class="iconfont icon-shuaxin1">刷新</i> </span>
+      <div class="form-row fr" style="margin-top:20px">
+        <el-button type="text" class="icon-span" @click="getFirstOrgFarmerList"><i class="iconfont icon-shuaxin1">刷新</i></el-button>
+        <el-button type="text" class="icon-span" @click="deleteOrgFarmerList"><i class="iconfont icon-069delete">删除</i></el-button>
       </div>
     </div>
   </div>
@@ -149,6 +148,15 @@ export default {
 			if(this.organizeData.id !== undefined){
 				message = '修改'
 			}
+			this.organizeData.beeBoxNum=this.isUndefined(this.organizeData.beeBoxNum)
+			this.organizeData.createDate=this.isUndefined(this.organizeData.createDate)
+			this.organizeData.firstTimeLogin=this.isUndefined(this.organizeData.firstTimeLogin)
+			this.organizeData.name=this.isUndefined(this.organizeData.name)
+			this.organizeData.organizationId=this.isUndefined(this.organizeData.organizationId)
+			this.organizeData.status=this.isUndefined(this.organizeData.status)
+			this.organizeData.updateDate=this.isUndefined(this.organizeData.updateDate)
+			this.organizeData.username=this.isUndefined(this.organizeData.username)
+			console.log(this.organizeData);
 			let result = post('/alterOrganization', this.organizeData);
 			result.then(res=>{
 				if(res.data.responseCode === "000000"){
@@ -166,25 +174,12 @@ export default {
 			        });
 		        }
 			});
-			// let options = {
-			// 	organizationName: this.organizeData.name,
-			// 	contactName: this.organizeData.contactName,
-			// 	email: this.organizeData.email,
-			// 	mobile: this.organizeData.mobile,
-			// 	address: this.organizeData.address
-			// };
-			// console.log(options);
-			// if (Validate(options, organizeAddSchema) !== null) {
-			// 	this.$message({
-		 //          showClose: true,
-		 //          message: '字段不能为空',
-		 //          type: 'error'
-		 //        });
-			// 	return;
-			// };
 		},
 		//清除蜂农
 		clearOrg(){
+			if(this.organizeData.id !== undefined){
+				delete this.organizeData.id;
+			}
 			this.organizeData = {
 				organizationName:'',
 				contactName:'',
@@ -197,30 +192,69 @@ export default {
 		searchOrg() {},
 		//获取组织列表 刷新组织列表
 		getOrgList() {
+			this.organizeLists = [];
 			let result = get('/getAllOrganizations', null);
 			result.then(res=>{
 				this.organizeLists = res.data.data;
+				this.getFirstOrgFarmerList();
 				this.organizeStatusList.length = this.organizeLists.length;
 				for(let i =0;i<this.organizeStatusList.length; i++){
 					this.organizeStatusList[i] = false;
 				}
-				let result = post('/getOrganizationBeeFarmers', {
-					organizationId: this.organizeLists[0].id
-				});
-				result.then(res=>{
-					console.log(res);
-					this.beeframerLists = res.data.data;
-					for(let i =0;i<this.beeframerLists.length;i++){
-						this.BeeFarmerStatusList[i] = false;
-					}
-				});
 			});
 		},
 		//删除组织列表
 		deleteOrgList() {
-			let result = post('/deleteOrganizations', { ids: [] });
+			this.deleteOrganizeIdArray = [];
+			for(let item in this.deleteOrganizeIdObject){
+				this.deleteOrganizeIdArray.push(item);
+			}
+			console.log(this.deleteOrganizeIdArray);
+			if(this.deleteOrganizeIdArray.length ===0){
+				return false;
+			}
+			this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+				confirmButtonText: '确定',
+				cancelButtonText: '取消',
+				type: 'warning',
+				center: true
+	        }).then(() => {
+				let result = post('/deleteOrganizations', { ids: this.deleteOrganizeIdArray });
+				result.then(res=>{
+					if(res.data.responseCode==="000000"){
+						this.$message({
+							type: 'success',
+							message: '删除成功!'
+						});
+						this.getOrgList();
+					}else{
+						this.$message({
+							type: 'error',
+							message: '删除失败!'
+						});
+					}
+				});
+	        }).catch(() => {
+				this.$message({
+					type: 'info',
+					message: '已取消删除'
+				});
+	        });
 		},
-
+		//获取第一个组织下的蜂农列表
+		getFirstOrgFarmerList(){
+			this.beeframerLists = [];
+			let result = post('/getOrganizationBeeFarmers', {
+				organizationId: this.organizeLists[0].id
+			});
+			result.then(res=>{
+				console.log(res);
+				this.beeframerLists = res.data.data;
+				for(let i =0;i<this.beeframerLists.length;i++){
+					this.BeeFarmerStatusList[i] = false;
+				}
+			});
+		},
 		//获取组织下的蜂农列表 刷新
 		getOrgFarmerList(id,index) {
 			console.log(this.organizeLists)
@@ -254,9 +288,41 @@ export default {
 		},
 		//删除组织下的蜂农列表
 		deleteOrgFarmerList() {
-			let result = post('/deleteFarmers', {
-				ids: '',
-			});
+			this.deleteBeeFramerIdArray = [];
+			for(let item in this.deleteBeeFramerIdObject){
+				this.deleteBeeFramerIdArray.push(item);
+			}
+			console.log(this.deleteBeeFramerIdArray);
+			if(this.deleteBeeFramerIdArray.length ===0){
+				return false;
+			}
+			this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+				confirmButtonText: '确定',
+				cancelButtonText: '取消',
+				type: 'warning',
+				center: true
+	        }).then(() => {
+				let result = post('/deleteFarmers', { ids: this.deleteBeeFramerIdArray });
+				result.then(res=>{
+					if(res.data.responseCode==="000000"){
+						this.$message({
+							type: 'success',
+							message: '删除成功!'
+						});
+						this.getFirstOrgFarmerList();
+					}else{
+						this.$message({
+							type: 'error',
+							message: '删除失败!'
+						});
+					}
+				});
+	        }).catch(() => {
+				this.$message({
+					type: 'info',
+					message: '已取消删除'
+				});
+	        });
 		},
 		//组织全选状态
 		changeAllOrganizeStatus(val){
@@ -305,6 +371,13 @@ export default {
 			console.log(this.deleteBeeFramerIdObject);
 			if(!val){this.BeeFarmerAllStatus = false};
 			if(this.BeeFarmerStatusList.toString().indexOf("false")<0){this.BeeFarmerAllStatus = true};
+		},
+		//检查是否未定义
+		isUndefined(data){
+			if(data === undefined){
+				data = '';
+			}
+			return data;
 		}
 	},
 	mounted(){
@@ -418,9 +491,10 @@ export default {
 .header {
 	color: white;
 }
-
-.icon-span {
+.fr{
 	float: right;
+}
+.icon-span {
 	font-size: 12px;
 	margin-right: 20px;
 	cursor: pointer;
