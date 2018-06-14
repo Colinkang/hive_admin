@@ -7,8 +7,12 @@
     <div class="input-section-left">
       <div class="form-row">
         <span style="margin-left:20px;margin-top:10px;display:block">创建组织</span>
-        <span class="input-item" style="margin-left:20px;"><label>组织名称 <input v-model="organizeData.organizationName" style="width:120px;"/></label></span>
         <span class="input-item" style="margin-left:20px;"><label>联系人名称 <input v-model="organizeData.contactName" style="width:120px;"/></label></span>
+        <span class="input-item" style="margin-left:20px"><label>管理员名称
+            <select style="width:120px;">
+            	<option>1</option>
+            </select></label></span>
+        <span class="input-item" style="margin-left:20px;"><label>组织名称 <input v-model="organizeData.organizationName" style="width:120px;"/></label></span>
         <span class="input-item" style="margin-left:20px;"><label>邮箱 <input v-model="organizeData.email" style="width:120px;"/></label></span>
         <span class="input-item" style="margin-left:20px;"><label>联系电话 <input v-model="organizeData.mobile" style="width:120px;"/></label></span>
         <span class="input-item" style="margin-left:20px;"><label>地址 <input v-model="organizeData.address" style="width:350px;"/></label></span>
@@ -25,10 +29,10 @@
     <div class="input-section-right">
       <div class="form-row">
         <span style="margin-left:20px;margin-top:10px;display:block">搜索</span>
-        <span class="input-item" style="margin-left:20px;"><label>关键字 <input style="width:140px;"/></label></span>
+        <span class="input-item" style="margin-left:20px;"><label>关键字 <input v-model="keyWord" style="width:140px;"/></label></span>
       </div>
       <div class="form-row">
-        <div class="sure-btn">
+        <div @click="searchOrganization" class="sure-btn">
           确认
         </div>
       </div>
@@ -139,9 +143,20 @@ export default {
 			deleteOrganizeIdObject:{},//需要删除组织对象的数组
 			deleteBeeFramerIdArray:[],//需要删除蜂农数据的数组
 			deleteBeeFramerIdObject:{},//需要删除蜂农对象的数组
+			keyWord:''//关键字
 		}
 	},
 	methods: {
+		//搜索组织
+		searchOrganization(){
+			let option = {
+				keyword:this.keyWord
+			};
+			let result = post('/searchOrganization',option);
+			result.then(res=>{
+				console.log(res)
+			});
+		},
 		//创建组织 编辑组织
 		createOrg() {
 			let message = '创建';
@@ -284,6 +299,19 @@ export default {
 				for(let i =0;i<this.beeframerLists.length;i++){
 					this.BeeFarmerStatusList[i] = false;
 				}
+			});
+			result.then(res=>{
+				console.log(res);
+				this.beeframerLists = res.data.data;
+				for(let i =0;i<this.beeframerLists.length;i++){
+					this.BeeFarmerStatusList[i] = false;
+				}
+			});
+			let adminResult = post('/getOrganizationAdmin', {
+				organizationId: id
+			});
+			adminResult.then(res=>{
+				console.log(res);
 			});
 		},
 		//删除组织下的蜂农列表

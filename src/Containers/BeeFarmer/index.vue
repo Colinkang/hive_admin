@@ -50,8 +50,8 @@
         <th>登录名</th>
         <th>姓名</th>
         <th @click="sortByBeeBoxNum">蜂箱数量<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
-        <th>创建时间<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
-        <th>修改时间<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
+        <th @click="sortByCreateDate">创建时间<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
+        <th @click="sortByUpdateDate">修改时间<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
         <th>合作社</th>
         <th>邮箱</th>
         <th>联系电话</th>
@@ -66,8 +66,8 @@
         <td>{{beeFarmerList.username}}</td>
         <td>{{beeFarmerList.name}}</td>
         <td>{{beeFarmerList.beeBoxNum}}</td>
-        <td>{{beeFarmerList.createDate}}</td>
-        <td>{{beeFarmerList.updateDate}}</td>
+        <td>{{beeFarmerList.createDate | formatDate}}</td>
+        <td>{{beeFarmerList.updateDate | formatDate}}</td>
         <td>{{beeFarmerList.organizationName}}</td>
         <td>{{beeFarmerList.email}}</td>
         <td>{{beeFarmerList.mobile}}</td>
@@ -91,6 +91,7 @@
 import { get, post } from '../../common/post.js';
 import { Validate, beeFarmerAddSchema } from '../../common/schema.js';
 import { sortBy } from '../../common/utils.js';
+import moment from 'moment';
 export default {
 	name: '',
 	data() {
@@ -119,15 +120,42 @@ export default {
 			statusList:[],//按钮状态列表
 			sortStatus:true,//默认从小到大
 			idArray:[],//获取蜂农组织id的数组
-			beeFarmerSortList:[]//排序后的数据
+			beeFarmerSortList:[],//排序后的数据
+			array1:[]
 		};
 	},
 	methods: {
 		sortById(){
-			this.beeFarmerLists = sortBy('id',this.statusList,this.checkAllStatus,[],this.beeFarmerLists,true)
+		    this.array1 = sortBy('id',this.statusList,this.checkAllStatus,[],this.beeFarmerLists,true);
+		    this.beeFarmerSortList = [];
+			this.$nextTick(()=>{
+				this.beeFarmerLists = this.beeFarmerSortList.concat(this.array1);
+				this.array1 = [];
+			});
 		},
 		sortByBeeBoxNum(){
-			this.beeFarmerLists = sortBy('beeBoxNum',this.statusList,this.checkAllStatus,[],this.beeFarmerLists,true)
+			this.array1 = sortBy('beeBoxNum',this.statusList,this.checkAllStatus,[],this.beeFarmerLists,true);
+			this.beeFarmerSortList = [];
+			this.$nextTick(()=>{
+				this.beeFarmerLists = this.beeFarmerSortList.concat(this.array1);
+				this.array1 = [];
+			});
+		},
+		sortByCreateDate(){
+			this.array1 = sortBy('createDate',this.statusList,this.checkAllStatus,[],this.beeFarmerLists,true)
+			this.beeFarmerSortList = [];
+			this.$nextTick(()=>{
+				this.beeFarmerLists = this.beeFarmerSortList.concat(this.array1);
+				this.array1 = [];
+			});
+		},
+		sortByUpdateDate(){
+			this.array1 = sortBy('updateDate',this.statusList,this.checkAllStatus,[],this.beeFarmerLists,true)
+			this.beeFarmerSortList = [];
+			this.$nextTick(()=>{
+				this.beeFarmerLists = this.beeFarmerSortList.concat(this.array1);
+				this.array1 = [];
+			});
 		},
 		//点击列表显示的编辑蜂农信息
 		editBeeFarmer(id,index){
@@ -268,6 +296,10 @@ export default {
 				this.deleteIdArray.push(item);
 			}
 			if(this.deleteIdArray.length ===0){
+				this.$message({
+					message: '请先点击列表选择要删除的蜂箱',
+					type: 'warning',
+				});
 				return false;
 			}
 			console.log(this.deleteIdArray)
@@ -384,7 +416,7 @@ export default {
 	},
 	filters:{
 		toBeeStatus(data){
-			if(data === 0){
+			if(data === 0 || data === 1){
 				data = '在线';
 			}else if(data === 2){
 				data = '异常';
@@ -392,6 +424,14 @@ export default {
 				data = '离线';
 			}
 			return data;
+		},
+		formatDate(timestamp) {
+	      return moment(timestamp).format('YYYY-MM-DD');
+	    }
+	},
+	watch:{
+		beeFarmerLists(newVal,oldVal){
+			console.log(newVal,oldVal);
 		}
 	}
 };

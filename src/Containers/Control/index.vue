@@ -101,12 +101,12 @@
         <th style="border:none;width:3%;text-align:center">
           <el-checkbox v-model="checkAll" @change="checkAllChange"></el-checkbox>
         </th>
-        <th>管理员ID<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
+        <th @click="sortById">管理员ID<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
         <th>登录名</th>
         <th>姓名</th>
-        <th>管理员类型<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
-        <th>创建时间<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
-        <th>修改时间<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
+        <th @click="sortByType">管理员类型<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
+        <th @click="sortByCreateDate">创建时间<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
+        <th @click="sortByUpdateDate">修改时间<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
         <th>合作社</th>
         <th>邮箱</th>
         <th>联系电话</th>
@@ -144,6 +144,7 @@
 <script>
 import { get, post } from '../../common/post.js';
 import moment from 'moment';
+import { sortBy } from '../../common/utils.js';
 export default {
 	name: '',
 	data: () => ({
@@ -192,6 +193,18 @@ export default {
 		this.getManagerList(1);
 	},
 	methods: {
+		sortById(){
+			this.adminList = sortBy('id',this.checkList,this.checkAll,[],this.adminList,true);
+		},
+		sortByType(){
+			this.adminList = sortBy('type',this.checkList,this.checkAll,[],this.adminList,true);
+		},
+		sortByCreateDate(){
+			this.adminList = sortBy('createDate',this.checkList,this.checkAll,[],this.adminList,true);
+		},
+		sortByUpdateDate(){
+			this.adminList = sortBy('updateDate',this.checkList,this.checkAll,[],this.adminList,true);
+		},
     formatDate(timestamp) {
       return moment(timestamp).format('YYYY-MM-DD');
 		},
@@ -467,6 +480,7 @@ export default {
 .header th {
 	border: none;
 	font-size: 13px;
+	cursor: pointer;
 }
 
 .header td {

@@ -17,13 +17,18 @@
                 v-model="search"
                 clearable
                 prefix-icon="el-icon-search" 
+                @keyup.enter.native = "getHiveList(search)"
                 ></el-input>
+                <!-- <input type="text"  v-model="search"  @keyup.enter = "getHiveList(search)"> -->
             </div>
         </div>
     <div class="box">
       <div class="section-left">
         <table border="0">
           <tr>
+          	<th>
+          		<el-checkbox v-model="checkAllStatus"  @change="changeAllStatus(checkAllStatus)"></el-checkbox>
+          	</th>
             <th>蜂箱ID</th>
             <th>温度</th>
             <th>湿度</th>
@@ -32,14 +37,17 @@
             <th>状态</th>
             <th>电量</th>
           </tr>
-          <tr v-for="(item) in hiveList" :key="item.boxId" @click="slectThisRow(item.beeBoxNo)">
+          <tr v-for="(item,index) in hiveList" :key="item.boxId" @click="slectThisRow(item.beeBoxNo)">
+          	<td>
+          		<el-checkbox v-model="statusList[index]" @change="changeStatus(index,statusList[index],item.id)"></el-checkbox>
+          	</td>
             <td>{{item.beeBoxNo}}</td>
-            <td>{{item.temperature}}</td>
-            <td>{{item.humidity}}</td>
-            <td>{{item.gravity}}</td>
-            <td>{{item.airPressure}}</td>
-            <td>{{item.status}}</td>
-            <td>{{item.battery}}</td>
+            <td>{{item.temperature | nullToLine}}</td>
+            <td>{{item.humidity | nullToLine}}</td>
+            <td>{{item.gravity | nullToLine}}</td>
+            <td>{{item.airPressure | nullToLine}}</td>
+            <td>{{item.status | toBeeBoxStatus}}</td>
+            <td>{{item.battery | nullToLine}}</td>
           </tr>
         </table>
       </div>
@@ -54,7 +62,7 @@
                       总览
                     </div>
                     <div class="overview-row">
-                      <div class="overview-row-left">
+                      <div class="overview-row-left" :title="pai.totalBeeBoxNum">
                         数量: {{pai.totalBeeBoxNum}}
                       </div>
                       <div class="overview-row-right">
@@ -90,25 +98,25 @@
                 蜂箱信息
               </div>
               <div class="dtail-row">
-                <div class="detail-col">
+                <div class="detail-col detail-col01" :title="beeBoxInfo.beeBoxId">
                   蜂箱ID: {{beeBoxInfo.beeBoxId}}
                 </div>
-                <div class="detail-col">
+                <div class="detail-col detail-col02" :title="beeBoxInfo.batchNo">
                   出厂批次:  {{beeBoxInfo.batchNo}}
                 </div>
-                <div class="detail-col">
+                <div class="detail-col detail-col03" :title="beeBoxInfo.manufacturer">
                   厂商: {{beeBoxInfo.manufacturer}}
                 </div>
               </div>
               <div class="dtail-row">
-                <div class="detail-col">
-                  蜂箱定位: {{beeBoxInfo.lat,beeBoxInfo.lng}}
+                <div class="detail-col detail-col01" :title="latlng">
+                  蜂箱定位: {{beeBoxInfo.lat}},{{beeBoxInfo.lng}}
                 </div>
-                <div class="detail-col">
+                <div class="detail-col detail-col02" :title="beeBoxInfo.productionDate">
                   生产日期:  {{beeBoxInfo.productionDate}}
                 </div>
-                <div class="detail-col">
-                  状态:  {{beeBoxInfo.status}}
+                <div class="detail-col detail-col03" :title="beeBoxInfo.status | toBeeBoxStatus">
+                  状态:  {{beeBoxInfo.status | toBeeBoxStatus}}
                 </div>
               </div>
             </div>
@@ -150,19 +158,22 @@
             <div class="form-row group-table">
               <table border="0" style="border:none">
                 <tr style="border:none;background:#40577f;color:white">
-                  <th style="border:none;width:50%;color:white"><el-checkbox v-model="checked">名称<i class="iconfont icon-duibi" style="font-size:12px"></i></el-checkbox></th>
-                  <th style="border:none;width:50%;color:white">蜂箱数量<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
+                  <th style="border:none;background:#40577f;color:white"><el-checkbox v-model="checkAllGroupStatus" @change="changeAllGroupStatus(checkAllGroupStatus)"></el-checkbox></th>	
+                  <th style="border:none;width:50%;color:white">名称<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
+                  <th style="border:none;width:50%;color:white" @click="sortByBeeBoxNum">蜂箱数量<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
                   <!-- <th style="border:none;width:50%;color:white">备注</th> -->
                 </tr>
-								 <tr v-for="(item) in groupList" :key="item.id" @click="slectThisGroupRow(item.id)">
-										<td style="width:50%;">{{item.groupName}}</td>
-										<td style="width:50%;">{{item.beeBoxNum}}</td>
+				 <!-- <tr v-for="(item,index) in groupList" :key="item.id" @click="slectThisGroupRow(item.id)"> -->
+				<tr v-for="(item,index) in groupList" :key="item.id" >
+			 		<td><el-checkbox v-model="groupStatusList[index]" @change="changeGroupStatus(index,groupStatusList[index],item.id)"></el-checkbox></td>
+					<td style="width:50%;">{{item.groupName}}</td>
+					<td style="width:50%;">{{item.beeBoxNum}}</td>
                 </tr>
               </table>
             </div>
             <div class="form-row">
               <span>共（2）</span>
-              <span class="icon-span"><i class="iconfont icon-shuaxin1">
+              <span class="icon-span"><i class="iconfont icon-069delete">
 								 <el-button type="text" @click="deleteGroupList" >删除</el-button></i> </span>
               <span class="icon-span"><i class="iconfont icon-shuaxin1">
 								 <el-button type="text" @click="getGroupList" >刷新</el-button></i> </span>
@@ -183,6 +194,7 @@ import { get, post } from '../../common/post.js';
 import echartspie from './echarts.vue';
 import fold from './fold.vue';
 import PropsSelect from './PropsSlect.vue';
+import { sortBy } from '../../common/utils.js';
 import moment from 'moment';
 export default {
 	components: {
@@ -219,6 +231,16 @@ export default {
 			clickBeeBoxId: '',
 			right: '',
 			ids: [],
+			checkAllStatus:false,//全选状态
+			statusList:[],//状态列表
+			deleteIdArray:[],//需要删除数据的数组
+			deleteIdObject:{},//需要删除数据的对象
+			latlng:'',//经纬度合用的
+			checkAllGroupStatus:false,//现有组全选状态
+			groupStatusList:[],//现有组状态列表
+			deleteGroupIdArray:[],//需要删除数据组的数组
+			deleteGroupIdObject:{},//需要删除数据组的对象
+			array1:[]
 		};
 	},
 	created: function() {
@@ -231,6 +253,14 @@ export default {
 		this.right = adminRight.split(',');
 	},
 	methods: {
+		sortByBeeBoxNum(){
+			this.array1 = sortBy('beeBoxNum',this.groupStatusList,this.checkAllGroupStatus,[],this.groupList,true)
+			this.beeFarmerSortList = [];
+			this.$nextTick(()=>{
+				this.beeFarmerLists = this.beeFarmerSortList.concat(this.array1);
+				this.array1 = [];
+			});
+		},
 		//获取蜂箱默认信息
 		getBeeBoxInfo(beeBoxId) {
 			let result = post('/getBeeBox', { beeBoxId: beeBoxId });
@@ -245,6 +275,8 @@ export default {
 						this.beeBoxInfo.manufacturer = data.manufacturer;
 						this.beeBoxInfo.lat = data.lat;
 						this.beeBoxInfo.lng = data.lng;
+						this.latlng = ''+this.beeBoxInfo.lat + ',' +''+this.beeBoxInfo.lng
+						console.log(this.latlng);
 						this.beeBoxInfo.productionDate = moment(data.productionDate).format('YYYY-MM-DD');
 						// 将值赋值给列表
 						if (data.status === 0) this.beeBoxInfo.status = '正在运行';
@@ -262,6 +294,7 @@ export default {
 		},
 		// 获取蜂箱列表信息 蜂箱信息  地图信息
 		getHiveList(keyword) {
+			console.log(keyword);
 			let result = post('/getAllBeeBoxSensorData', { keyword: keyword });
 			result.then(res => {
 				console.log(111167, res);
@@ -269,12 +302,10 @@ export default {
 					let data = res.data.data;
 					// 将值赋值给列表
 					if (data.length > 0) {
-						for (let obj of data) {
-							if (obj.status === 0) obj.status = '正在运行';
-							else if (obj.status === 2) obj.status = '异常';
-							else obj.status = '离线';
-						}
 						this.hiveList = data;
+						for(let i=0;i<this.hiveList.length;i++){
+							this.statusList[i] = false
+						}
 					}
 
 					console.log(122, this.hiveList);
@@ -285,16 +316,21 @@ export default {
 
 		//删除蜂箱
 		deleteBeeBox() {
-			if (this.clickBeeBoxId === '') {
+			this.deleteIdArray = [];
+			for(let item in this.deleteIdObject){
+				this.deleteIdArray.push(item);
+			}
+			console.log(this.deleteIdArray);
+			if (this.deleteIdArray.length === '') {
 				this.$message({
 					message: '请先点击列表选择要删除的蜂箱',
 					type: 'warning',
 				});
 				return;
 			}
-			this.ids.push(this.clickBeeBoxId);
+			// this.ids.push(this.clickBeeBoxId);
 			let result = post('/deleteBeeBoxes', {
-				ids: this.ids,
+				ids: this.deleteIdArray,
 			});
 			result.then(res => {
 				console.log(2222, res);
@@ -303,6 +339,8 @@ export default {
 						message: '删除蜂箱成功',
 						type: 'success',
 					});
+					this.getHiveList(null);
+					this.deleteIdObject = {};
 				}
 			});
 		},
@@ -328,7 +366,7 @@ export default {
 		slectThisRow(id) {
 			//  this.idChange(id)
 			console.log('99999', id);
-			this.clickBeeBoxId = id;
+			// this.clickBeeBoxId = id;
 			this.getBeeBoxInfo(id);
 		},
 		// 获取折线图的数据，并将数据显示在折线图上
@@ -373,16 +411,36 @@ export default {
 					console.log(1111, res);
 					let data = res.data.data;
 					this.groupList = data;
+					for(let i =0;i<this.groupList.length;i++){
+						this.groupStatusList[i] = false;
+					}
 				}
 			});
 		},
 
 		// 删除现有组列表
 		deleteGroupList() {
-			let result = post('/deleteGroups', { ids: [1] });
+			this.deleteGroupIdArray = [];
+			for(let item in this.deleteGroupIdObject){
+				this.deleteGroupIdArray.push(item);
+			}
+			console.log(this.deleteGroupIdArray);
+			if (this.deleteGroupIdArray.length === '') {
+				this.$message({
+					message: '请先点击列表选择要删除的现有组',
+					type: 'warning',
+				});
+				return;
+			}
+			let result = post('/deleteGroups', { ids: this.deleteGroupIdArray });
 			result.then(res => {
 				if(res.data.responseCode === '000000'){
-
+					this.$message({
+						message: '删除现有组成功',
+						type: 'success',
+					});
+					this.getGroupList(null);
+					this.deleteGroupIdObject = {};
 				}
 			});
 		},
@@ -398,7 +456,71 @@ export default {
 		getTermList() {},
 		//搜索框用来查找蜂箱列表
 		searchBoxList() {},
+		//点击全选的状态
+		changeAllStatus(val){
+			for(let i =0;i<this.statusList.length;i++){
+				this.statusList[i] = val
+			}
+			if(val){
+				this.hiveList.forEach((item,index)=>{
+					this.deleteIdObject[item.id] = val
+				})
+			}
+		},
+		//单个点击的状态
+		changeStatus(index,val,id){
+			event.preventDefault();
+			if(val){
+				this.deleteIdObject[id] = val;
+			}else{
+				delete this.deleteIdObject[id];
+			}
+			console.log(this.deleteIdObject);
+			if(!val){this.checkAllStatus = false};
+			if(this.statusList.toString().indexOf("false")<0){this.checkAllStatus = true};
+		},
+		//点击组全选的状态
+		changeAllGroupStatus(val){
+			for(let i =0;i<this.groupStatusList.length;i++){
+				this.groupStatusList[i] = val
+			}
+			if(val){
+				this.groupList.forEach((item,index)=>{
+					this.deleteGroupIdObject[item.id] = val
+				})
+			}
+		},
+		//单个点击组的状态
+		changeGroupStatus(index,val,id){
+			event.preventDefault();
+			if(val){
+				this.deleteGroupIdObject[id] = val;
+			}else{
+				delete this.deleteGroupIdObject[id];
+			}
+			console.log(this.deleteGroupIdObject);
+			if(!val){this.checkAllGroupStatus = false};
+			if(this.groupStatusList.toString().indexOf("false")<0){this.checkAllGroupStatus = true};
+		}
 	},
+	filters:{
+		toBeeBoxStatus(data){
+			if(data === 0 || data === 1){
+				data = '在线';
+			}else if(data === 2){
+				data = '异常';
+			}else{
+				data = '离线';
+			}
+			return data;
+		},
+		nullToLine(data){
+			if(data === null){
+				data = '-'
+			}
+			return data;
+		}
+	}
 };
 </script>
 
@@ -514,7 +636,7 @@ td {
 }
 
 table tr th {
-	width: 14.28%;
+	width: 11.28%;
 }
 
 .detail-box {
@@ -544,10 +666,22 @@ table tr th {
 }
 
 .detail-col {
-	width: 33%;
+	height:16px;
 	text-align: left;
+	overflow: hidden;
+	text-overflow:ellipsis;
+	white-space: nowrap;
 }
 
+.detail-col01{
+	width: 30%;
+}
+.detail-col02{
+	width: 40%;
+}
+.detail-col03{
+	width: 30%;
+}
 .chart-box {
 	position: relative;
 	color: #daac52;
@@ -584,9 +718,11 @@ table tr th {
 }
 
 .overview-chart-left {
-	width: 45%;
+	width: 40%;
 	height: 100%;
 	font-size: 14px;
+	padding-left:2.5%;
+	padding-right:2.5%;
 }
 
 .overview-chart-right {

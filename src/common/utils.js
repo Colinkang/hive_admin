@@ -1,33 +1,46 @@
 let beeFarmerSortList  = []; 
 let sortStatus = true;
 export function sortBy(property,statusListArray,allStatus,idArray,beeFarmerLists,firstSortStatus){
-	console.log(idArray);
 	allStatus = false;
 	for(let i =0;i<statusListArray.length;i++){
 		statusListArray[i] = false;
 	}
-	console.log(beeFarmerLists);
-	if(firstSortStatus){
-		beeFarmerLists.forEach((item,index)=>{
-			idArray.push(item[property]);
-		});
-		firstSortStatus = false;
-	}
-	sortStatus ? idArray.sort(sortMaxNumber) : idArray.sort(sortMinNumber);
-	sortStatus = !sortStatus;
-	console.log(idArray);
-	beeFarmerSortList = [];
-	for(let i =0;i<idArray.length;i++){
-		beeFarmerLists.forEach((item,index)=>{
-			console.log(item[property]);
-			if(idArray[i] == item[property]){
-				beeFarmerSortList[i] = item;
+	// console.log(beeFarmerLists);
+	let t = {};
+	function sortMax(array){
+		for(let i =0;i<array.length;i++){
+			for(let j =0;j<array.length;j++){
+				if(array[i][property] >= array[j][property]){
+					t = array[i];
+					array[i] = array[j];
+					array[j] = t;
+				}
 			}
-		});
+		}
+		return array;
 	}
-	beeFarmerLists = beeFarmerSortList;
-	return beeFarmerLists;
+	function sortMin(array){
+		for(let i =0;i<array.length;i++){
+			for(let j =0;j<array.length;j++){
+				if(array[i][property] <= array[j][property]){
+					t = array[i];
+					array[i] = array[j];
+					array[j] = t;
+				}
+			}
+		}
+		return array;
+	}
+	if(sortStatus){
+		beeFarmerLists = sortMax(beeFarmerLists);
+		sortStatus = false;
+	}else{
+		beeFarmerLists = sortMin(beeFarmerLists);
+		sortStatus = true;
+	}
 	console.log(beeFarmerLists);
+	// beeFarmerLists = beeFarmerSortList
+	return beeFarmerLists;
 }
 function sortMinNumber(a,b){
 	return a - b ;
