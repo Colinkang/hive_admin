@@ -7,7 +7,7 @@
       </div>
       <div class="">
         <el-row class="form-row">
-          <el-col :span="3">
+          <el-col :span="3" style="text-align:right">
             登录名
           </el-col>
           <el-col :span="5">
@@ -16,7 +16,7 @@
 
         </el-row>
         <el-row class="form-row">
-          <el-col :span="3">
+          <el-col :span="3" style="text-align:right;margin-right:20px;">
             管理员ID
           </el-col>
           <el-col :span="5">
@@ -25,7 +25,7 @@
 
         </el-row>
         <el-row class="form-row">
-          <el-col :span="3">
+          <el-col :span="3" style="text-align:right;margin-right:20px;">
             管理员类型
           </el-col>
           <el-col :span="5">
@@ -34,7 +34,7 @@
 
         </el-row>
         <el-row class="form-row">
-          <el-col :span="3" >
+          <el-col :span="3" style="text-align:right;margin-right:20px;">
             邮箱
           </el-col>
           <el-col :span="5">
@@ -52,7 +52,7 @@
 
         </el-row>
         <el-row class="form-row">
-          <el-col :span="3" >
+          <el-col :span="3" style="text-align:right;margin-right:20px;">
             联系电话
           </el-col>
           <el-col :span="5">
@@ -65,7 +65,7 @@
 
         </el-row>
         <el-row class="form-row">
-          <el-col :span="3">
+          <el-col :span="3" style="text-align:right;margin-right:20px;">
             组织
           </el-col>
           <el-col :span="5">
