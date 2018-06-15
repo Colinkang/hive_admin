@@ -61,8 +61,12 @@
 
     </div>
     <div class="canshu" style="text-align:right">
-      <span class="hover" style="margin-right:20px"><i class="iconfont icon-add"></i>添加</span>
-      <span class="hover"> <i class="iconfont icon-069delete"></i>删除</span>
+      <span class="hover" style="margin-right:20px"><i class="iconfont icon-add"></i>
+      添加  
+      </span>
+      <span class="hover"> <i class="iconfont icon-069delete"></i>
+      删除
+      </span>
     </div>
   </div>
   <div class="form-row">

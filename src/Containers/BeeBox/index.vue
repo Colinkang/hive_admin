@@ -19,7 +19,6 @@
                 prefix-icon="el-icon-search" 
                 @keyup.enter.native = "getHiveList(search)"
                 ></el-input>
-                <!-- <input type="text"  v-model="search"  @keyup.enter = "getHiveList(search)"> -->
             </div>
         </div>
     <div class="box">
@@ -126,7 +125,7 @@
           </div>
           <div class="section-right-top-right">
             <baidu-map style="width:100%;height:100%" center="北京">
-							<bm-marker :position="{lng: 116.404, lat: 39.915}" :dragging="true">
+							<bm-marker position="{lng: 116.404, lat: 39.915}" :dragging="true">
 
 							</bm-marker>
 						</baidu-map>
@@ -196,6 +195,7 @@ import fold from './fold.vue';
 import PropsSelect from './PropsSlect.vue';
 import { sortBy } from '../../common/utils.js';
 import moment from 'moment';
+let hiveTimer;
 export default {
 	components: {
 		echartspie,
@@ -230,33 +230,37 @@ export default {
 			groupList: [],
 			clickBeeBoxId: '',
 			right: '',
-			ids: [],
-			checkAllStatus:false,//全选状态
-			statusList:[],//状态列表
-			deleteIdArray:[],//需要删除数据的数组
-			deleteIdObject:{},//需要删除数据的对象
-			latlng:'',//经纬度合用的
-			checkAllGroupStatus:false,//现有组全选状态
-			groupStatusList:[],//现有组状态列表
-			deleteGroupIdArray:[],//需要删除数据组的数组
-			deleteGroupIdObject:{},//需要删除数据组的对象
-			array1:[]
+			groupIds: [],
+			checkAllStatus: false, //全选状态
+			statusList: [], //状态列表
+			deleteIdArray: [], //需要删除数据的数组
+			deleteIdObject: {}, //需要删除数据的对象
+			latlng: '', //经纬度合用的
+			checkAllGroupStatus: false, //现有组全选状态
+			groupStatusList: [], //现有组状态列表
+			deleteGroupIdArray: [], //需要删除数据组的数组
+			deleteGroupIdObject: {}, //需要删除数据组的对象
+			array1: [],
+
+			position: {lng: 116.404, lat: 39.915},
+			center: {lng: 116.404, lat: 39.915},
 		};
 	},
-	created: function() {
+	mounted: function() {
 		// this.getBeeBoxInfo();
 		this.getPai();
-		this.getHiveList(null);
-		this.getFold();
+		this.getHiveList();
+		hiveTimer = setInterval(this.getHiveList, 5000);
+		// this.getFold();
 		this.getGroupList();
 		let adminRight = LocalStore.getItem(HIVE_ADMIN_RIGHTS);
 		this.right = adminRight.split(',');
 	},
 	methods: {
-		sortByBeeBoxNum(){
-			this.array1 = sortBy('beeBoxNum',this.groupStatusList,this.checkAllGroupStatus,[],this.groupList,true)
+		sortByBeeBoxNum() {
+			this.array1 = sortBy('beeBoxNum', this.groupStatusList, this.checkAllGroupStatus, [], this.groupList, true);
 			this.beeFarmerSortList = [];
-			this.$nextTick(()=>{
+			this.$nextTick(() => {
 				this.beeFarmerLists = this.beeFarmerSortList.concat(this.array1);
 				this.array1 = [];
 			});
@@ -270,12 +274,12 @@ export default {
 					let data = res.data.data;
 					console.log(88888, data);
 					if (data) {
-						this.beeBoxInfo.beeBoxId = data.id;
+						this.beeBoxInfo.beeBoxId = data.beeBoxNo;
 						this.beeBoxInfo.batchNo = data.batchNo;
 						this.beeBoxInfo.manufacturer = data.manufacturer;
 						this.beeBoxInfo.lat = data.lat;
 						this.beeBoxInfo.lng = data.lng;
-						this.latlng = ''+this.beeBoxInfo.lat + ',' +''+this.beeBoxInfo.lng
+						this.latlng = '' + this.beeBoxInfo.lat + ',' + '' + this.beeBoxInfo.lng;
 						console.log(this.latlng);
 						this.beeBoxInfo.productionDate = moment(data.productionDate).format('YYYY-MM-DD');
 						// 将值赋值给列表
@@ -295,7 +299,7 @@ export default {
 		// 获取蜂箱列表信息 蜂箱信息  地图信息
 		getHiveList(keyword) {
 			console.log(keyword);
-			let result = post('/getAllBeeBoxSensorData', { keyword: keyword });
+			let result = post('/getAllBeeBoxSensorData', { keyword: keyword || null });
 			result.then(res => {
 				console.log(111167, res);
 				if (res.data.responseCode === '000000') {
@@ -303,11 +307,10 @@ export default {
 					// 将值赋值给列表
 					if (data.length > 0) {
 						this.hiveList = data;
-						for(let i=0;i<this.hiveList.length;i++){
-							this.statusList[i] = false
+						for (let i = 0; i < this.hiveList.length; i++) {
+							this.statusList[i] = false;
 						}
 					}
-
 					console.log(122, this.hiveList);
 					// 画扇形图
 				}
@@ -317,7 +320,7 @@ export default {
 		//删除蜂箱
 		deleteBeeBox() {
 			this.deleteIdArray = [];
-			for(let item in this.deleteIdObject){
+			for (let item in this.deleteIdObject) {
 				this.deleteIdArray.push(item);
 			}
 			console.log(this.deleteIdArray);
@@ -363,20 +366,21 @@ export default {
 		},
 
 		// 点击列表某行获取蜂箱信息，并将该行标记颜色
-		slectThisRow(id) {
+		slectThisRow(beeBoxNo) {
 			//  this.idChange(id)
-			console.log('99999', id);
-			// this.clickBeeBoxId = id;
-			this.getBeeBoxInfo(id);
+			console.log('99999', beeBoxNo);
+			this.getBeeBoxInfo(beeBoxNo);
+			this.getFold(beeBoxNo);
 		},
 		// 获取折线图的数据，并将数据显示在折线图上
-		getFold() {
+		getFold(beeBoxNo) {
 			let result = post('/getBeeBoxSensorData', {
-				beeBoxNos: [1], //所有信息
+				beeBoxNos: [beeBoxNo], //所有信息
 			});
 			result.then(res => {
 				if (res.data.responseCode === '000000') {
 					let data = res.data.data;
+					console.log(2345, data);
 					if (data.length > 0) {
 						for (let d of data) {
 							this.fold.temperature.push(d.temperature);
@@ -397,8 +401,8 @@ export default {
 				beeBoxGroup: {
 					id: 1,
 					groupName: '',
-					beeBoxNum: 1,
 				},
+				ids:[]
 			});
 			result.then(res => {});
 		},
@@ -411,7 +415,7 @@ export default {
 					console.log(1111, res);
 					let data = res.data.data;
 					this.groupList = data;
-					for(let i =0;i<this.groupList.length;i++){
+					for (let i = 0; i < this.groupList.length; i++) {
 						this.groupStatusList[i] = false;
 					}
 				}
@@ -421,7 +425,7 @@ export default {
 		// 删除现有组列表
 		deleteGroupList() {
 			this.deleteGroupIdArray = [];
-			for(let item in this.deleteGroupIdObject){
+			for (let item in this.deleteGroupIdObject) {
 				this.deleteGroupIdArray.push(item);
 			}
 			console.log(this.deleteGroupIdArray);
@@ -434,7 +438,7 @@ export default {
 			}
 			let result = post('/deleteGroups', { ids: this.deleteGroupIdArray });
 			result.then(res => {
-				if(res.data.responseCode === '000000'){
+				if (res.data.responseCode === '000000') {
 					this.$message({
 						message: '删除现有组成功',
 						type: 'success',
@@ -457,70 +461,78 @@ export default {
 		//搜索框用来查找蜂箱列表
 		searchBoxList() {},
 		//点击全选的状态
-		changeAllStatus(val){
-			for(let i =0;i<this.statusList.length;i++){
-				this.statusList[i] = val
+		changeAllStatus(val) {
+			for (let i = 0; i < this.statusList.length; i++) {
+				this.statusList[i] = val;
 			}
-			if(val){
-				this.hiveList.forEach((item,index)=>{
-					this.deleteIdObject[item.id] = val
-				})
+			if (val) {
+				this.hiveList.forEach((item, index) => {
+					this.deleteIdObject[item.id] = val;
+				});
 			}
 		},
 		//单个点击的状态
-		changeStatus(index,val,id){
+		changeStatus(index, val, id) {
 			event.preventDefault();
-			if(val){
+			if (val) {
 				this.deleteIdObject[id] = val;
-			}else{
+			} else {
 				delete this.deleteIdObject[id];
 			}
 			console.log(this.deleteIdObject);
-			if(!val){this.checkAllStatus = false};
-			if(this.statusList.toString().indexOf("false")<0){this.checkAllStatus = true};
+			if (!val) {
+				this.checkAllStatus = false;
+			}
+			if (this.statusList.toString().indexOf('false') < 0) {
+				this.checkAllStatus = true;
+			}
 		},
 		//点击组全选的状态
-		changeAllGroupStatus(val){
-			for(let i =0;i<this.groupStatusList.length;i++){
-				this.groupStatusList[i] = val
+		changeAllGroupStatus(val) {
+			for (let i = 0; i < this.groupStatusList.length; i++) {
+				this.groupStatusList[i] = val;
 			}
-			if(val){
-				this.groupList.forEach((item,index)=>{
-					this.deleteGroupIdObject[item.id] = val
-				})
+			if (val) {
+				this.groupList.forEach((item, index) => {
+					this.deleteGroupIdObject[item.id] = val;
+				});
 			}
 		},
 		//单个点击组的状态
-		changeGroupStatus(index,val,id){
+		changeGroupStatus(index, val, id) {
 			event.preventDefault();
-			if(val){
+			if (val) {
 				this.deleteGroupIdObject[id] = val;
-			}else{
+			} else {
 				delete this.deleteGroupIdObject[id];
 			}
 			console.log(this.deleteGroupIdObject);
-			if(!val){this.checkAllGroupStatus = false};
-			if(this.groupStatusList.toString().indexOf("false")<0){this.checkAllGroupStatus = true};
-		}
+			if (!val) {
+				this.checkAllGroupStatus = false;
+			}
+			if (this.groupStatusList.toString().indexOf('false') < 0) {
+				this.checkAllGroupStatus = true;
+			}
+		},
 	},
-	filters:{
-		toBeeBoxStatus(data){
-			if(data === 0 || data === 1){
+	filters: {
+		toBeeBoxStatus(data) {
+			if (data === 0 || data === 1) {
 				data = '在线';
-			}else if(data === 2){
+			} else if (data === 2) {
 				data = '异常';
-			}else{
+			} else {
 				data = '离线';
 			}
 			return data;
 		},
-		nullToLine(data){
-			if(data === null){
-				data = '-'
+		nullToLine(data) {
+			if (data === null) {
+				data = '-';
 			}
 			return data;
-		}
-	}
+		},
+	},
 };
 </script>
 
@@ -666,20 +678,20 @@ table tr th {
 }
 
 .detail-col {
-	height:16px;
+	height: 16px;
 	text-align: left;
 	overflow: hidden;
-	text-overflow:ellipsis;
+	text-overflow: ellipsis;
 	white-space: nowrap;
 }
 
-.detail-col01{
+.detail-col01 {
 	width: 30%;
 }
-.detail-col02{
+.detail-col02 {
 	width: 40%;
 }
-.detail-col03{
+.detail-col03 {
 	width: 30%;
 }
 .chart-box {
@@ -721,8 +733,8 @@ table tr th {
 	width: 40%;
 	height: 100%;
 	font-size: 14px;
-	padding-left:2.5%;
-	padding-right:2.5%;
+	padding-left: 2.5%;
+	padding-right: 2.5%;
 }
 
 .overview-chart-right {

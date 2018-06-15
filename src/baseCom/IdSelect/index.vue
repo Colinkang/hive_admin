@@ -9,7 +9,7 @@
   </div>
   <div class="list-box">
     <ul>
-      <li v-for="item in list" :class="selectId ===item?'slected':''" @click="selectThis(item)">
+      <li v-for="(item,index) in list" :key=index  :class="selectId ===item?'slected':''" @click="selectThis(item)">
         {{item}}
       </li>
 
