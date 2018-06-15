@@ -1,25 +1,25 @@
 <template>
 <div class="nav">
-  <el-menu default-active="0" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose" background-color="#404040" text-color="rgba(105, 105, 106)" a ctive-text-color="rgb(105, 105, 106)" :collapse="collapse" :router="true">
-    <el-menu-item index="0" route="/beebox" v-if="right.indexOf('4')>-1">
+  <el-menu :default-active="index" class="el-menu-vertical-demo" @select="select" @open="handleOpen" @close="handleClose" background-color="#404040" text-color="rgba(105, 105, 106)" active-text-color="rgb(105, 105, 106)" :collapse="collapse" :router="true">
+    <el-menu-item index="0" route="/beebox" v-show="right.indexOf('4')>-1">
       <span class="nav-text">
         <i class="iconfont icon-boxxiangzi"></i>
         <span slot="title">蜂箱</span>
       </span>
     </el-menu-item>
-    <el-menu-item index="1" route="/beefarmer" v-if="right.indexOf('3')>-1">
+    <el-menu-item index="1" route="/beefarmer" v-show="right.indexOf('3')>-1">
       <span class="nav-text">
         <i class="iconfont icon-wo"></i>
         <span slot="title">蜂农</span>
       </span>
     </el-menu-item>
-    <el-menu-item index="2" route="/organization" v-if="right.indexOf('2')>-1">
+    <el-menu-item index="2" route="/organization" v-show="right.indexOf('2')>-1">
       <span class="nav-text">
         <i class="iconfont icon-renshu"></i>
         <span slot="title">组织</span>
       </span>
     </el-menu-item>
-    <el-menu-item index="3" route="/event"  v-if="right.indexOf('5')>-1">
+    <el-menu-item index="3" route="/event"  v-show="right.indexOf('5')>-1">
       <span class="nav-text">
         <i class="iconfont icon-event"></i>
         <span slot="title">事件</span>
@@ -48,7 +48,7 @@
 </div>
 </template>
 <script>
-import { HIVE_ADMIN_RIGHTS } from '../../common/localStorageKey';
+import { HIVE_ADMIN_RIGHTS ,HIVE_NAV_INDEX} from '../../common/localStorageKey';
 import LocalStore from '../../common/localStore';
 export default {
 	props: {
@@ -59,6 +59,7 @@ export default {
 	},
 	data: () => ({
 		right: [],
+    index:'0'
 	}),
 	methods: {
 		toRoutePage(route) {
@@ -67,16 +68,23 @@ export default {
 			});
 		},
 		handleOpen(key, keyPath) {
+      console.log(key, keyPath)
 			//console.log(key, keyPath);
 		},
 		handleClose(key, keyPath) {
 			//console.log(key, keyPath);
 		},
+    select(e){
+      this.index=e
+      LocalStore.setItem(HIVE_NAV_INDEX,e)
+    }
 	},
 	mounted() {
 		//do something after mounting vue instance
 		let adminRight = LocalStore.getItem(HIVE_ADMIN_RIGHTS);
 		this.right = adminRight.split(',');
+    let index  = LocalStore.getItem(HIVE_NAV_INDEX)
+    this.index = index
 	},
 };
 </script>

@@ -47,7 +47,8 @@ import {
 	HIVE_REMENBER_USERNAME,
   HIVE_ADMIN_ID,
   HIVE_ADMIN_RIGHTS,
-  HIVE_ADMIN_TYPE
+  HIVE_ADMIN_TYPE,
+  HIVE_NAV_INDEX
 } from '../../common/localStorageKey';
 import LocalStore from '../../common/localStore';
 import updatepwd from './updatepwd';
@@ -82,7 +83,7 @@ export default {
 				result.then(res => {
 					this.showAlert = true;
 					if (res.data.responseCode === '000000') {
-						console.log(1233, res.data.data);
+				
 						this.status = 'success';
 						this.text = '验证成功，欢迎登陆';
 						//保存token到local
@@ -92,6 +93,7 @@ export default {
 						LocalStore.setItem(HIVE_ADMIN_RIGHTS, res.data.data.rights);
 						LocalStore.setItem(HIVE_ADMIN_TYPE, res.data.data.type);
 						LocalStore.setItem(HIVE_REMENBER_USERNAME, this.checked);
+            LocalStore.setItem(HIVE_NAV_INDEX, '0');
 						if (this.checked) {
 							LocalStore.setItem(HIVE_USER_PASSWORD, this.password);
 						}

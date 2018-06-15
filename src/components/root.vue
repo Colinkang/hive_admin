@@ -33,7 +33,7 @@ import {
 } from '../common/localStorageKey';
 import LocalStore from '../common/localStore';
 import {
-  post
+  get
 } from '../common/post';
 export default {
   name: 'HelloWorld',
@@ -53,19 +53,37 @@ export default {
   methods: {
     loginSuccess(){
       this.isLogin=true;
+      this.$router.push({
+        path:'/beebox'
+      })
     },
     logout(){
       this.isLogin=false;
-    }
-  },
-  mounted() {
-    let isLogin = LocalStore.getItem(IS_LOGIN)
-    this.isLogin=isLogin
-    if(!isLogin){
       this.$router.push({
         path:'/'
       })
     }
+  },
+  mounted() {
+    // let isLogin = LocalStore.getItem(IS_LOGIN)
+    // this.isLogin=isLogin
+    // if(!isLogin){
+    //   this.$router.push({
+    //     path:'/'
+    //   })
+    // }
+
+    let result = get('/checkTokenExpiration',{})
+    result.then((res)=>{
+      if(!res.data.data){
+        this.isLogin=true
+      }else{
+        this.isLogin=false
+        this.$router.push({
+            path:'/'
+          })
+      }
+    })
   }
 }
 </script>

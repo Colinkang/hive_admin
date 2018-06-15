@@ -19,7 +19,7 @@
 </div>
 </template>
 <script>
-import { HIVE_API_TOKEN, HIVE_USER_NAME ,IS_LOGIN} from '../../common/localStorageKey';
+import { HIVE_API_TOKEN, HIVE_USER_NAME ,IS_LOGIN,HIVE_NAV_INDEX} from '../../common/localStorageKey';
 import LocalStore from '../../common/localStore';
 
 export default {
@@ -45,6 +45,7 @@ export default {
       LocalStore.setItem(IS_LOGIN, '');
 			setTimeout(() => {
 				this.$emit('logout');
+        LocalStore.setItem(HIVE_NAV_INDEX,'0')
 			}, 200);
 		},
 		handleSelect(key, keyPath) {
