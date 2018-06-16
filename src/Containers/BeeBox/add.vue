@@ -5,13 +5,13 @@
       蜂箱ID
     </el-col>
     <el-col :span="5">
-      <el-input size="small"  placeholder="请输入内容" v-model="beeBox.beeBoxNo"></el-input>
+      <el-input size="small"  placeholder="请输入内容" v-model.trim="beeBox.beeBoxNo"></el-input>
     </el-col>
     <el-col :span="3" :offset="3">
       所属蜂农ID
     </el-col>
     <el-col :span="5">
-      <el-input size="small"  placeholder="请输入内容" v-model="beeBox.farmerId"></el-input>
+      <el-input size="small"  placeholder="请输入内容" v-model.trim="beeBox.farmerId"></el-input>
     </el-col>
   </el-row>
   <el-row class="form-row">
@@ -19,13 +19,13 @@
       出厂批次
     </el-col>
     <el-col :span="5">
-      <el-input size="small"  placeholder="请输入内容" v-model="beeBox.batchNo"></el-input>
+      <el-input size="small"  placeholder="请输入内容" v-model.trim="beeBox.batchNo"></el-input>
     </el-col>
     <el-col :span="3" :offset="3">
       手机号码
     </el-col>
     <el-col :span="5">
-      <el-input size="small"  placeholder="请输入内容" v-model="beeBox.mobile"></el-input>
+      <el-input size="small"  placeholder="请输入内容" v-model.trim="beeBox.mobile"></el-input>
     </el-col>
     <el-col :span="4">
       <span class="sent-code" @click="sendCode">发送验证码</span>
@@ -38,7 +38,7 @@
     <el-col :span="5">
       <!-- <el-input size="small"  placeholder="请输入内容" v-model="beeBox.entryDate"></el-input> -->
 			 <el-date-picker size="small"
-         v-model="beeBox.entryDate"
+         v-model.trim="beeBox.entryDate"
          type="date"
          placeholder="选择日期" value-format="yyyy-MM-dd">
     </el-date-picker>
@@ -47,7 +47,7 @@
       验证码
     </el-col>
     <el-col :span="5">
-      <el-input size="small"  placeholder="请输入内容" v-model="beeBox.code"></el-input>
+      <el-input size="small"  placeholder="请输入内容" v-model.trim="beeBox.code"></el-input>
     </el-col>
 
   </el-row>
@@ -56,7 +56,7 @@
       厂商
     </el-col>
     <el-col :span="5">
-      <el-input size="small"  placeholder="请输入内容" v-model="beeBox.manufacturer"></el-input>
+      <el-input size="small"  placeholder="请输入内容" v-model.trim="beeBox.manufacturer"></el-input>
     </el-col>
     <el-col :span="3" :offset="3">
       状态
