@@ -279,6 +279,7 @@ export default {
 			this.getRights();
 			let result = post('/alterAdmin', this.managementParams);
 			result.then(res => {
+				// console.log(res)
 				this.getManagerList(this.currentPageNo);
 			});
 		},

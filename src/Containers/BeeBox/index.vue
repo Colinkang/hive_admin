@@ -196,6 +196,14 @@ import PropsSelect from './PropsSlect.vue';
 import { sortBy } from '../../common/utils.js';
 import moment from 'moment';
 let hiveTimer;
+let timer;
+let sensorDataId;
+let temperature = [];
+let humidity = [];
+let gravity = [];
+let airPressure = [];
+let battery = [];
+let date = [];
 export default {
 	components: {
 		echartspie,
@@ -229,6 +237,7 @@ export default {
 			term: { name: '', condition: '', value: '' },
 			groupList: [],
 			clickBeeBoxId: '',
+			beeBoxNo: '',
 			right: '',
 			groupIds: [],
 			checkAllStatus: false, //全选状态
@@ -242,8 +251,8 @@ export default {
 			deleteGroupIdObject: {}, //需要删除数据组的对象
 			array1: [],
 
-			position: {lng: 116.404, lat: 39.915},
-			center: {lng: 116.404, lat: 39.915},
+			position: { lng: 116.404, lat: 39.915 },
+			center: { lng: 116.404, lat: 39.915 },
 		};
 	},
 	mounted: function() {
@@ -255,6 +264,12 @@ export default {
 		this.getGroupList();
 		let adminRight = LocalStore.getItem(HIVE_ADMIN_RIGHTS);
 		this.right = adminRight.split(',');
+	},
+	destroyed() {
+		console.log(888888);
+		// clearInterval(hiveTimer);
+		clearInterval(hiveTimer);
+		clearInterval(timer);
 	},
 	methods: {
 		sortByBeeBoxNum() {
@@ -368,32 +383,100 @@ export default {
 		// 点击列表某行获取蜂箱信息，并将该行标记颜色
 		slectThisRow(beeBoxNo) {
 			//  this.idChange(id)
+			this.beeBoxNo = beeBoxNo;
 			console.log('99999', beeBoxNo);
 			this.getBeeBoxInfo(beeBoxNo);
-			this.getFold(beeBoxNo);
+			this.clickBoxId(beeBoxNo);
 		},
 		// 获取折线图的数据，并将数据显示在折线图上
-		getFold(beeBoxNo) {
-			let result = post('/getBeeBoxSensorData', {
-				beeBoxNos: [beeBoxNo], //所有信息
-			});
-			result.then(res => {
-				if (res.data.responseCode === '000000') {
-					let data = res.data.data;
-					console.log(2345, data);
-					if (data.length > 0) {
-						for (let d of data) {
-							this.fold.temperature.push(d.temperature);
-							this.fold.humidity.push(d.humidity);
-							this.fold.gravity.push(d.gravity);
-							this.fold.airPressure.push(d.airPressure);
-							this.fold.battery.push(d.battery);
-							this.fold.date.push(moment(data.createDate).format('YYYY-MM-DD hh:mm'));
-						}
-						this.$refs.fool.drawFoldLine(this.fold);
-					}
+		// getFold(beeBoxNo) {
+		// 	let result = post('/getBeeBoxSensorData', {
+		// 		beeBoxNos: [beeBoxNo], //所有信息
+		// 	});
+		// 	result.then(res => {
+		// 		if (res.data.responseCode === '000000') {
+		// 			let data = res.data.data;
+		// 			console.log(2345, data);
+		// 			if (data.length > 0) {
+		// 				for (let d of data) {
+		// 					this.fold.temperature.push(d.temperature);
+		// 					this.fold.humidity.push(d.humidity);
+		// 					this.fold.gravity.push(d.gravity);
+		// 					this.fold.airPressure.push(d.airPressure);
+		// 					this.fold.battery.push(d.battery);
+		// 					this.fold.date.push(moment(data.createDate).format('YYYY-MM-DD hh:mm'));
+		// 				}
+		// 				this.$refs.fool.drawFoldLine(this.fold);
+		// 			}
+		// 		}
+		// 	});
+		// },
+		clickBoxId() {
+			let _this = this;
+			console.log(123, _this.beeBoxNo);
+			sensorDataId = '';
+			temperature = [];
+			humidity = [];
+			gravity = [];
+			airPressure = [];
+			battery = [];
+			date = [];
+			let obj = {
+				temperature,
+				humidity,
+				gravity,
+				airPressure,
+				battery,
+				date,
+			};
+			_this.$refs.fool.drawFoldLine(obj);
+			timer = setInterval(() => {
+				let result;
+				if (!sensorDataId) {
+					result = post('/getBeeBoxSensorData', {
+						sensorDataTags: [
+							{
+								beeBoxNo: _this.beeBoxNo,
+								// lastestSensorDataId: 68884,
+							},
+						],
+					});
+				} else {
+					result = post('/getBeeBoxSensorData', {
+						sensorDataTags: [
+							{
+								beeBoxNo: _this.beeBoxNo,
+								lastestSensorDataId: sensorDataId,
+							},
+						],
+					});
 				}
-			});
+				result.then(res => {
+					if (res.data.responseCode === '000000') {
+						console.log(99999, res.data);
+						let d = res.data.data;
+						if (d) {
+							sensorDataId = d.id;
+							temperature.push(d.temperature);
+							humidity.push(d.humidity);
+							gravity.push(d.gravity);
+							airPressure.push(d.airPressure);
+							battery.push(d.battery);
+							date.push(moment(d.createDate).format('YYYY-MM-DD hh:mm'));
+							let obj = {
+								temperature,
+								humidity,
+								gravity,
+								airPressure,
+								battery,
+								date,
+							};
+							console.log(1111111, obj);
+							_this.$refs.fool.drawFoldLine(obj);
+						}
+					}
+				});
+			}, 1000);
 		},
 		// 添加到编组列表
 		addToGroup() {
@@ -402,7 +485,7 @@ export default {
 					id: 1,
 					groupName: '',
 				},
-				ids:[]
+				ids: [],
 			});
 			result.then(res => {});
 		},
