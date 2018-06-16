@@ -29,7 +29,7 @@ export default {
 						name: '总量',
 						type: 'pie',
 						selectedMode: 'single',
-						radius: [0, '30%'],
+						radius: [0, '20%'],
 
 						label: {
 							normal: {
@@ -42,14 +42,14 @@ export default {
 							},
 						},
 						data: [
-							{ value: obj.protectionNum, name: '策略保护', selected: true },
+							{ value: obj.protectionNum, name: '策略保护', selected: false },
 							{ value: obj.noProtectionNum, name: '非策略保护' },
 						],
 					},
 					{
 						name: '总量',
 						type: 'pie',
-						radius: ['40%', '55%'],
+						radius: ['30%', '45%'],
 						label: {
 							normal: {
 								// shadowBlur:3,
@@ -72,9 +72,9 @@ export default {
 									// },
 									hr: {
 										borderColor: '#aaa',
-										width: '100%',
-										borderWidth: 0.5,
-										height: 0,
+										width: 2,
+										borderWidth: 0.2,
+										height: 4,
 									},
 									b: {
 										fontSize: 16,
@@ -83,7 +83,7 @@ export default {
 									per: {
 										color: '#eee',
 										backgroundColor: '#334455',
-										padding: [2, 4],
+										padding: [1, 2],
 										borderRadius: 2,
 									},
 								},

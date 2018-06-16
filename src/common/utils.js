@@ -1,6 +1,7 @@
-let beeFarmerSortList  = []; 
+
 let sortStatus = true;
 export function sortBy(property,statusListArray,allStatus,idArray,beeFarmerLists,firstSortStatus){
+	let beeFarmerSortList  = []; 
 	allStatus = false;
 	for(let i =0;i<statusListArray.length;i++){
 		statusListArray[i] = false;
@@ -32,14 +33,14 @@ export function sortBy(property,statusListArray,allStatus,idArray,beeFarmerLists
 		return array;
 	}
 	if(sortStatus){
-		beeFarmerLists = sortMax(beeFarmerLists);
+		beeFarmerSortList = sortMax(beeFarmerLists);
 		sortStatus = false;
 	}else{
-		beeFarmerLists = sortMin(beeFarmerLists);
+		beeFarmerSortList = sortMin(beeFarmerLists);
 		sortStatus = true;
 	}
-	console.log(beeFarmerLists);
-	// beeFarmerLists = beeFarmerSortList
+	console.log(beeFarmerSortList);
+	beeFarmerLists = beeFarmerSortList
 	return beeFarmerLists;
 }
 function sortMinNumber(a,b){

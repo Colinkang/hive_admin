@@ -124,6 +124,8 @@ export default {
 	width: 100%;
 	height: 100%;
 	top: 0;
+	min-width: 1280px;
+	min-height: 720px;
 }
 
 .login-logo {
@@ -197,7 +199,6 @@ input::-webkit-input-placeholder {
 .btn {
 	width: 100%;
 	height: 30px;
-	line-height: 30px;
 }
 
 .margin-top {

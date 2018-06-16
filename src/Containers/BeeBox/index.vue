@@ -124,11 +124,11 @@
             </div>
           </div>
           <div class="section-right-top-right">
-            <baidu-map style="width:100%;height:100%" center="北京">
-							<bm-marker position="{lng: 116.404, lat: 39.915}" :dragging="true">
-
-							</bm-marker>
-						</baidu-map>
+            <baidu-map class="map" style="width:100%;height:100%" :center="{lng: beeBoxInfo.lng, lat: beeBoxInfo.lat}" :zoom="12">
+				<bm-marker :position="{lng: beeBoxInfo.lng, lat: beeBoxInfo.lat}" :dragging="true" 
+				:scroll-wheel-zoom="true">
+				</bm-marker>
+			</baidu-map>
           </div>
         </div>
         <div class="section-right-bottom">
@@ -209,8 +209,8 @@ export default {
 				beeBoxId: '',
 				batchNo: '',
 				manufacturer: '',
-				lat: '',
-				lng: '',
+				lat: '39.915',
+				lng: '116.404',
 				productionDate: '',
 				status: '',
 			},
@@ -532,11 +532,11 @@ export default {
 			}
 			return data;
 		},
-	},
+	}
 };
 </script>
 
-<style scoped>
+<style lang="" scoped>
 .outer-box {
 	width: 100%;
 }

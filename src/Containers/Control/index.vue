@@ -187,6 +187,7 @@ export default {
 		searchFlag: false,
 		currentPageNo: 1,
 		totalPageNo: 1,
+		array1:[]
 	}),
 	mounted() {
 		this.getAllOrganizations();
@@ -194,16 +195,36 @@ export default {
 	},
 	methods: {
 		sortById(){
-			this.adminList = sortBy('id',this.checkList,this.checkAll,[],this.adminList,true);
+			this.array1 = sortBy('id',this.checkList,this.checkAll,[],this.adminList,true)
+			this.beeFarmerSortList = [];
+			this.$nextTick(()=>{
+				this.adminList = this.beeFarmerSortList.concat(this.array1);
+				this.array1 = [];
+			});
 		},
 		sortByType(){
-			this.adminList = sortBy('type',this.checkList,this.checkAll,[],this.adminList,true);
+			this.array1 = sortBy('type',this.checkList,this.checkAll,[],this.adminList,true)
+			this.beeFarmerSortList = [];
+			this.$nextTick(()=>{
+				this.adminList = this.beeFarmerSortList.concat(this.array1);
+				this.array1 = [];
+			});
 		},
 		sortByCreateDate(){
-			this.adminList = sortBy('createDate',this.checkList,this.checkAll,[],this.adminList,true);
+			this.array1 = sortBy('createDate',this.checkList,this.checkAll,[],this.adminList,true)
+			this.beeFarmerSortList = [];
+			this.$nextTick(()=>{
+				this.adminList = this.beeFarmerSortList.concat(this.array1);
+				this.array1 = [];
+			});
 		},
 		sortByUpdateDate(){
-			this.adminList = sortBy('updateDate',this.checkList,this.checkAll,[],this.adminList,true);
+			this.array1 = sortBy('updateDate',this.checkList,this.checkAll,[],this.adminList,true)
+			this.beeFarmerSortList = [];
+			this.$nextTick(()=>{
+				this.adminList = this.beeFarmerSortList.concat(this.array1);
+				this.array1 = [];
+			});
 		},
     formatDate(timestamp) {
       return moment(timestamp).format('YYYY-MM-DD');

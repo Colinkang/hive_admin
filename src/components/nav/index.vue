@@ -50,6 +50,7 @@
 <script>
 import { HIVE_ADMIN_RIGHTS ,HIVE_NAV_INDEX} from '../../common/localStorageKey';
 import LocalStore from '../../common/localStore';
+import bus from '../../common/event';
 export default {
 	props: {
 		collapse: {
@@ -59,33 +60,38 @@ export default {
 	},
 	data: () => ({
 		right: [],
-    index:'0'
+    	index:'0'
 	}),
 	methods: {
 		toRoutePage(route) {
+			console.log(route);
 			this.$router.push({
 				path: route,
 			});
 		},
 		handleOpen(key, keyPath) {
-      console.log(key, keyPath)
-			//console.log(key, keyPath);
+            console.log(key, keyPath)
 		},
 		handleClose(key, keyPath) {
 			//console.log(key, keyPath);
 		},
-    select(e){
-      this.index=e
-      LocalStore.setItem(HIVE_NAV_INDEX,e)
-    }
+	    select(e){
+	      this.index=e
+	      LocalStore.setItem(HIVE_NAV_INDEX,e)
+	    }
 	},
 	mounted() {
+		bus.$on("activeIndex",(data)=>{
+			debugger
+			this.activeIndex = data
+			console.log("data"+data);
+		});
 		//do something after mounting vue instance
 		let adminRight = LocalStore.getItem(HIVE_ADMIN_RIGHTS);
 		this.right = adminRight.split(',');
-    let index  = LocalStore.getItem(HIVE_NAV_INDEX)
-    this.index = index
-	},
+	    let index  = LocalStore.getItem(HIVE_NAV_INDEX)
+	    this.index = index
+	}
 };
 </script>
 <style lang="" scoped>

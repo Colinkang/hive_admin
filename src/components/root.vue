@@ -113,7 +113,6 @@ export default {
   background: #0b1b36 !important
 }
 .login-page{
-  position: fixed;
   width: 100%;
   height: 100%;
   top: 0;

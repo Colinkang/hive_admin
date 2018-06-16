@@ -48,7 +48,7 @@
           <th style="border:none;width:3%;text-align:center">
             <el-checkbox v-model="organizeAllStatus" @change="changeAllOrganizeStatus(organizeAllStatus)"></el-checkbox>
           </th>
-          <th>组织ID<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
+          <th @click="sortById">组织ID<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
           <th>组织名称<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
           <th>联系人<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
           <th>管理员</th>
@@ -74,12 +74,12 @@
       <div class="form-row">
         <span class="title">蜂农列表</span>
       </div>
-      <div class="form-row">
-        <span class="farmer-span">管理员：张三</span>
-        <span class="farmer-span">联系人：张三</span>
-        <span class="farmer-span">联系邮箱：171chjvhebde@qq.com</span>
-        <span class="farmer-span">联系电话：10029e9719212</span>
-        <span class="farmer-span">联系地址：上海市嘉定区嘉定镇嘉定村</span>
+      <div class="form-row" v-if="beeFramerFLag">
+        <span class="farmer-span">管理员：{{adminInfo.username}}</span>
+        <span class="farmer-span">联系人：{{adminInfo.name}}</span>
+        <span class="farmer-span">联系邮箱：{{adminInfo.email}}</span>
+        <span class="farmer-span">联系电话：{{adminInfo.mobile}}</span>
+        <span class="farmer-span">联系地址：{{adminInfo.address}}</span>
 
       </div>
       <table border="0" class="header">
@@ -87,11 +87,11 @@
           <th style="border:none;width:3%;text-align:center">
             <el-checkbox v-model="BeeFarmerAllStatus" @change="changeAllBeeFramerStatus(BeeFarmerAllStatus)"></el-checkbox>
           </th>
-          <th>组织ID<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
+          <th @click="sortByBeeFarmerId">组织ID<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
           <th>组织名称<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
           <th>蜂农<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
-          <th>蜂箱数量<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
-          <th>创建时间<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
+          <th @click="sortByBeeBoxNum">蜂箱数量<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
+          <th @click="sortByCreateDate">创建时间<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
           <th>邮箱</th>
           <th>联系电话</th>
           <th>地址</th>
@@ -104,7 +104,7 @@
           <td>{{beeframerList.organizationName}}</td>
           <td>{{beeframerList.username}}</td>
           <td>{{beeframerList.beeBoxNum}}</td>
-          <td>{{beeframerList.createDate}}</td>
+          <td>{{beeframerList.createDate | formatDate}}</td>
           <td>{{beeframerList.email}}</td>
           <td>{{beeframerList.mobile}}</td>
           <td>{{beeframerList.address}}</td>
@@ -121,7 +121,9 @@
 </template>
 <script>
 import { get, post } from '../../common/post.js';
+import { sortBy } from '../../common/utils.js';
 import { Validate, organizeAddSchema } from '../../common/schema.js';
+import moment from 'moment';
 export default {
 	name: '',
 	data(){
@@ -129,6 +131,13 @@ export default {
 			organizeData:{
 				organizationName:'',
 				contactName:'',
+				email:'',
+				mobile:'',
+				address:''
+			},
+			admionInfo:{
+				username:'',
+				name:'',
 				email:'',
 				mobile:'',
 				address:''
@@ -143,10 +152,44 @@ export default {
 			deleteOrganizeIdObject:{},//需要删除组织对象的数组
 			deleteBeeFramerIdArray:[],//需要删除蜂农数据的数组
 			deleteBeeFramerIdObject:{},//需要删除蜂农对象的数组
-			keyWord:''//关键字
+			keyWord:'',//关键字
+			array1:[],
+			beeFramerFLag:false
 		}
 	},
 	methods: {
+		sortById(){
+		    this.array1 = sortBy('id',this.organizeStatusList,this.organizeAllStatus,[],this.organizeLists,true);
+		    this.beeFarmerSortList = [];
+			this.$nextTick(()=>{
+				this.organizeLists = this.beeFarmerSortList.concat(this.array1);
+				this.array1 = [];
+			});
+		},
+		sortByBeeFarmerId(){
+		    this.array1 = sortBy('id',this.BeeFarmerStatusList,this.BeeFarmerAllStatus,[],this.beeframerLists,true);
+		    this.beeFarmerSortListArray = [];
+			this.$nextTick(()=>{
+				this.beeframerLists = this.beeFarmerSortListArray.concat(this.array1);
+				this.array1 = [];
+			});
+		},
+		sortByBeeBoxNum(){
+		    this.array1 = sortBy('beeBoxNum',this.BeeFarmerStatusList,this.BeeFarmerAllStatus,[],this.beeframerLists,true);
+		    this.beeFarmerSortListArray = [];
+			this.$nextTick(()=>{
+				this.beeframerLists = this.beeFarmerSortListArray.concat(this.array1);
+				this.array1 = [];
+			});
+		},
+		sortByCreateDate(){
+		    this.array1 = sortBy('createDate',this.BeeFarmerStatusList,this.BeeFarmerAllStatus,[],this.beeframerLists,true);
+		    this.beeFarmerSortListArray = [];
+			this.$nextTick(()=>{
+				this.beeframerLists = this.beeFarmerSortListArray.concat(this.array1);
+				this.array1 = [];
+			});
+		},
 		//搜索组织
 		searchOrganization(){
 			let option = {
@@ -155,10 +198,26 @@ export default {
 			let result = post('/searchOrganization',option);
 			result.then(res=>{
 				console.log(res)
+				this.organizeList = res.data.data;
 			});
 		},
 		//创建组织 编辑组织
 		createOrg() {
+			let options = {
+				organizationName: this.organizeData.organizationName,
+				contactName: this.organizeData.contactName,
+				email: this.organizeData.email,
+				mobile: this.organizeData.mobile,
+				address: this.organizeData.address,
+			};
+			if (Validate(options, organizeAddSchema) !== null) {
+				this.$message({
+		          showClose: true,
+		          message: '字段不能为空',
+		          type: 'error'
+		        });
+				return;
+			}
 			let message = '创建';
 			if(this.organizeData.id !== undefined){
 				message = '修改'
@@ -203,8 +262,6 @@ export default {
 				address:''
 			}
 		},
-		//搜索组织
-		searchOrg() {},
 		//获取组织列表 刷新组织列表
 		getOrgList() {
 			this.organizeLists = [];
@@ -311,7 +368,12 @@ export default {
 				organizationId: id
 			});
 			adminResult.then(res=>{
-				console.log(res);
+				if(res.data.responseCode === "000000"){
+					this.beeFramerFLag = true;
+					this.adminInfo = res.data.data;
+				}else{
+					this.beeFramerFLag = false;
+				}
 			});
 		},
 		//删除组织下的蜂农列表
@@ -410,6 +472,11 @@ export default {
 	},
 	mounted(){
 		this.getOrgList()
+	},
+	filters:{
+		formatDate(timestamp) {
+	      return moment(timestamp).format('YYYY-MM-DD');
+	    }
 	}
 };
 </script>
@@ -497,6 +564,7 @@ export default {
 	border: none;
 	font-size: 13px;
 	height:40px;
+	cursor: pointer;
 }
 
 .header td {

@@ -157,15 +157,19 @@
         <table border="0" style="border:none">
           <tr style="border:none;background:#40577f;color:white">
             <th style="border:none;width:25%;color:white">
-              <el-checkbox v-model="checked">日期<i class="iconfont icon-duibi" style="font-size:12px"></i></el-checkbox>
+              <el-checkbox v-model="checked" @change="changeAllGroupStatus(checked)"></el-checkbox>
+            </th>
+            <th style="border:none;width:25%;color:white" @click="sortByCreateDate">
+              日期<i class="iconfont icon-duibi" style="font-size:12px"></i>
             </th>
             <th style="border:none;width:25%;color:white">事件<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
             <th style="border:none;width:50%;color:white">处理方式</th>
           </tr>
-          <tr v-for="item in historyAlertList">
+          <tr v-for="(item,index) in historyAlertList">
+            <td><el-checkbox v-model="checkListStatus[index]" @change="changeGroupStatus(checkListStatus[index])"></el-checkbox></td>
             <td style="width:25%;">{{ formatDate(item.createDate) }}</td>
             <td style="width:25%;">{{ item.event }}</td>
-            <td style="width:50%;">{{ item.handleWay }}</td>
+            <td style="width:25%;">{{ item.handleWay }}</td>
           </tr>
         </table>
       </div>
@@ -182,6 +186,7 @@ import { get, post } from '../../common/post.js';
 import { HIVE_ADMIN_ID } from '../../common/localStorageKey';
 import LocalStore from '../../common/localStore';
 import moment from 'moment';
+import { sortBy } from '../../common/utils.js';
 export default {
 	name: '',
 	data: () => ({
@@ -196,12 +201,16 @@ export default {
     notificationTarget: [false, false],
     notificationWay: [false, false, false],
 		selected: 2,
-    checked: true,
+    checked: false,
+    checkListStatus:[],
     eventsCheckedList: [],
     allEventsChecked: false,
     deleteEventsIdList: [],
     historyAlertList: [],
 		keyword: '',
+    deleteGroupIdObject:{},
+    deleteGroupIdArray:[],
+    array1:[]
   }),
   mounted() {
     this.getGroups();
@@ -209,6 +218,14 @@ export default {
     this.getHistoryAlertList();
   },
 	methods: {
+    sortByCreateDate(){
+      this.array1 = sortBy('createDate',this.checkListStatus,this.checked,[],this.historyAlertList,true)
+      this.beeFarmerSortList = [];
+      this.$nextTick(()=>{
+        this.historyAlertList = this.beeFarmerSortList.concat(this.array1);
+        this.array1 = [];
+      });
+    },
     addRule() {
       this.createWarmRule();
     },
@@ -321,6 +338,9 @@ export default {
 			let result = get('/getHistoryAlertEvents');
 			result.then(res => {
         this.historyAlertList = res.data.data;
+        for(let i =0;i<this.historyAlertList.length;i++){
+          this.checkListStatus[i] = false;
+        }
       });
 		},
 
@@ -334,9 +354,39 @@ export default {
         this.historyAlertList = res.data.data;
       })
     },
-
     formatDate(timestamp) {
       return moment(timestamp).format('YYYY-MM-DD');
+    },
+    checkAllChange() {
+      if (this.checkAll) {
+        for (let i = 0; i < this.checkList.length; i++) {
+          this.checkList[i] = true;
+        }
+      } else {
+        for (let i = 0; i < this.checkList.length; i++) {
+          this.checkList[i] = false;
+        }
+      }
+    },
+    checkedChange() {
+      for (let i = 0; i < this.checkList.length; i++) {
+        if (!this.checkList[i]) {
+          this.checkAll = false;
+          return;
+        }
+      }
+      this.checkAll = true;
+    },
+    //点击组全选的状态
+    changeAllGroupStatus(val){
+      for(let i =0;i<this.checkListStatus.length;i++){
+        this.checkListStatus[i] = val
+      }
+    },
+    //单个点击组的状态
+    changeGroupStatus(val){
+      if(!val){this.checked = false};
+      if(this.checkListStatus.toString().indexOf("false")<0){this.checked = true};
     }
 	},
 };
