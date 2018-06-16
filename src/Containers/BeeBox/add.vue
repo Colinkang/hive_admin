@@ -72,12 +72,6 @@
       <el-button type="primary" @click="save">保存</el-button>
     </el-col>
   </el-row>
-  <el-row class="line-height margin-top" v-if="showAlert">
-        <el-col :span="24">
-          <el-alert :title="text" :type="status==='wrong'?'error':'success'">
-          </el-alert>
-        </el-col>
-      </el-row>
 </div>
 </template>
 <script>
@@ -113,15 +107,12 @@ export default {
 				mobile: this.beeBox.mobile,
 				code: this.beeBox.code,
 			};
-			console.log(111,options)
+		  console.log(111,options)
 			if (Validate(options, beeBoxAddSchema) !== null) {
-				this.showAlert = true;
-				this.status = 'error';
-				this.text = '字段都不能为空';
-				let _this = this;
-				setTimeout(function() {
-					_this.showAlert = false;
-				}, 3000);
+				this.$message({
+					message: '字段都不能为空',
+					type: 'warning',
+				});
 				return;
 			}
 			console.log(options);
@@ -130,22 +121,37 @@ export default {
 				this.showAlert = true;
 				console.log(112, res);
 				if (res.data.responseCode === '000000') {
-					this.status = 'success';
-					this.text = '添加成功';
+					this.$message({
+						message: '该蜂箱添加成功',
+						type: 'success',
+					});
 					this.$router.push({
 						path: '/beebox',
 					});
 				} else if (res.data.responseCode === '000110') {
-					this.status = 'error';
-					this.text = '蜂箱ID已经添加过了';
+					this.$message({
+						message: '蜂箱ID已经添加过了',
+						type: 'warning',
+					});
+				} else if (res.data.responseCode === '000031') {
+					this.$message({
+						message: '没有该蜂农信息',
+						type: 'warning',
+					});
 				} else {
-					this.status = 'error';
-					this.text = '添加失败';
+					this.$message.error('添加失败');
 				}
 			});
 			//保存成功后
 		},
 		sendCode() {
+			if (!this.beeBox.mobile) {
+				this.$message({
+					message: '手机号不能为空',
+					type: 'warning',
+				});
+				return;
+			}
 			let result = post('/adminSMSService', {
 				mobile: this.beeBox.mobile,
 				userName: 'hello',

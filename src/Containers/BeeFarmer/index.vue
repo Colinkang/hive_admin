@@ -190,8 +190,8 @@ export default {
 			if (Validate(options, beeFarmerAddSchema) !== null) {
 				this.$message({
 		          showClose: true,
-		          message: '字段不能为空',
-		          type: 'error'
+		          message: '字段都不能为空',
+		          type: 'warning'
 		        });
 				return;
 			}
