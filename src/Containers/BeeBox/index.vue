@@ -124,11 +124,20 @@
             </div>
           </div>
           <div class="section-right-top-right">
-            <baidu-map class="map" style="width:100%;height:100%" :center="{lng: beeBoxInfo.lng, lat: beeBoxInfo.lat}" :zoom="12">
+            <!-- <baidu-map class="map" style="width:100%;height:100%" :center="{lng: beeBoxInfo.lng, lat: beeBoxInfo.lat}" :zoom="12">
 				<bm-marker :position="{lng: beeBoxInfo.lng, lat: beeBoxInfo.lat}" :dragging="true" 
 				:scroll-wheel-zoom="true">
 				</bm-marker>
+			</baidu-map> -->
+			<baidu-map class="map" style="width:100%;height:100%" :zoom="4">
+				<bm-point-collection :points="points"  color="red" size="BMAP_POINT_SIZE_MEDIUM" @click="clickHandler">
+				</bm-point-collection>
 			</baidu-map>
+			<!-- <baidu-map class="map" style="width:100%;height:100%" center="中国">
+				<bml-marker-clusterer :averageCenter="true">
+				    <bm-marker v-for="marker of markers" shape="BMAP_POINT_SHAPE_STAR" color="red" size="BMAP_POINT_SIZE_SMALL" :position="{lng: marker.lng, lat: marker.lat}"></bm-marker>
+				</bml-marker-clusterer>
+			</baidu-map> -->
           </div>
         </div>
         <div class="section-right-bottom">
@@ -209,6 +218,7 @@ export default {
 		echartspie,
 		fold,
 		PropsSelect,
+		// BmPointCollection
 	},
 	data() {
 		return {
@@ -250,9 +260,9 @@ export default {
 			deleteGroupIdArray: [], //需要删除数据组的数组
 			deleteGroupIdObject: {}, //需要删除数据组的对象
 			array1: [],
-
 			position: { lng: 116.404, lat: 39.915 },
 			center: { lng: 116.404, lat: 39.915 },
+			points:[]
 		};
 	},
 	mounted: function() {
@@ -272,6 +282,14 @@ export default {
 		clearInterval(timer);
 	},
 	methods: {
+		clickHandler (e) {
+	    	for(let  i =0;i<this.hiveList.length;i++){
+	    		if(e.point.lng===this.hiveList[i].lng&&e.point.lat===this.hiveList[i].lat){
+	    			this.getBeeBoxInfo(this.hiveList[i].beeBoxNo);
+	    			this.clickBoxId(this.hiveList[i].beeBoxNo);
+	    		}
+	    	}
+	    },
 		sortByBeeBoxNum() {
 			this.array1 = sortBy('beeBoxNum', this.groupStatusList, this.checkAllGroupStatus, [], this.groupList, true);
 			this.beeFarmerSortList = [];
@@ -313,25 +331,33 @@ export default {
 		},
 		// 获取蜂箱列表信息 蜂箱信息  地图信息
 		getHiveList(keyword) {
+			this.points = [];
 			console.log(keyword);
 			let result = post('/getAllBeeBoxSensorData', { keyword: keyword || null });
 			result.then(res => {
 				console.log(111167, res);
 				if (res.data.responseCode === '000000') {
 					let data = res.data.data;
+					this.hiveList = data;
+					this.clickBoxId(this.hiveList[0].beeBoxNo);
 					// 将值赋值给列表
 					if (data.length > 0) {
-						this.hiveList = data;
 						for (let i = 0; i < this.hiveList.length; i++) {
 							this.statusList[i] = false;
 						}
+						const points = [];
+						for (let i=0;i<this.hiveList.length;i++) {
+							const position = { lng: this.hiveList[i].lng, lat: this.hiveList[i].lat};
+							points.push(position);
+						}
+						this.points = points
+						console.log(this.points);
 					}
 					console.log(122, this.hiveList);
 					// 画扇形图
 				}
 			});
 		},
-
 		//删除蜂箱
 		deleteBeeBox() {
 			this.deleteIdArray = [];
@@ -406,7 +432,7 @@ export default {
 		// 					this.fold.battery.push(d.battery);
 		// 					this.fold.date.push(moment(data.createDate).format('YYYY-MM-DD hh:mm'));
 		// 				}
-		// 				this.$refs.fool.drawFoldLine(this.fold);
+						// this.$refs.fool.drawFoldLine(this.fold);
 		// 			}
 		// 		}
 		// 	});
