@@ -45,12 +45,35 @@ const changeCodeSchema = Joi.object().keys({
     smsCode: Joi.string().required()
 });
 
+const createRuleSchema = Joi.object().keys({
+    ruleName: Joi.string().required(),
+    groupId: Joi.number().required(),
+    minThreshold: Joi.string().required(),
+    maxThreshold: Joi.string().required(),
+    ruleType: Joi.number().required(),
+    notificationTarget: Joi.string().required(),
+    notificationWay: Joi.string().required(),
+    adminId: Joi.string().required(),
+});
+const createManagerSchema = Joi.object().keys({
+    address: Joi.string().required(),
+    code: Joi.string().required(),
+    email: Joi.string().required(),
+    mobile: Joi.string().required(),
+    name: Joi.string().required(),
+    organizationId: Joi.number().required(),
+    password: Joi.string().required(),
+    rights: Joi.any(),
+    type: Joi.any(),
+
+});
 module.exports = {
     Validate,
     loginSchema,
     beeBoxAddSchema,
     beeFarmerAddSchema,
     organizeAddSchema,
-    changeCodeSchema
-
+    changeCodeSchema,
+    createRuleSchema,
+    createManagerSchema
 };

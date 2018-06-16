@@ -7,9 +7,9 @@
     <div class="input-section-left">
       <div class="form-row">
         <span style="margin-left:20px;margin-top:10px;display:block">创建管理员</span>
-        <span class="input-item" style="margin-left:20px;"><label>姓名 <input v-model="managementParams.name" style="width:120px;"/></label></span>
+        <span class="input-item" style="margin-left:20px;"><label>姓名 <input v-model.trim="managementParams.name" style="width:120px;"/></label></span>
         <span class="input-item" style="margin-left:20px;"><label>合作社   
-          <select v-model="managementParams.organizationId" style="width:120px;" placeholder="请选择">
+          <select v-model.trim="managementParams.organizationId" style="width:120px;" placeholder="请选择">
               <option
                 v-for="item in organizationLists"
                 :key="item.id"
@@ -18,11 +18,11 @@
               </option>
             </select></label>
         </span>
-        <span class="input-item" style="margin-left:20px;"><label>邮箱 <input v-model="managementParams.email" style="width:120px;"/></label></span>
-        <span class="input-item" style="margin-left:20px;"><label>联系电话 <input v-model="managementParams.mobile" style="width:120px;"/></label><span class="sent-code" :class="{ active : codeStatus}" @click="sendVerifyCode">{{ codeText }}</span></span>
-        <span class="input-item" style="margin-left:20px;"><label>验证码 <input v-model="managementParams.code" style="width:70px;"/></label></span>
-        <span class="input-item" style="margin-left:20px;"><label>密码 <input style="width:120px;" v-model="managementParams.password"/></label></span>
-        <span class="input-item" style="margin-left:20px;"><label>地址 <input v-model="managementParams.address" style="width:250px;"/></label></span>
+        <span class="input-item" style="margin-left:20px;"><label>邮箱 <input v-model.trim="managementParams.email" style="width:120px;"/></label></span>
+        <span class="input-item" style="margin-left:20px;"><label>联系电话 <input v-model.trim="managementParams.mobile" style="width:120px;"/></label><span class="sent-code" :class="{ active : codeStatus}" @click="sendVerifyCode">{{ codeText }}</span></span>
+        <span class="input-item" style="margin-left:20px;"><label>验证码 <input v-model.trim="managementParams.code" style="width:70px;"/></label></span>
+        <span class="input-item" style="margin-left:20px;"><label>密码 <input style="width:120px;" v-model.trim="managementParams.password"/></label></span>
+        <span class="input-item" style="margin-left:20px;"><label>地址 <input v-model.trim="managementParams.address" style="width:250px;"/></label></span>
         <span class="input-item" style="font-size:17px;margin-left:20px">类型</span>
         <span class="input-item" style="margin-left:20px">
           <div class="">
@@ -85,7 +85,7 @@
     <div class="input-section-right">
       <div class="form-row">
         <span style="margin-left:20px;margin-top:10px;display:block">搜索</span>
-        <span class="input-item" style="margin-left:20px;"><label>关键字 <input v-model="keyword" style="width:140px;"/></label></span>
+        <span class="input-item" style="margin-left:20px;"><label>关键字 <input v-model.trim="keyword" style="width:140px;"/></label></span>
       </div>
       <div class="form-row">
         <div class="sure-btn" @click="searchManager(1)">
@@ -145,6 +145,7 @@
 import { get, post } from '../../common/post.js';
 import moment from 'moment';
 import { sortBy } from '../../common/utils.js';
+import { Validate, createManagerSchema } from '../../common/schema.js';
 export default {
 	name: '',
 	data: () => ({
@@ -159,10 +160,10 @@ export default {
 			password: '',
 			address: '',
 			rights: [],
-			type: '2'
+			type: '2',
 		},
-		codeText:'发送短信验证码',
-		codeStatus:false,
+		codeText: '发送短信验证码',
+		codeStatus: false,
 		beefarmerChecked: false,
 		beefarmerType: '8',
 		beeboxChecked: false,
@@ -187,47 +188,47 @@ export default {
 		searchFlag: false,
 		currentPageNo: 1,
 		totalPageNo: 1,
-		array1:[]
+		array1: [],
 	}),
 	mounted() {
 		this.getAllOrganizations();
 		this.getManagerList(1);
 	},
 	methods: {
-		sortById(){
-			this.array1 = sortBy('id',this.checkList,this.checkAll,[],this.adminList,true)
+		sortById() {
+			this.array1 = sortBy('id', this.checkList, this.checkAll, [], this.adminList, true);
 			this.beeFarmerSortList = [];
-			this.$nextTick(()=>{
+			this.$nextTick(() => {
 				this.adminList = this.beeFarmerSortList.concat(this.array1);
 				this.array1 = [];
 			});
 		},
-		sortByType(){
-			this.array1 = sortBy('type',this.checkList,this.checkAll,[],this.adminList,true)
+		sortByType() {
+			this.array1 = sortBy('type', this.checkList, this.checkAll, [], this.adminList, true);
 			this.beeFarmerSortList = [];
-			this.$nextTick(()=>{
+			this.$nextTick(() => {
 				this.adminList = this.beeFarmerSortList.concat(this.array1);
 				this.array1 = [];
 			});
 		},
-		sortByCreateDate(){
-			this.array1 = sortBy('createDate',this.checkList,this.checkAll,[],this.adminList,true)
+		sortByCreateDate() {
+			this.array1 = sortBy('createDate', this.checkList, this.checkAll, [], this.adminList, true);
 			this.beeFarmerSortList = [];
-			this.$nextTick(()=>{
+			this.$nextTick(() => {
 				this.adminList = this.beeFarmerSortList.concat(this.array1);
 				this.array1 = [];
 			});
 		},
-		sortByUpdateDate(){
-			this.array1 = sortBy('updateDate',this.checkList,this.checkAll,[],this.adminList,true)
+		sortByUpdateDate() {
+			this.array1 = sortBy('updateDate', this.checkList, this.checkAll, [], this.adminList, true);
 			this.beeFarmerSortList = [];
-			this.$nextTick(()=>{
+			this.$nextTick(() => {
 				this.adminList = this.beeFarmerSortList.concat(this.array1);
 				this.array1 = [];
 			});
 		},
-    formatDate(timestamp) {
-      return moment(timestamp).format('YYYY-MM-DD');
+		formatDate(timestamp) {
+			return moment(timestamp).format('YYYY-MM-DD');
 		},
 		getRights() {
 			this.managementParams.rights = [];
@@ -248,50 +249,84 @@ export default {
 			}
 		},
 		// 获取合作社
-		getAllOrganizations(){
+		getAllOrganizations() {
 			let result = get('/getAllOrganizations');
 			result.then(res => {
-				this.organizationLists = res.data.data
-			})
+				this.organizationLists = res.data.data;
+			});
 		},
-    checkAllChange() {
-      if (this.checkAll) {
-        for (let i = 0; i < this.checkList.length; i++) {
-          this.checkList[i] = true;
-        }
-      } else {
-        for (let i = 0; i < this.checkList.length; i++) {
-          this.checkList[i] = false;
-        }
-      }
-    },
-    checkedChange() {
-      for (let i = 0; i < this.checkList.length; i++) {
-        if (!this.checkList[i]) {
-          this.checkAll = false;
-          return;
-        }
-      }
-      this.checkAll = true;
-    },
+		checkAllChange() {
+			if (this.checkAll) {
+				for (let i = 0; i < this.checkList.length; i++) {
+					this.checkList[i] = true;
+				}
+			} else {
+				for (let i = 0; i < this.checkList.length; i++) {
+					this.checkList[i] = false;
+				}
+			}
+		},
+		checkedChange() {
+			for (let i = 0; i < this.checkList.length; i++) {
+				if (!this.checkList[i]) {
+					this.checkAll = false;
+					return;
+				}
+			}
+			this.checkAll = true;
+		},
 		// 创建管理员  //编辑管理员
 		createManager() {
 			this.getRights();
+			console.log(888, this.managementParams, Validate(this.managementParams, createManagerSchema));
+			if (Validate(this.managementParams, createManagerSchema) !== null) {
+				this.$message({
+					message: '字段不能为空',
+					type: 'warning',
+				});
+				return;
+			}
 			let result = post('/alterAdmin', this.managementParams);
 			result.then(res => {
 				// console.log(res)
-				this.getManagerList(this.currentPageNo);
+				if (res.data.responseCode === '000000') {
+					this.$message({
+						message: '添加管理员成功',
+						type: 'success',
+					});
+					this.managementParams = {
+						name: '',
+						organizationId: '',
+						email: '',
+						mobile: '',
+						code: '',
+						password: '',
+						address: '',
+						rights: [],
+						type: '2',
+					};
+					this.getManagerList(this.currentPageNo);
+				} else {
+					this.$message.error('添加管理员失败');
+				}
 			});
 		},
 		//模糊搜索管理员
 		searchManager(pageNo) {
+			if (!this.keyword) {
+				this.$message({
+					message: '请先在搜索框里输入关键字',
+					type: 'warning',
+				});
+				return;
+			}
 			if (!this.searchFlag) {
 				this.currentPageNo = 1;
 			}
 			let result = post('/searchAdmin', {
 				keyword: this.keyword,
 				pageNo: pageNo,
-				pageSize: 10
+				pageSize: 10,
 			});
 			result.then(res => {
 				this.searchFlag = true;
@@ -299,10 +334,10 @@ export default {
 				this.currentPageNo = res.data.data.currentPageNo;
 				this.totalPageNo = res.data.data.totalPageNo;
 				// 重置勾选状态数组
-        this.checkList.length =  this.adminList.length;
-        for (let i = 0; i < this.checkList.length; i++) {
-          this.checkList[i] = false;
-        }
+				this.checkList.length = this.adminList.length;
+				for (let i = 0; i < this.checkList.length; i++) {
+					this.checkList[i] = false;
+				}
 			});
 		},
 		//获取管理员列表  刷新管理员
@@ -319,14 +354,14 @@ export default {
 				this.currentPageNo = res.data.data.currentPageNo;
 				this.totalPageNo = res.data.data.totalPageNo;
 				// 重置勾选状态数组
-        this.checkList.length =  this.adminList.length;
-        for (let i = 0; i < this.checkList.length; i++) {
-          this.checkList[i] = false;
-        }
+				this.checkList.length = this.adminList.length;
+				for (let i = 0; i < this.checkList.length; i++) {
+					this.checkList[i] = false;
+				}
 			});
 		},
 		handlePageChange(pageNo) {
-			console.log(111, pageNo)
+			console.log(111, pageNo);
 			if (this.searchFlag) {
 				this.searchManager(pageNo);
 			} else {
@@ -335,24 +370,39 @@ export default {
 		},
 		// 删除管理员
 		deleteManager() {
-      this.deleteIdList.length = 0;
-      if (this.checkAll) {
-        this.adminList.forEach(element => {
-          this.deleteIdList.push(element.adminId);
-        })
-      } else {
-        this.checkList.forEach((element, index) => {
-          if (element) {
-            this.deleteIdList.push(this.adminList[index].id);
-          }
-        });
-      }
-      let result = post('/deleteAdmins', {
-        adminIds: this.deleteIdList
-      });
-      result.then(res => {
-        this.getManagerList(this.currentPageNo);
-      });
+			this.deleteIdList.length = 0;
+			if (this.checkAll) {
+				this.adminList.forEach(element => {
+					this.deleteIdList.push(element.adminId);
+				});
+			} else {
+				this.checkList.forEach((element, index) => {
+					if (element) {
+						this.deleteIdList.push(this.adminList[index].id);
+					}
+				});
+			}
+			if (this.deleteIdList.length === 0) {
+				this.$message({
+					message: '请至少勾选一项内容',
+					type: 'warning',
+				});
+				return;
+			}
+			let result = post('/deleteAdmins', {
+				adminIds: this.deleteIdList,
+			});
+			result.then(res => {
+				if (res.data.responseCode === '000000') {
+					this.$message({
+						message: '删除成功',
+						type: 'success',
+					});
+					this.getManagerList(this.currentPageNo);
+				} else {
+					this.$message.error('删除失败');
+				}
+			});
 		},
 		//管理员ID排序
 		idSort() {},
@@ -386,6 +436,13 @@ export default {
 		},
 		// 发送短信验证码
 		sendVerifyCode() {
+			if (!this.managementParams.mobile || !this.managementParams.name) {
+				this.$message({
+					message: '请先输入手机号和姓名',
+					type: 'warning',
+				});
+				return;
+			}
 			if (this.codeStatus) return;
 			let leftTime = 60;
 			this.codeText = leftTime + 's';
@@ -403,10 +460,9 @@ export default {
 				mobile: this.managementParams.mobile,
 				userName: this.managementParams.name,
 				registerFlag: 1,
-				messageType: 2298872
+				messageType: 2298872,
 			});
-			result.then(res => {
-			});
+			result.then(res => {});
 		},
 	},
 };
@@ -453,20 +509,20 @@ export default {
 .sent-code {
 	font-size: 13px;
 	color: #fff;
-	padding:2px 4px;
+	padding: 2px 4px;
 	margin-left: 10px;
-	background-color:#40557b;
-	width:120px;
-	display:inline-block;
-	text-align:center;
+	background-color: #40557b;
+	width: 120px;
+	display: inline-block;
+	text-align: center;
 }
 
 .sent-code:hover {
 	color: white;
 	cursor: pointer;
 }
-.active{
-	background-color:grey;
+.active {
+	background-color: grey;
 }
 
 .input-item {

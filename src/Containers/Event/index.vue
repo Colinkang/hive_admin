@@ -147,7 +147,7 @@
     <div class="form-row" style="text-align:left">
       <span class="input-item" style="margin-left:20px;color:white"><label>搜索 </label></span>
       <span style="width:250px;display:inline-block;margin-right:30px">
-        <el-input size="mini" placeholder="请输入内容" prefix-icon="el-icon-search" v-model="keyword">
+        <el-input size="mini" placeholder="请输入内容" v-model="keyword">
         </el-input>
       </span>
       <div class="sure-btn" @click="historyWarnSearch">
@@ -187,207 +187,243 @@ import { HIVE_ADMIN_ID } from '../../common/localStorageKey';
 import LocalStore from '../../common/localStore';
 import moment from 'moment';
 import { sortBy } from '../../common/utils.js';
+import { Validate, createRuleSchema } from '../../common/schema.js';
 export default {
 	name: '',
 	data: () => ({
-    groupList: [],
-    eventList: [],
-    ruleTypeList: ['温度', '湿度', '压强', '电量', '重力'],
-    ruleName: '',
-    groupId: 1,
-    ruleType: 1,
-    minThreshold: '',
-    maxThreshold: '',
-    notificationTarget: [false, false],
-    notificationWay: [false, false, false],
+		groupList: [],
+		eventList: [],
+		ruleTypeList: ['温度', '湿度', '压强', '电量', '重力'],
+		ruleName: '',
+		groupId: 1,
+		ruleType: 1,
+		minThreshold: '',
+		maxThreshold: '',
+		notificationTarget: [false, false],
+		notificationWay: [false, false, false],
 		selected: 2,
-    checked: false,
-    checkListStatus:[],
-    eventsCheckedList: [],
-    allEventsChecked: false,
-    deleteEventsIdList: [],
-    historyAlertList: [],
+		checked: false,
+		checkListStatus: [],
+		eventsCheckedList: [],
+		allEventsChecked: false,
+		deleteEventsIdList: [],
+		historyAlertList: [],
 		keyword: '',
-    deleteGroupIdObject:{},
-    deleteGroupIdArray:[],
-    array1:[]
-  }),
-  mounted() {
-    this.getGroups();
-    this.getEvents();
-    this.getHistoryAlertList();
-  },
+		deleteGroupIdObject: {},
+		deleteGroupIdArray: [],
+		array1: [],
+	}),
+	mounted() {
+		this.getGroups();
+		this.getEvents();
+		this.getHistoryAlertList();
+	},
 	methods: {
-    sortByCreateDate(){
-      this.array1 = sortBy('createDate',this.checkListStatus,this.checked,[],this.historyAlertList,true)
-      this.beeFarmerSortList = [];
-      this.$nextTick(()=>{
-        this.historyAlertList = this.beeFarmerSortList.concat(this.array1);
-        this.array1 = [];
-      });
-    },
-    addRule() {
-      this.createWarmRule();
-    },
+		sortByCreateDate() {
+			this.array1 = sortBy('createDate', this.checkListStatus, this.checked, [], this.historyAlertList, true);
+			this.beeFarmerSortList = [];
+			this.$nextTick(() => {
+				this.historyAlertList = this.beeFarmerSortList.concat(this.array1);
+				this.array1 = [];
+			});
+		},
+		addRule() {
+			this.createWarmRule();
+		},
 		selectModule(selected) {
 			this.selected = selected;
-    },
-    convert(str, type) {
-      let result = [];
-      switch (type) {
-        case 1:
-          result = ['蜂农', '管理员'];
-          break;
-        case 2:
-          result = ['电话', '短信', '邮件'];
-        default:
-          break;
-      }
-      let list = [];
-      list = str.split(",");
-      for (let i = list.length - 1; i >= 0; i--) {
-        if (list[i] === "false") {
-          result.splice(i, 1);
-        }
-      }
-      return result.toString();
-    },
-    allEventsCheckedChange() {
-      if (this.allEventsChecked) {
-        for (let i = 0; i < this.eventsCheckedList.length; i++) {
-          this.eventsCheckedList[i] = true;
-        }
-      } else {
-        for (let i = 0; i < this.eventsCheckedList.length; i++) {
-          this.eventsCheckedList[i] = false;
-        }
-      }
-    },
-    eventsCheckedChange() {
-      for (let i = 0; i < this.eventsCheckedList.length; i++) {
-        if (!this.eventsCheckedList[i]) {
-          this.allEventsChecked = false;
-          return;
-        }
-      }
-      this.allEventsChecked = true;
-    },
-    // 获取目标列表
-    getGroups() {
-      let result = get('/getGroups');
-      result.then(res => {
-        this.groupList = res.data.data;
-      });
-    },
-    // 获取已有规则，刷新或删除后更新已有规则
-    getEvents() {
-      let result = get('/getEvents');
-      result.then(res => {
-        this.eventList = res.data.data;
-        // 重置勾选状态数组
-        this.eventsCheckedList.length =  this.eventList.length;
-        for (let i = 0; i < this.eventsCheckedList.length; i++) {
-          this.eventsCheckedList[i] = false;
-        }
-      });
-    },
-    // 删除已有规则
-    deleteEvents() {
-      this.deleteEventsIdList.length = 0;
-      if (this.allEventsChecked) {
-        this.eventList.forEach(element => {
-          this.deleteEventsIdList.push(element.id);
-        })
-      } else {
-        this.eventsCheckedList.forEach((element, index) => {
-          if (element) {
-            this.deleteEventsIdList.push(this.eventList[index].id);
-          }
-        });
-      }
-      let result = post('/deleteEvents', {
-        ids: this.deleteEventsIdList
-      });
-      result.then(res => {
-        this.getEvents();
-      })
-    },
+		},
+		convert(str, type) {
+			let result = [];
+			switch (type) {
+				case 1:
+					result = ['蜂农', '管理员'];
+					break;
+				case 2:
+					result = ['电话', '短信', '邮件'];
+				default:
+					break;
+			}
+			let list = [];
+			list = str.split(',');
+			for (let i = list.length - 1; i >= 0; i--) {
+				if (list[i] === 'false') {
+					result.splice(i, 1);
+				}
+			}
+			return result.toString();
+		},
+		allEventsCheckedChange() {
+			if (this.allEventsChecked) {
+				for (let i = 0; i < this.eventsCheckedList.length; i++) {
+					this.eventsCheckedList[i] = true;
+				}
+			} else {
+				for (let i = 0; i < this.eventsCheckedList.length; i++) {
+					this.eventsCheckedList[i] = false;
+				}
+			}
+		},
+		eventsCheckedChange() {
+			for (let i = 0; i < this.eventsCheckedList.length; i++) {
+				if (!this.eventsCheckedList[i]) {
+					this.allEventsChecked = false;
+					return;
+				}
+			}
+			this.allEventsChecked = true;
+		},
+		// 获取目标列表
+		getGroups() {
+			let result = get('/getGroups');
+			result.then(res => {
+				this.groupList = res.data.data;
+			});
+		},
+		// 获取已有规则，刷新或删除后更新已有规则
+		getEvents() {
+			let result = get('/getEvents');
+			result.then(res => {
+				this.eventList = res.data.data;
+				// 重置勾选状态数组
+				this.eventsCheckedList.length = this.eventList.length;
+				for (let i = 0; i < this.eventsCheckedList.length; i++) {
+					this.eventsCheckedList[i] = false;
+				}
+			});
+		},
+		// 删除已有规则
+		deleteEvents() {
+			this.deleteEventsIdList.length = 0;
+			if (this.allEventsChecked) {
+				this.eventList.forEach(element => {
+					this.deleteEventsIdList.push(element.id);
+				});
+			} else {
+				this.eventsCheckedList.forEach((element, index) => {
+					if (element) {
+						this.deleteEventsIdList.push(this.eventList[index].id);
+					}
+				});
+			}
+			if (this.deleteEventsIdList.length === 0) {
+				this.$message({
+					message: '至少有一项需要勾选上',
+					type: 'warning',
+				});
+				return;
+			}
+			let result = post('/deleteEvents', {
+				ids: this.deleteEventsIdList,
+			});
+			result.then(res => {
+				console.log(14, res);
+				if (res.data.responseCode === '000000') {
+					this.$message({
+						message: '删除成功',
+						type: 'success',
+					});
+				} else {
+					this.$message.error('删除失败');
+				}
+				this.getEvents();
+			});
+		},
 		//创建预警规则
 		createWarmRule() {
 			let _this = this;
-      let result = post('/alterAlertRule', {
-        ruleName: this.ruleName,
-        groupId: this.groupId,
-        minThreshold: this.minThreshold,
-        maxThreshold: this.maxThreshold,
-        ruleType: this.ruleType,
-        notificationTarget: this.notificationTarget.toString(),
-        notificationWay: this.notificationWay.toString(),
-        adminId: LocalStore.getItem(HIVE_ADMIN_ID)
-      }
-      );
-      result.then(res => {
-        // 刷新已有规则
-        this.getEvents();
-      })
+			let options = {
+				ruleName: this.ruleName,
+				groupId: this.groupId,
+				minThreshold: this.minThreshold,
+				maxThreshold: this.maxThreshold,
+				ruleType: this.ruleType,
+				notificationTarget: this.notificationTarget.toString(),
+				notificationWay: this.notificationWay.toString(),
+				adminId: LocalStore.getItem(HIVE_ADMIN_ID),
+			};
+			console.log(123, options, Validate(options, createRuleSchema));
+			if (Validate(options, createRuleSchema) !== null) {
+				this.$message({
+					message: '字段都不能为空',
+					type: 'warning',
+				});
+				return;
+			}
+			let result = post('/alterAlertRule', options);
+			result.then(res => {
+				// 刷新已有规则
+				this.getEvents();
+			});
 		},
 
 		// 历史预警列表
 		getHistoryAlertList() {
-      this.keyword = '';
+			this.keyword = '';
 			let result = get('/getHistoryAlertEvents');
 			result.then(res => {
-        this.historyAlertList = res.data.data;
-        for(let i =0;i<this.historyAlertList.length;i++){
-          this.checkListStatus[i] = false;
-        }
-      });
+				console.log(111, res);
+				this.historyAlertList = res.data.data;
+				for (let i = 0; i < this.historyAlertList.length; i++) {
+					this.checkListStatus[i] = false;
+				}
+			});
 		},
 
 		// 搜索历史预警
 		historyWarnSearch() {
-      if (!this.keyword) return;
+			if (!this.keyword) {
+				this.$message({
+					message: '搜索内容不能为空',
+					type: 'warning',
+				});
+				return;
+			}
 			let result = post('/searchHistoryAlertEvents', {
-        keyword: this.keyword
-      });
-      result.then(res => {
-        this.historyAlertList = res.data.data;
-      })
-    },
-    formatDate(timestamp) {
-      return moment(timestamp).format('YYYY-MM-DD');
-    },
-    checkAllChange() {
-      if (this.checkAll) {
-        for (let i = 0; i < this.checkList.length; i++) {
-          this.checkList[i] = true;
-        }
-      } else {
-        for (let i = 0; i < this.checkList.length; i++) {
-          this.checkList[i] = false;
-        }
-      }
-    },
-    checkedChange() {
-      for (let i = 0; i < this.checkList.length; i++) {
-        if (!this.checkList[i]) {
-          this.checkAll = false;
-          return;
-        }
-      }
-      this.checkAll = true;
-    },
-    //点击组全选的状态
-    changeAllGroupStatus(val){
-      for(let i =0;i<this.checkListStatus.length;i++){
-        this.checkListStatus[i] = val
-      }
-    },
-    //单个点击组的状态
-    changeGroupStatus(val){
-      if(!val){this.checked = false};
-      if(this.checkListStatus.toString().indexOf("false")<0){this.checked = true};
-    }
+				keyword: this.keyword,
+			});
+			result.then(res => {
+				this.historyAlertList = res.data.data;
+			});
+		},
+		formatDate(timestamp) {
+			return moment(timestamp).format('YYYY-MM-DD');
+		},
+		checkAllChange() {
+			if (this.checkAll) {
+				for (let i = 0; i < this.checkList.length; i++) {
+					this.checkList[i] = true;
+				}
+			} else {
+				for (let i = 0; i < this.checkList.length; i++) {
+					this.checkList[i] = false;
+				}
+			}
+		},
+		checkedChange() {
+			for (let i = 0; i < this.checkList.length; i++) {
+				if (!this.checkList[i]) {
+					this.checkAll = false;
+					return;
+				}
+			}
+			this.checkAll = true;
+		},
+		//点击组全选的状态
+		changeAllGroupStatus(val) {
+			for (let i = 0; i < this.checkListStatus.length; i++) {
+				this.checkListStatus[i] = val;
+			}
+		},
+		//单个点击组的状态
+		changeGroupStatus(val) {
+			if (!val) {
+				this.checked = false;
+			}
+			if (this.checkListStatus.toString().indexOf('false') < 0) {
+				this.checked = true;
+			}
+		},
 	},
 };
 </script>
@@ -453,12 +489,12 @@ li:hover {
 	margin-top: -1px;
 	background: #dde5f4;
 	border: 1px solid #162f46;
-  padding-right: 20px;
+	padding-right: 20px;
 }
 
 .form-row {
 	text-align: left;
-  margin-top: 5px;
+	margin-top: 5px;
 }
 
 .title {
@@ -471,11 +507,11 @@ li:hover {
 .input-item {
 	display: inline-block;
 	margin-top: 10px;
-  margin-left: 20px;
+	margin-left: 20px;
 }
 
 .notification {
-  font-size: 14px;
+	font-size: 14px;
 }
 
 .iconfont:hover {
@@ -495,15 +531,15 @@ li:hover {
 	height: 410px;
 	color: black;
 	background: white;
-  overflow: scroll;
+	overflow: scroll;
 }
 
 .sure-btn {
 	width: 80px;
 	height: 28px;
-  float: right;
-  margin-top: 10px;
-  margin-right: 100px;
+	float: right;
+	margin-top: 10px;
+	margin-right: 100px;
 	text-align: center;
 	line-height: 28px;
 	background: #40557b;

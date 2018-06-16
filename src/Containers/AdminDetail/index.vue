@@ -103,7 +103,7 @@ export default {
 	},
 	methods: {
 		save() {
-			this.$router.back();
+			// this.$router.back();
 		},
 		getManagerInfo() {
 			let result = get('/getAdminInfo');
