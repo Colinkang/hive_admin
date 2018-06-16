@@ -320,6 +320,7 @@ export default {
 				if (res.data.responseCode === '000000') {
 					let data = res.data.data;
 					// 将值赋值给列表
+					console.log(res.data)
 					if (data.length > 0) {
 						this.hiveList = data;
 						for (let i = 0; i < this.hiveList.length; i++) {
