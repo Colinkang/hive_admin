@@ -70,23 +70,24 @@
     </div>
   </div>
   <div class="form-row">
-      <div class="condition-box">
-        <div  v-for="(item,index) in condition" @click="slectThisCondition(index)" :class="`condition-row ${conditionIndex === index?'selected':''}`">
-            <div class="">
-                {{item.name}}:{{item.text}}
-            </div>
-            <div class="">
-              <ul>
-                <li v-for="item1 in item.children">  {{item1.name}}:{{item1.text}}</li>
-              </ul>
-            </div>
+    <div class="condition-box">
+      <div v-for="(item,index) in condition" @click="slectThisCondition(index)" :class="`condition-row ${conditionIndex === index?'selected':''}`">
+        <div class="">
+          {{item.name}}:{{item.text}}
+        </div>
+        <div class="">
+          <ul>
+            <li v-for="item1 in item.children"> {{item1.name}}:{{item1.text}}</li>
+          </ul>
         </div>
       </div>
+    </div>
   </div>
 </div>
 </template>
 <script>
-import _ from 'lodash'
+import _ from 'lodash';
+import { get, post } from '../../common/post.js';
 const config = {
   'id': 'id',
   "beeFarmerName": '蜂农姓名',
@@ -186,7 +187,7 @@ export default {
             text: `从${valueArr[0]}至${valueArr[1]}`,
             type: 'id',
             value: valueArr,
-            children:[]
+            children: []
           }
           break;
         case ('beeFarmerName'):
@@ -195,7 +196,7 @@ export default {
             text: valueArr[0],
             type: 'beeFarmerName',
             value: valueArr,
-            children:[]
+            children: []
           }
           break;
         case ('beeFarmerId'):
@@ -204,7 +205,7 @@ export default {
             text: valueArr[0],
             type: 'beeFarmerId',
             value: valueArr,
-            children:[]
+            children: []
           }
           break;
         case ('manufacturer'):
@@ -213,7 +214,7 @@ export default {
             text: valueArr[0],
             type: 'manufacturer',
             value: valueArr,
-            children:[]
+            children: []
           }
           break;
         case ('batchNo'):
@@ -222,7 +223,7 @@ export default {
             text: `从${valueArr[0]}至${valueArr[1]}`,
             type: 'batchNo',
             value: valueArr,
-            children:[]
+            children: []
           }
           break;
         case ('productionDate'):
@@ -231,7 +232,7 @@ export default {
             text: this.date,
             type: 'productionDate',
             value: [this.date],
-            children:[]
+            children: []
           }
           break;
         case ('position'):
@@ -240,43 +241,162 @@ export default {
             text: `【${valueArr[0]},${valueArr[2]}】,【${valueArr[1]},${valueArr[3]}】`,
             type: 'position',
             value: [this.date],
-            children:[]
+            children: []
           }
           break;
       }
       let conditionArr = _.cloneDeep(this.condition)
 
-      if (this.conditionIndex==="") {
+      if (this.conditionIndex === "") {
         conditionArr.push(condition)
       } else {
         conditionArr[this.conditionIndex].children.push(condition)
       }
-      this.condition=conditionArr
-      this.conditionIndex=""
-      this.input1="";
-      this.input2="";
-      this.input3="";
-      this.input4="";
+      this.condition = conditionArr
+      this.conditionIndex = ""
+      this.input1 = "";
+      this.input2 = "";
+      this.input3 = "";
+      this.input4 = "";
       console.log(conditionArr)
 
     },
-    slectThisCondition(index){
+    slectThisCondition(index) {
       this.conditionIndex = index
     },
     inputChange(e, key) {
       //let value = e.target.value
       console.log(key)
     },
-    add(){
+    add() {
+      console.log(123, this.condition);
+      let obj = {};
+      let array = [];
+      let condition = this.condition;
 
+      for (let con of condition) {
+        switch (con.type) {
+          case 'beeFarmerId':
+            {
+              obj['beeFarmerId'] = con.value[0];
+            }
+            break;
+          case 'beeFarmerName':
+            {
+              obj['beeFarmerName'] = con.value[0];
+            }
+            break;
+          case 'manufacturer':
+            {
+              obj['manfaucturer'] = con.value[0];
+            }
+            break;
+          case 'productionDate':
+            {
+              obj['productionDate'] = new Date(con.value[0]).getTime();
+            }
+            break;
+          case 'id':
+            {
+              obj['maxBeeBoxNo'] = con.value[1];
+              obj['minBeeBoxNo'] = con.value[0];
+            }
+            break;
+          case 'batchNo':
+            {
+              obj['maxBatchNo'] = con.value[1];
+              obj['minBatchNo'] = con.value[0];
+            }
+            break;
+          case 'position':
+            {
+              obj['minLongitude'] = con.value[0];
+              obj['maxLongitude'] = con.value[1];
+              obj['minLatitude'] = con.value[2];
+              obj['maxLatitude'] = con.value[3];
+            }
+            break;
+        }
+        if (condition.children) {
+          for (let child of condition.children) {
+            switch (child.type) {
+              case 'beeFarmerId':
+                {
+                  obj['beeFarmerId'] = child.value[0];
+                }
+                break;
+              case 'beeFarmerName':
+                {
+                  obj['beeFarmerName'] = child.value[0];
+                }
+                break;
+              case 'manufacturer':
+                {
+                  obj['manfaucturer'] = child.value[0];
+                }
+                break;
+              case 'productionDate':
+                {
+                  obj['productionDate'] = new Date(child.value[0]).getTime();
+                }
+                break;
+              case 'id':
+                {
+                  obj['maxBeeBoxNo'] = child.value[1];
+                  obj['minBeeBoxNo'] = child.value[0];
+                }
+                break;
+              case 'batchNo':
+                {
+                  obj['maxBatchNo'] = child.value[1];
+                  obj['minBatchNo'] = child.value[0];
+                }
+                break;
+              case 'position':
+                {
+                  obj['minLongitude'] = child.value[0];
+                  obj['maxLongitude'] = child.value[1];
+                  obj['minLatitude'] = child.value[2];
+                  obj['maxLatitude'] = child.value[3];
+                }
+                break;
+            }
+          }
+        }
+
+        array.push(obj);
+      }
+      console.log(11121212,array)
+      let result = post('/queryGroupBeeBox', {
+        filterItems: array
+      });
+      result.then(res => {
+        console.log(1111, res);
+        this.ids = [];
+        let data = res.data.data;
+        for (let d of data) {
+          this.ids.push(d.beeBoxNo);
+        }
+        // 展示表格数据
+
+      });
     },
-    deleteById(){
+    save() {
+      let result = post('/api/saveGroupBeeBox', {
+        beeBoxGroup: {
+          groupName: 'groupName',
+          adminId: '1',
+        },
+        ids: this.ids,
+      });
+    },
+    deleteById() {
       let index = this.conditionIndex
       let conditionArr = this.condition
       console.log(conditionArr)
-      if(conditionArr.length>0){
-        conditionArr.splice(index,1)
-        this.conditionIndex=""
+      if (conditionArr.length > 0) {
+        conditionArr.splice(index, 1)
+        this.conditionIndex = ""
       }
       this.condition = conditionArr
     }
@@ -309,21 +429,25 @@ export default {
   background: #1a335e;
   cursor: pointer;
 }
-.condition-box{
+
+.condition-box {
   width: 100%;
   height: 165px;
   background: white;
-  color:black;
+  color: black;
   overflow: scroll;
 }
-.condition-row:hover{
+
+.condition-row:hover {
   background: rgb(107, 152, 171);
   cursor: pointer;
 }
-.selected{
+
+.selected {
   background: rgb(107, 152, 171)
 }
-.hover:hover{
+
+.hover:hover {
   color: rgb(31, 132, 170);
   cursor: pointer;
 }
