@@ -1,5 +1,9 @@
 <template>
 <div class="form-row">
+  <div class="form-row">
+    <span>名称</span>
+    <input type="text" v-model="groupName" class="name-input" style="width:180px">
+  </div>
   <div class="tiaojian" style="vertical-align: top;">
     <div class="">
       条件
@@ -48,9 +52,12 @@
 
     </div>
   </div>
-  <div class="form-row">
+  <div class="form-row" style="display:flex">
     <div class="sure-btn" @click="sure">
       确认
+    </div>
+    <div class="sure-btn" @click="save" style="margin-left:20px">
+      保存
     </div>
   </div>
   <div class="form-row">
@@ -61,8 +68,8 @@
 
     </div>
     <div class="canshu" style="text-align:right">
-      <span class="hover" style="margin-right:20px" @click="add"><i class="iconfont icon-add"></i>
-      添加
+      <span class="hover" style="margin-right:20px" @click="add"><i class="iconfont icon-search"></i>
+      查询
       </span>
       <span class="hover" @click="deleteById"> <i class="iconfont icon-069delete" ></i>
       删除
@@ -110,7 +117,8 @@ export default {
     input4: '',
     //查询条件数组
     condition: [],
-    conditionIndex: ''
+    conditionIndex: '',
+    groupName:''
   }),
   methods: {
     selectProps(e) {
@@ -366,25 +374,25 @@ export default {
 
         array.push(obj);
       }
-      console.log(11121212,array)
+      //console.log(11121212,array)
       let result = post('/queryGroupBeeBox', {
         filterItems: array
       });
       result.then(res => {
-        console.log(1111, res);
+      //  console.log(1111, res);
         this.ids = [];
         let data = res.data.data;
         for (let d of data) {
           this.ids.push(d.beeBoxNo);
         }
         // 展示表格数据
-
+        this.$emit('getList',res)
       });
     },
     save() {
       let result = post('/api/saveGroupBeeBox', {
         beeBoxGroup: {
-          groupName: 'groupName',
+          groupName: this.groupName,
           adminId: '1',
         },
         ids: this.ids,
@@ -393,7 +401,7 @@ export default {
     deleteById() {
       let index = this.conditionIndex
       let conditionArr = this.condition
-      console.log(conditionArr)
+    //  console.log(conditionArr)
       if (conditionArr.length > 0) {
         conditionArr.splice(index, 1)
         this.conditionIndex = ""

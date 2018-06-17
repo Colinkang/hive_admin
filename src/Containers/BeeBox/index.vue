@@ -150,11 +150,8 @@
             <div class="form-title">
               编组
             </div>
-            <div class="form-row">
-              <span>名称</span>
-              <input type="text" name="" value="" class="name-input">
-            </div>
-            <props-select></props-select>
+            
+            <props-select @getList="createStartData"></props-select>
 
 
             <div class="form-row">
@@ -340,33 +337,36 @@ export default {
 			result.then(res => {
 				//console.log(111167, res);
 				if (res.data.responseCode === '000000') {
-					let data = res.data.data;
-					this.hiveList = data;
-					let list = data
-          if(data.length>0&&this.beeBoxNo===""){
-            this.beeBoxNo = list[0].beeBoxNo
-            this.clickBoxId(list[0].beeBoxNo);
-            this.getBeeBoxInfo(list[0].beeBoxNo);
-          }
-					// 将值赋值给列表
-					console.log(res.data)
-					if (data.length > 0) {
-						for (let i = 0; i < this.hiveList.length; i++) {
-							this.statusList[i] = false;
-						}
-						const points = [];
-						for (let i=0;i<this.hiveList.length;i++) {
-							const position = { lng: this.hiveList[i].lng, lat: this.hiveList[i].lat};
-							points.push(position);
-						}
-						this.points = points
-						console.log(this.points);
-					}
-					//console.log(122, this.hiveList);
+
+					this.createStartData(res)
 					// 画扇形图
 				}
 			});
 		},
+    createStartData(res){
+      let data = res.data.data;
+      this.hiveList = data;
+      let list = data
+      if(data.length>0&&this.beeBoxNo===""){
+        this.beeBoxNo = list[0].beeBoxNo
+        this.clickBoxId(list[0].beeBoxNo);
+        this.getBeeBoxInfo(list[0].beeBoxNo);
+      }
+      // 将值赋值给列表
+      console.log(res.data)
+      if (data.length > 0) {
+        for (let i = 0; i < this.hiveList.length; i++) {
+          this.statusList[i] = false;
+        }
+        const points = [];
+        for (let i=0;i<this.hiveList.length;i++) {
+          const position = { lng: this.hiveList[i].lng, lat: this.hiveList[i].lat};
+          points.push(position);
+        }
+        this.points = points
+        console.log(this.points);
+      }
+    },
 		//删除蜂箱
 		deleteBeeBox() {
 			this.deleteIdArray = [];
