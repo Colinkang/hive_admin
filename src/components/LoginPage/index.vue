@@ -83,7 +83,7 @@ export default {
 				result.then(res => {
 					this.showAlert = true;
 					if (res.data.responseCode === '000000') {
-				
+
 						this.status = 'success';
 						this.text = '验证成功，欢迎登陆';
 						//保存token到local
@@ -120,7 +120,7 @@ export default {
 <style lang="" scoped>
 .login-box {
 	position: absolute;
-	background-color: rgb(94, 95, 95);
+	background-color: rgb(13, 27, 54);
 	width: 100%;
 	height: 100%;
 	top: 0;

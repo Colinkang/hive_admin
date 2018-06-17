@@ -35,6 +35,7 @@ import LocalStore from '../common/localStore';
 import {
   get
 } from '../common/post';
+let timer
 export default {
   name: 'HelloWorld',
   components: {
@@ -62,28 +63,35 @@ export default {
       this.$router.push({
         path:'/'
       })
+    },
+    checkedLoginStill(){
+      let result = get('/checkTokenExpiration', {})
+      result.then((res) => {
+
+        if (res.data.responseCode==='000000') {
+          console.log(res.data.responseCode)
+          this.isLogin = true;
+          timer =setTimeout(()=>{
+            this.checkedLoginStill()
+          },5000)
+        } else {
+          this.isLogin = false
+          LocalStore.setItem(IS_LOGIN,false)
+          LocalStore.setItem(HIVE_API_TOKEN,'')
+          this.$router.push({
+            path: '/'
+          })
+        }
+      })
     }
   },
   mounted() {
-    // let isLogin = LocalStore.getItem(IS_LOGIN)
-    // this.isLogin=isLogin
-    // if(!isLogin){
-    //   this.$router.push({
-    //     path:'/'
-    //   })
-    // }
+    this.checkedLoginStill()
 
-    let result = get('/checkTokenExpiration',{})
-    result.then((res)=>{
-      if(!res.data.data){
-        this.isLogin=true
-      }else{
-        this.isLogin=false
-        this.$router.push({
-            path:'/'
-          })
-      }
-    })
+  },
+  beforeDestroy() {
+    //do something before destroying vue instance
+    clearInterval(timer)
   }
 }
 </script>

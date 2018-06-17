@@ -15,7 +15,7 @@ export default {
 	// },
 	methods: {
 		drawLine(obj) {
-			console.log(111111, obj);
+		//	console.log(111111, obj);
 			// 基于准备好的dom，初始化echarts实例
 			let myChart = echarts.init(document.getElementById('myChart'));
 			// 绘制图表
