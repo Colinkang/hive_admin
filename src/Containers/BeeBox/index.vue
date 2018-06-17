@@ -16,7 +16,7 @@
                 <el-input size="mini" placeholder="请输入查询内容"
                 v-model="search"
                 clearable
-                prefix-icon="el-icon-search" 
+                prefix-icon="el-icon-search"
                 @keyup.enter.native = "getHiveList(search)"
                 ></el-input>
             </div>
@@ -36,7 +36,7 @@
             <th>状态</th>
             <th>电量</th>
           </tr>
-          <tr v-for="(item,index) in hiveList" :key="item.boxId" @click="slectThisRow(item.beeBoxNo)">
+          <tr v-for="(item,index) in hiveList" :key="item.boxId" @click="slectThisRow(item.beeBoxNo)" :class="beeBoxNo===item.beeBoxNo?'selected':''">
           	<td>
           		<el-checkbox v-model="statusList[index]" @change="changeStatus(index,statusList[index],item.id)"></el-checkbox>
           	</td>
@@ -57,7 +57,7 @@
               <div class="overview-chart">
                 <div class="overview-chart-left">
                   <div class="overview-chart-left-row">
-                    <div class="section-title">
+                    <div class="section-title" style="text-indent:0">
                       总览
                     </div>
                     <div class="overview-row">
@@ -65,24 +65,29 @@
                         数量: {{pai.totalBeeBoxNum}}
                       </div>
                       <div class="overview-row-right">
-                        正常:{{pai.normalBeeBoxNum}}
+                        离线:{{pai.offLineBeeBoxNum}}
                       </div>
+
                     </div>
                     <div class="overview-row">
+
+                      <div class="overview-row-left">
+                        异常:{{ pai.abnormalBeeBoxNum }}
+                      </div>
+                      <div class="overview-row-right">
+                        正常:{{pai.normalBeeBoxNum}}
+                      </div>
+
+                    </div>
+                    <div class="overview-row">
+
                       <div class="overview-row-left">
                         策略维护:{{pai.protectionNum}}
                       </div>
                       <div class="overview-row-right">
-                        异常:{{ pai.abnormalBeeBoxNum }}
-                      </div>
-                    </div>
-                    <div class="overview-row">
-                      <div class="overview-row-left">
                         非策略维护:{{pai.noProtectionNum}}
                       </div>
-                      <div class="overview-row-right">
-                        离线:{{pai.offLineBeeBoxNum}}
-                      </div>
+
                     </div>
                   </div>
                 </div>
@@ -125,7 +130,7 @@
           </div>
           <div class="section-right-top-right">
             <!-- <baidu-map class="map" style="width:100%;height:100%" :center="{lng: beeBoxInfo.lng, lat: beeBoxInfo.lat}" :zoom="12">
-				<bm-marker :position="{lng: beeBoxInfo.lng, lat: beeBoxInfo.lat}" :dragging="true" 
+				<bm-marker :position="{lng: beeBoxInfo.lng, lat: beeBoxInfo.lat}" :dragging="true"
 				:scroll-wheel-zoom="true">
 				</bm-marker>
 			</baidu-map> -->
@@ -151,7 +156,7 @@
             </div>
             <props-select></props-select>
 
-            
+
             <div class="form-row">
               <div class="exit-rule" ></div>
             </div>
@@ -166,7 +171,7 @@
             <div class="form-row group-table">
               <table border="0" style="border:none">
                 <tr style="border:none;background:#40577f;color:white">
-                  <th style="border:none;background:#40577f;color:white"><el-checkbox v-model="checkAllGroupStatus" @change="changeAllGroupStatus(checkAllGroupStatus)"></el-checkbox></th>	
+                  <th style="border:none;background:#40577f;color:white"><el-checkbox v-model="checkAllGroupStatus" @change="changeAllGroupStatus(checkAllGroupStatus)"></el-checkbox></th>
                   <th style="border:none;width:50%;color:white">名称<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
                   <th style="border:none;width:50%;color:white" @click="sortByBeeBoxNum">蜂箱数量<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
                   <!-- <th style="border:none;width:50%;color:white">备注</th> -->
@@ -269,15 +274,13 @@ export default {
 		// this.getBeeBoxInfo();
 		this.getPai();
 		this.getHiveList();
-		hiveTimer = setInterval(this.getHiveList, 5000);
+		//hiveTimer = setInterval(this.getHiveList, 5000);
 		// this.getFold();
 		this.getGroupList();
 		let adminRight = LocalStore.getItem(HIVE_ADMIN_RIGHTS);
 		this.right = adminRight.split(',');
 	},
-	destroyed() {
-		console.log(888888);
-		// clearInterval(hiveTimer);
+	beforeDestroy(){
 		clearInterval(hiveTimer);
 		clearInterval(timer);
 	},
@@ -302,10 +305,10 @@ export default {
 		getBeeBoxInfo(beeBoxId) {
 			let result = post('/getBeeBox', { beeBoxId: beeBoxId });
 			result.then(res => {
-				console.log(1119887, res);
+				//console.log(1119887, res);
 				if (res.data.responseCode === '000000') {
 					let data = res.data.data;
-					console.log(88888, data);
+					//console.log(88888, data);
 					if (data) {
 						this.beeBoxInfo.beeBoxId = data.beeBoxNo;
 						this.beeBoxInfo.batchNo = data.batchNo;
@@ -313,7 +316,7 @@ export default {
 						this.beeBoxInfo.lat = data.lat;
 						this.beeBoxInfo.lng = data.lng;
 						this.latlng = '' + this.beeBoxInfo.lat + ',' + '' + this.beeBoxInfo.lng;
-						console.log(this.latlng);
+					//	console.log(this.latlng);
 						this.beeBoxInfo.productionDate = moment(data.productionDate).format('YYYY-MM-DD');
 						// 将值赋值给列表
 						if (data.status === 0) this.beeBoxInfo.status = '正在运行';
@@ -335,11 +338,16 @@ export default {
 			console.log(keyword);
 			let result = post('/getAllBeeBoxSensorData', { keyword: keyword || null });
 			result.then(res => {
-				console.log(111167, res);
+				//console.log(111167, res);
 				if (res.data.responseCode === '000000') {
 					let data = res.data.data;
 					this.hiveList = data;
-					this.clickBoxId(this.hiveList[0].beeBoxNo);
+					let list = data
+          if(data.length>0&&this.beeBoxNo===""){
+            this.beeBoxNo = list[0].beeBoxNo
+            this.clickBoxId(list[0].beeBoxNo);
+            this.getBeeBoxInfo(list[0].beeBoxNo);
+          }
 					// 将值赋值给列表
 					console.log(res.data)
 					if (data.length > 0) {
@@ -354,7 +362,7 @@ export default {
 						this.points = points
 						console.log(this.points);
 					}
-					console.log(122, this.hiveList);
+					//console.log(122, this.hiveList);
 					// 画扇形图
 				}
 			});
@@ -378,7 +386,7 @@ export default {
 				ids: this.deleteIdArray,
 			});
 			result.then(res => {
-				console.log(2222, res);
+        hiveTimer = setTimeout(this.getHiveList, 5000);
 				if (res.data.responseCode === '000000') {
 					this.$message({
 						message: '删除蜂箱成功',
@@ -387,7 +395,10 @@ export default {
 					this.getHiveList(null);
 					this.deleteIdObject = {};
 				}
-			});
+			}).catch((err)=>{
+        hiveTimer = setTimeout(this.getHiveList, 5000);
+
+      });
 		},
 		//获取饼图信息 总览信息
 		getPai() {
@@ -411,7 +422,7 @@ export default {
 		slectThisRow(beeBoxNo) {
 			//  this.idChange(id)
 			this.beeBoxNo = beeBoxNo;
-			console.log('99999', beeBoxNo);
+			//console.log('99999', beeBoxNo);
 			this.getBeeBoxInfo(beeBoxNo);
 			this.clickBoxId(beeBoxNo);
 		},
@@ -438,9 +449,9 @@ export default {
 		// 		}
 		// 	});
 		// },
-		clickBoxId() {
+		clickBoxId(id) {
 			let _this = this;
-			console.log(123, _this.beeBoxNo);
+			//console.log(123, _this.beeBoxNo);
 			sensorDataId = '';
 			temperature = [];
 			humidity = [];
@@ -463,7 +474,7 @@ export default {
 					result = post('/getBeeBoxSensorData', {
 						sensorDataTags: [
 							{
-								beeBoxNo: _this.beeBoxNo,
+								beeBoxNo: id,
 								// lastestSensorDataId: 68884,
 							},
 						],
@@ -480,9 +491,11 @@ export default {
 				}
 				result.then(res => {
 					if (res.data.responseCode === '000000') {
-						console.log(99999, res.data);
+
 						let d = res.data.data;
-						if (d) {
+						if (d.length>0) {
+                d = d[0]
+
 							sensorDataId = d.id;
 							temperature.push(d.temperature);
 							humidity.push(d.humidity);
@@ -498,12 +511,12 @@ export default {
 								battery,
 								date,
 							};
-							console.log(1111111, obj);
+							//console.log(1111111, obj);
 							_this.$refs.fool.drawFoldLine(obj);
 						}
 					}
 				});
-			}, 1000);
+			}, 5000);
 		},
 		// 添加到编组列表
 		addToGroup() {
@@ -840,7 +853,7 @@ table tr th {
 }
 
 .overview-chart-left {
-	width: 40%;
+	width: 30%;
 	height: 100%;
 	font-size: 14px;
 	padding-left: 2.5%;
@@ -848,25 +861,25 @@ table tr th {
 }
 
 .overview-chart-right {
-	width: 55%;
+	width: 70%;
 	height: 100%;
 	background: white;
 }
 
 .overview-row {
 	width: 100%;
-	display: flex;
-	margin-top: 30px;
+	margin-top: 10px;
 }
 
 .overview-row-left {
-	width: 65%;
+	width:100%;
 	text-align: left;
 }
 
 .overview-row-right {
 	text-align: left;
-	width: 35%;
+	width: 100%;
+  margin-top: 10px;
 }
 
 .line-chart-box {
@@ -940,5 +953,8 @@ textarea {
 }
 .icon-span i {
 	font-size: 13px;
+}
+.selected{
+  background: rgb(153, 206, 232)
 }
 </style>
