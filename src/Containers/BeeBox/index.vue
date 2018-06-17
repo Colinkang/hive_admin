@@ -36,7 +36,7 @@
             <th>状态</th>
             <th>电量</th>
           </tr>
-          <tr v-for="(item,index) in hiveList" :key="item.boxId" @click="slectThisRow(item.beeBoxNo)">
+          <tr v-for="(item,index) in hiveList" :key="item.boxId" @click="slectThisRow(item.beeBoxNo)" :class="beeBoxNo===item.beeBoxNo?'selected':''">
           	<td>
           		<el-checkbox v-model="statusList[index]" @change="changeStatus(index,statusList[index],item.id)"></el-checkbox>
           	</td>
@@ -338,11 +338,16 @@ export default {
 			console.log(keyword);
 			let result = post('/getAllBeeBoxSensorData', { keyword: keyword || null });
 			result.then(res => {
-				console.log(111167, res);
+				//console.log(111167, res);
 				if (res.data.responseCode === '000000') {
 					let data = res.data.data;
 					this.hiveList = data;
-					this.clickBoxId(this.hiveList[0].beeBoxNo);
+					let list = data
+          if(data.length>0&&this.beeBoxNo===""){
+            this.beeBoxNo = list[0].beeBoxNo
+            this.clickBoxId(list[0].beeBoxNo);
+            this.getBeeBoxInfo(list[0].beeBoxNo);
+          }
 					// 将值赋值给列表
 					if (data.length > 0) {
 						for (let i = 0; i < this.hiveList.length; i++) {
@@ -356,7 +361,7 @@ export default {
 						this.points = points
 						console.log(this.points);
 					}
-					console.log(122, this.hiveList);
+					//console.log(122, this.hiveList);
 					// 画扇形图
 				}
 			});
@@ -416,7 +421,7 @@ export default {
 		slectThisRow(beeBoxNo) {
 			//  this.idChange(id)
 			this.beeBoxNo = beeBoxNo;
-			console.log('99999', beeBoxNo);
+			//console.log('99999', beeBoxNo);
 			this.getBeeBoxInfo(beeBoxNo);
 			this.clickBoxId(beeBoxNo);
 		},
@@ -443,9 +448,9 @@ export default {
 		// 		}
 		// 	});
 		// },
-		clickBoxId() {
+		clickBoxId(id) {
 			let _this = this;
-			console.log(123, _this.beeBoxNo);
+			//console.log(123, _this.beeBoxNo);
 			sensorDataId = '';
 			temperature = [];
 			humidity = [];
@@ -468,7 +473,7 @@ export default {
 					result = post('/getBeeBoxSensorData', {
 						sensorDataTags: [
 							{
-								beeBoxNo: _this.beeBoxNo,
+								beeBoxNo: id,
 								// lastestSensorDataId: 68884,
 							},
 						],
@@ -485,9 +490,11 @@ export default {
 				}
 				result.then(res => {
 					if (res.data.responseCode === '000000') {
-						console.log(99999, res.data);
+
 						let d = res.data.data;
-						if (d) {
+						if (d.length>0) {
+                d = d[0]
+
 							sensorDataId = d.id;
 							temperature.push(d.temperature);
 							humidity.push(d.humidity);
@@ -503,12 +510,12 @@ export default {
 								battery,
 								date,
 							};
-							console.log(1111111, obj);
+							//console.log(1111111, obj);
 							_this.$refs.fool.drawFoldLine(obj);
 						}
 					}
 				});
-			}, 1000);
+			}, 5000);
 		},
 		// 添加到编组列表
 		addToGroup() {
@@ -945,5 +952,8 @@ textarea {
 }
 .icon-span i {
 	font-size: 13px;
+}
+.selected{
+  background: rgb(153, 206, 232)
 }
 </style>

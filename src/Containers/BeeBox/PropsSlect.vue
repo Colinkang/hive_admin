@@ -64,7 +64,7 @@
       <span class="hover" style="margin-right:20px" @click="add"><i class="iconfont icon-add"></i>
       添加
       </span>
-      <span class="hover"> <i class="iconfont icon-069delete"></i>
+      <span class="hover" @click="deleteById"> <i class="iconfont icon-069delete" ></i>
       删除
       </span>
     </div>
@@ -229,7 +229,7 @@ export default {
           condition = {
             name: "生产日期",
             text: this.date,
-            type: 'batchNo',
+            type: 'productionDate',
             value: [this.date],
             children:[]
           }
@@ -238,7 +238,7 @@ export default {
           condition = {
             name: "地理位置",
             text: `【${valueArr[0]},${valueArr[2]}】,【${valueArr[1]},${valueArr[3]}】`,
-            type: 'batchNo',
+            type: 'position',
             value: [this.date],
             children:[]
           }
@@ -269,6 +269,16 @@ export default {
     },
     add(){
 
+    },
+    deleteById(){
+      let index = this.conditionIndex
+      let conditionArr = this.condition
+      console.log(conditionArr)
+      if(conditionArr.length>0){
+        conditionArr.splice(index,1)
+        this.conditionIndex=""
+      }
+      this.condition = conditionArr
     }
 
   }

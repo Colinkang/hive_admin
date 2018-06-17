@@ -126,6 +126,7 @@ export default {
 	top: 0;
 	min-width: 1280px;
 	min-height: 720px;
+  overflow: scroll;
 }
 
 .login-logo {
