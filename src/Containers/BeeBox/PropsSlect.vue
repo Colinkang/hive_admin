@@ -5,7 +5,7 @@
       条件
     </div>
     <select style="width:90%;" @change="selectProps">
-        <option value ="id">ID</option>
+        <option value ="id">蜂箱ID</option>
         <option value ="beeFarmerName">蜂农姓名</option>
         <option value ="beeFarmerId">蜂农ID</option>
         <option value="manufacturer">制造商</option>
@@ -61,23 +61,23 @@
 
     </div>
     <div class="canshu" style="text-align:right">
-      <span class="hover" style="margin-right:20px" @click="add"><i class="iconfont icon-add"></i>
-      添加
+      <span class="hover" style="margin-right:20px"><i class="iconfont icon-add"></i>
+        <el-button type="text" @click="add" >添加</el-button>
       </span>
-      <span class="hover" @click="deleteById"> <i class="iconfont icon-069delete" ></i>
-      删除
+      <span class="hover"> <i class="iconfont icon-069delete"></i>
+        <el-button type="text" @click="del" > 删除</el-button>
       </span>
     </div>
   </div>
   <div class="form-row">
       <div class="condition-box">
-        <div  v-for="(item,index) in condition" @click="slectThisCondition(index)" :class="`condition-row ${conditionIndex === index?'selected':''}`">
+        <div  v-for="(item,index) in condition" :key="index" @click="slectThisCondition(index)" :class="`condition-row ${conditionIndex === index?'selected':''}`">
             <div class="">
                 {{item.name}}:{{item.text}}
             </div>
             <div class="">
               <ul>
-                <li v-for="item1 in item.children">  {{item1.name}}:{{item1.text}}</li>
+                <li v-for="item1 in item.children" :key="item1.name">  {{item1.name}}:{{item1.text}}</li>
               </ul>
             </div>
         </div>
@@ -86,245 +86,351 @@
 </div>
 </template>
 <script>
-import _ from 'lodash'
+import { get, post } from '../../common/post.js';
+import _ from 'lodash';
 const config = {
-  'id': 'id',
-  "beeFarmerName": '蜂农姓名',
-  'beeFarmerId': '蜂农ID',
-  'manufacturer': '制造商',
-  'batchNo': '批次',
-  'productionDate': '生产日期',
-  'position': '地理位置'
-}
+	id: 'id',
+	beeFarmerName: '蜂农姓名',
+	beeFarmerId: '蜂农ID',
+	manufacturer: '制造商',
+	batchNo: '批次',
+	productionDate: '生产日期',
+	position: '地理位置',
+};
 export default {
-  name: "",
-  data: () => ({
-    selectClass: 'range',
-    slectType: 'id',
-    date: '',
-    //最所四个输入框，如果只有一个全用input1
-    input1: '',
-    input2: '',
-    input3: '',
-    input4: '',
-    //查询条件数组
-    condition: [],
-    conditionIndex: ''
-  }),
-  methods: {
-    selectProps(e) {
-      let value = e.target.value
-      this.slectType = value
-    },
-    sure() {
-      let slectType = this.slectType
-      console.log(slectType)
-      switch (slectType) {
-        case ('id'):
-          if (!this.input1 || !this.input2) {
-            alert('请输入查询id的范围')
-          } else {
-            this.createcondition('id', [this.input1, this.input2])
-          }
-          break;
-        case ('beeFarmerName'):
-          if (!this.input1) {
-            alert('请输入要查询的蜂农名字')
-          } else {
-            this.createcondition('beeFarmerName', [this.input1])
-          }
-          break;
-        case ('beeFarmerId'):
-          if (!this.input1) {
-            alert('请输入要查询的蜂农Id')
-          } else {
-            this.createcondition('beeFarmerId', [this.input1])
-          }
-          break;
-        case ('manufacturer'):
-          if (!this.input1) {
-            alert('请输入要查询的制造商')
-          } else {
-            this.createcondition('manufacturer', [this.input1])
-          }
-          break;
-        case ('batchNo'):
-          if (!this.input1) {
-            alert('请输入要查询的批次范围')
-          } else {
-            this.createcondition('batchNo', [this.input1, this.input2])
-          }
-          break;
-        case ('productionDate'):
-          if (!this.date) {
-            alert('请输入要查询的生产日期')
-          } else {
-            this.createcondition('productionDate', this.date)
-          }
-          break;
-        case ('position'):
-          if (!this.input1 && !this.input2 && !this.input3 && !this.input4) {
-            alert('请输入要查询经纬度范围')
-          } else {
-            this.createcondition('position', [this.input1, this.input2, this.input3, this.input4])
-          }
-          break;
-      }
-      // this.input1="";
-      // this.input2="";
-      // this.input3="";
-      // this.input4="";
-    },
-    createcondition(slectType, valueArr) {
+	name: '',
+	data: () => ({
+		selectClass: 'range',
+		slectType: 'id',
+		date: '',
+		//最所四个输入框，如果只有一个全用input1
+		input1: '',
+		input2: '',
+		input3: '',
+		input4: '',
+		//查询条件数组
+		condition: [],
+		conditionIndex: '',
+		ids: [],
+	}),
+	methods: {
+		selectProps(e) {
+			let value = e.target.value;
+			this.slectType = value;
+		},
+		sure() {
+			let slectType = this.slectType;
+			console.log(slectType);
+			switch (slectType) {
+				case 'id':
+					if (!this.input1 || !this.input2) {
+						alert('请输入查询id的范围');
+					} else {
+						this.createcondition('id', [this.input1, this.input2]);
+					}
+					break;
+				case 'beeFarmerName':
+					if (!this.input1) {
+						alert('请输入要查询的蜂农名字');
+					} else {
+						this.createcondition('beeFarmerName', [this.input1]);
+					}
+					break;
+				case 'beeFarmerId':
+					if (!this.input1) {
+						alert('请输入要查询的蜂农Id');
+					} else {
+						this.createcondition('beeFarmerId', [this.input1]);
+					}
+					break;
+				case 'manufacturer':
+					if (!this.input1) {
+						alert('请输入要查询的制造商');
+					} else {
+						this.createcondition('manufacturer', [this.input1]);
+					}
+					break;
+				case 'batchNo':
+					if (!this.input1) {
+						alert('请输入要查询的批次范围');
+					} else {
+						this.createcondition('batchNo', [this.input1, this.input2]);
+					}
+					break;
+				case 'productionDate':
+					if (!this.date) {
+						alert('请输入要查询的生产日期');
+					} else {
+						this.createcondition('productionDate', this.date);
+					}
+					break;
+				case 'position':
+					if (!this.input1 && !this.input2 && !this.input3 && !this.input4) {
+						alert('请输入要查询经纬度范围');
+					} else {
+						this.createcondition('position', [this.input1, this.input2, this.input3, this.input4]);
+					}
+					break;
+			}
+			// this.input1="";
+			// this.input2="";
+			// this.input3="";
+			// this.input4="";
+		},
+		createcondition(slectType, valueArr) {
+			let condition = {};
 
-      let condition = {}
+			switch (slectType) {
+				case 'id':
+					condition = {
+						name: 'ID',
+						text: `从${valueArr[0]}至${valueArr[1]}`,
+						type: 'id',
+						value: valueArr,
+						children: [],
+					};
+					break;
+				case 'beeFarmerName':
+					condition = {
+						name: '蜂农名称',
+						text: valueArr[0],
+						type: 'beeFarmerName',
+						value: valueArr,
+						children: [],
+					};
+					break;
+				case 'beeFarmerId':
+					condition = {
+						name: '蜂农ID',
+						text: valueArr[0],
+						type: 'beeFarmerId',
+						value: valueArr,
+						children: [],
+					};
+					break;
+				case 'manufacturer':
+					condition = {
+						name: '制造商',
+						text: valueArr[0],
+						type: 'manufacturer',
+						value: valueArr,
+						children: [],
+					};
+					break;
+				case 'batchNo':
+					condition = {
+						name: '批次范围',
+						text: `从${valueArr[0]}至${valueArr[1]}`,
+						type: 'batchNo',
+						value: valueArr,
+						children: [],
+					};
+					break;
+				case 'productionDate':
+					condition = {
+						name: '生产日期',
+						text: this.date,
+						type: 'batchNo',
+						value: [this.date],
+						children: [],
+					};
+					break;
+				case 'position':
+					condition = {
+						name: '地理位置',
+						text: `【${valueArr[0]},${valueArr[2]}】,【${valueArr[1]},${valueArr[3]}】`,
+						type: 'batchNo',
+						value: [this.date],
+						children: [],
+					};
+					break;
+			}
+			let conditionArr = _.cloneDeep(this.condition);
 
-      switch (slectType) {
-        case ('id'):
-          condition = {
-            name: "ID",
-            text: `从${valueArr[0]}至${valueArr[1]}`,
-            type: 'id',
-            value: valueArr,
-            children:[]
-          }
-          break;
-        case ('beeFarmerName'):
-          condition = {
-            name: "蜂农名称",
-            text: valueArr[0],
-            type: 'beeFarmerName',
-            value: valueArr,
-            children:[]
-          }
-          break;
-        case ('beeFarmerId'):
-          condition = {
-            name: "蜂农ID",
-            text: valueArr[0],
-            type: 'beeFarmerId',
-            value: valueArr,
-            children:[]
-          }
-          break;
-        case ('manufacturer'):
-          condition = {
-            name: "制造商",
-            text: valueArr[0],
-            type: 'manufacturer',
-            value: valueArr,
-            children:[]
-          }
-          break;
-        case ('batchNo'):
-          condition = {
-            name: "批次范围",
-            text: `从${valueArr[0]}至${valueArr[1]}`,
-            type: 'batchNo',
-            value: valueArr,
-            children:[]
-          }
-          break;
-        case ('productionDate'):
-          condition = {
-            name: "生产日期",
-            text: this.date,
-            type: 'productionDate',
-            value: [this.date],
-            children:[]
-          }
-          break;
-        case ('position'):
-          condition = {
-            name: "地理位置",
-            text: `【${valueArr[0]},${valueArr[2]}】,【${valueArr[1]},${valueArr[3]}】`,
-            type: 'position',
-            value: [this.date],
-            children:[]
-          }
-          break;
-      }
-      let conditionArr = _.cloneDeep(this.condition)
+			if (this.conditionIndex === '') {
+				conditionArr.push(condition);
+			} else {
+				conditionArr[this.conditionIndex].children.push(condition);
+			}
+			this.condition = conditionArr;
+			this.conditionIndex = '';
+			this.input1 = '';
+			this.input2 = '';
+			this.input3 = '';
+			this.input4 = '';
+			console.log(conditionArr);
+		},
+		slectThisCondition(index) {
+			this.conditionIndex = index;
+		},
+		inputChange(e, key) {
+			//let value = e.target.value
+			console.log(key);
+		},
+		add() {
+			console.log(123, this.condition);
+			let obj = {};
+			let array = [];
+			let condition = this.condition;
 
-      if (this.conditionIndex==="") {
-        conditionArr.push(condition)
-      } else {
-        conditionArr[this.conditionIndex].children.push(condition)
-      }
-      this.condition=conditionArr
-      this.conditionIndex=""
-      this.input1="";
-      this.input2="";
-      this.input3="";
-      this.input4="";
-      console.log(conditionArr)
+			for (let con of condition) {
+				switch (con.type) {
+					case 'beeFarmerId':
+						{
+							obj['beeFarmerId'] = con.value[0];
+						}
+						break;
+					case 'beeFarmerName':
+						{
+							obj['beeFarmerName'] = con.value[0];
+						}
+						break;
+					case 'manufacturer':
+						{
+							obj['manfaucturer'] = con.value[0];
+						}
+						break;
+					case 'productionDate':
+						{
+							obj['productionDate'] = new Date(con.value[0]).getTime();
+						}
+						break;
+					case 'id':
+						{
+							obj['maxBeeBoxNo'] = con.value[1];
+							obj['minBeeBoxNo'] = con.value[0];
+						}
+						break;
+					case 'batchNo':
+						{
+							obj['maxBatchNo'] = con.value[1];
+							obj['minBatchNo'] = con.value[0];
+						}
+						break;
+					case 'position':
+						{
+							obj['minLongitude'] = con.value[0];
+							obj['maxLongitude'] = con.value[1];
+							obj['minLatitude'] = con.value[2];
+							obj['maxLatitude'] = con.value[3];
+						}
+						break;
+				}
+				if (condition.children) {
+					for (let child of condition.children) {
+						switch (child.type) {
+							case 'beeFarmerId':
+								{
+									obj['beeFarmerId'] = child.value[0];
+								}
+								break;
+							case 'beeFarmerName':
+								{
+									obj['beeFarmerName'] = child.value[0];
+								}
+								break;
+							case 'manufacturer':
+								{
+									obj['manfaucturer'] = child.value[0];
+								}
+								break;
+							case 'productionDate':
+								{
+									obj['productionDate'] = new Date(child.value[0]).getTime();
+								}
+								break;
+							case 'id':
+								{
+									obj['maxBeeBoxNo'] = child.value[1];
+									obj['minBeeBoxNo'] = child.value[0];
+								}
+								break;
+							case 'batchNo':
+								{
+									obj['maxBatchNo'] = child.value[1];
+									obj['minBatchNo'] = child.value[0];
+								}
+								break;
+							case 'position':
+								{
+									obj['minLongitude'] = child.value[0];
+									obj['maxLongitude'] = child.value[1];
+									obj['minLatitude'] = child.value[2];
+									obj['maxLatitude'] = child.value[3];
+								}
+								break;
+						}
+					}
+				}
 
-    },
-    slectThisCondition(index){
-      this.conditionIndex = index
-    },
-    inputChange(e, key) {
-      //let value = e.target.value
-      console.log(key)
-    },
-    add(){
-
-    },
-    deleteById(){
-      let index = this.conditionIndex
-      let conditionArr = this.condition
-      console.log(conditionArr)
-      if(conditionArr.length>0){
-        conditionArr.splice(index,1)
-        this.conditionIndex=""
-      }
-      this.condition = conditionArr
-    }
-
-  }
-}
+				array.push(obj);
+			}
+			let result = post('/queryGroupBeeBox', { filterItems: array });
+			result.then(res => {
+				console.log(1111, res);
+				this.ids = [];
+				let data = res.data.data;
+				for (let d of data) {
+					this.ids.push(d.beeBoxNo);
+        }
+        // 展示表格数据
+        
+			});
+		},
+		save() {
+			let result = post('/api/saveGroupBeeBox', {
+				beeBoxGroup: {
+					groupName: 'groupName',
+					adminId: '1',
+				},
+				ids: this.ids,
+			});
+		},
+		del() {},
+	},
+};
 </script>
 <style lang="" scoped>
 .form-row {
-  vertical-align: top;
+	vertical-align: top;
 }
 
 .tiaojian,
 .canshu {
-  width: 49%;
-  display: inline-block;
+	width: 49%;
+	display: inline-block;
 }
 
 .sure-btn {
-  width: 80px;
-  height: 30px;
-  text-align: center;
-  line-height: 30px;
-  background: #0b1b36;
-  color: white;
-  margin-top: 20px;
+	width: 80px;
+	height: 30px;
+	text-align: center;
+	line-height: 30px;
+	background: #0b1b36;
+	color: white;
+	margin-top: 20px;
 }
 
 .sure-btn:hover {
-  background: #1a335e;
-  cursor: pointer;
+	background: #1a335e;
+	cursor: pointer;
 }
-.condition-box{
-  width: 100%;
-  height: 165px;
-  background: white;
-  color:black;
-  overflow: scroll;
+.condition-box {
+	width: 100%;
+	height: 165px;
+	background: white;
+	color: black;
+	overflow: scroll;
 }
-.condition-row:hover{
-  background: rgb(107, 152, 171);
-  cursor: pointer;
+.condition-row:hover {
+	background: rgb(107, 152, 171);
+	cursor: pointer;
 }
-.selected{
-  background: rgb(107, 152, 171)
+.selected {
+	background: rgb(107, 152, 171);
 }
-.hover:hover{
-  color: rgb(31, 132, 170);
-  cursor: pointer;
+.hover:hover {
+	color: rgb(31, 132, 170);
+	cursor: pointer;
 }
 </style>

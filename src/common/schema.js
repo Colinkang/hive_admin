@@ -67,6 +67,16 @@ const createManagerSchema = Joi.object().keys({
     type: Joi.any(),
 
 });
+
+const adminDetailSchema = Joi.object().keys({
+    id: Joi.number().required(),
+    name: Joi.string().required(),
+    username: Joi.string().required(),
+    mobile: Joi.string().required(),
+    email: Joi.string().required(),
+    type: Joi.number().required(),
+    address: joi.string().required(),
+});
 module.exports = {
     Validate,
     loginSchema,
@@ -75,5 +85,6 @@ module.exports = {
     organizeAddSchema,
     changeCodeSchema,
     createRuleSchema,
-    createManagerSchema
+    createManagerSchema,
+    adminDetailSchema
 };

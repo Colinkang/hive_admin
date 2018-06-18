@@ -40,38 +40,23 @@
           <el-col :span="5">
             <el-input size="mini"  placeholder="请输入内容" v-model="manager.email"></el-input>
           </el-col>
-          <!-- <el-col :span="4">
-            <span class="sent-code">发送邮件获取验证码</span>
-          </el-col>
-          <el-col :span="3" >
-            验证码
-          </el-col>
-          <el-col :span="3">
-            <el-input size="mini"  placeholder="请输入内容"></el-input>
-          </el-col> -->
-
         </el-row>
         <el-row class="form-row">
           <el-col :span="3" style="text-align:right;margin-right:20px;">
             联系电话
           </el-col>
-          <el-col :span="5">
-             {{manager.mobile}}
+         <el-col :span="5">
+              <el-input size="mini"  v-model="manager.mobile"  placeholder="请输入内容"></el-input>
           </el-col>
-          <!-- <el-col :span="4">
-            <span class="sent-code">修改</span>
-          </el-col> -->
-
-
-        </el-row>
-        <el-row class="form-row">
-          <el-col :span="3" style="text-align:right;margin-right:20px;">
-            组织
+          <el-col :span="4">
+            <span class="sent-code" @click="sendCode">发送验证码</span>
           </el-col>
-          <el-col :span="5">
-            {{manager.organization}}
+          <el-col :span="3" >
+            验证码
+          </el-col> 
+          <el-col :span="3">
+            <el-input size="mini" v-model="beekeeper.code"  placeholder="请输入内容"></el-input>
           </el-col>
-
         </el-row>
         <el-row class="form-row">
           <el-col :span="4">
@@ -85,17 +70,19 @@
 </template>
 <script>
 import { get, post } from '../../common/post.js';
+import { Validate, adminDetailSchema } from '../../common/schema.js';
 export default {
 	name: '',
 	data: () => ({
 		manager: {
 			name: '',
 			username: '',
-			adminId: '',
 			type: '',
 			email: '',
 			mobile: '',
-			organization: '',
+			id: '',
+			address,
+			type_value: '',
 		},
 	}),
 	mounted() {
@@ -103,7 +90,31 @@ export default {
 	},
 	methods: {
 		save() {
+			let options = {
+				id: this.manager.id,
+				name: this.manager.name,
+				username: this.manager.username,
+				mobile: this.manager.mobile,
+				email: this.manager.email,
+				type: this.manager.type,
+				address: this.manager.address,
+			};
+			if (Validate(options, adminDetailSchema) !== null) {
+				this.$message({
+					message: '参数都不能为空',
+					type: 'warning',
+				});
+			}
+			let result = post('/updateAdminInfo', options);
 			// this.$router.back();
+			result.then(res => {
+				if (res.data.responseCode === '000000') {
+					this.$message({
+						message: '更新管理员信息成功',
+						type: 'success',
+					});
+				}
+			});
 		},
 		getManagerInfo() {
 			let result = get('/getAdminInfo');
@@ -111,28 +122,28 @@ export default {
 				if (res.data.responseCode === '000000') {
 					let data = res.data.data;
 					console.log(111, data);
+					this.manager.id = data.id;
 					this.manager.name = data.name;
 					this.manager.username = data.username;
-					this.manager.adminId = data.id;
+					this.manager.mobile = data.mobile;
 					this.manager.email = data.email;
+					this.manager.type = data.type;
 					switch (data.type) {
 						case 1:
-							this.manager.type = '超级管理员';
+							this.manager.type_value = '超级管理员';
 							break;
 						case 2:
-							this.manager.type = '高级管理员';
+							this.manager.type_value = '高级管理员';
 							break;
 						case 3:
-							this.manager.type = '组织管理员';
+							this.manager.type_value = '组织管理员';
 							break;
 						case 4:
-							this.manager.type = '无组织管理员';
-							break;;
+							this.manager.type_value = '无组织管理员';
+							break;
 					}
-
-					// this.manager.type = data.type;
+					this.manager.address = data.address;
 					this.manager.mobile = data.mobile;
-					this.manager.organization = data.organizationName;
 				}
 			});
 		},
