@@ -4,11 +4,11 @@
     <span class="title">管理</span>
   </div>
   <div class="form-row form-row-section">
-    <div class="input-section-left">
+    <div class="input-section-left" v-if="right.indexOf('1')>-1">
       <div class="form-row">
         <span style="margin-left:20px;margin-top:10px;display:block">创建管理员</span>
         <span class="input-item" style="margin-left:20px;"><label>姓名 <input v-model.trim="managementParams.name" style="width:120px;"/></label></span>
-        <span class="input-item" style="margin-left:20px;"><label>合作社   
+        <!-- <span class="input-item" style="margin-left:20px;"><label>合作社   
           <select v-model.trim="managementParams.organizationId" style="width:120px;" placeholder="请选择">
               <option
                 v-for="item in organizationLists"
@@ -17,7 +17,7 @@
                 :value="item.id">
               </option>
             </select></label>
-        </span>
+        </span> -->
         <span class="input-item" style="margin-left:20px;"><label>邮箱 <input v-model.trim="managementParams.email" style="width:120px;"/></label></span>
         <span class="input-item" style="margin-left:20px;"><label>联系电话 <input v-model.trim="managementParams.mobile" style="width:120px;"/></label><span class="sent-code" :class="{ active : codeStatus}" @click="sendVerifyCode">{{ codeText }}</span></span>
         <span class="input-item" style="margin-left:20px;"><label>验证码 <input v-model.trim="managementParams.code" style="width:70px;"/></label></span>
@@ -132,7 +132,7 @@
     </table>
   </div>
   <div class="form-row">
-    <el-button type="text" class="icon-span" @click="deleteManager"><i class="iconfont icon-069delete">删除</i></el-button>
+    <el-button v-if="right.indexOf('1')>-1" type="text" class="icon-span" @click="deleteManager"><i class="iconfont icon-069delete">删除</i></el-button>
     <el-button type="text" class="icon-span" @click="handlePageChange(currentPageNo)"><i class="iconfont icon-shuaxin1">刷新</i></el-button>
   </div>
   <div class="form-row" style="text-align:center">
@@ -142,6 +142,8 @@
 </div>
 </template>
 <script>
+import { HIVE_ADMIN_RIGHTS } from '../../common/localStorageKey';
+import LocalStore from '../../common/localStore';
 import { get, post } from '../../common/post.js';
 import moment from 'moment';
 import { sortBy } from '../../common/utils.js';
@@ -153,7 +155,7 @@ export default {
 		adminList: [],
 		managementParams: {
 			name: '',
-			organizationId: '',
+			// organizationId: '',
 			email: '',
 			mobile: '',
 			code: '',
@@ -189,10 +191,13 @@ export default {
 		currentPageNo: 1,
 		totalPageNo: 1,
 		array1: [],
+		right: '',
 	}),
 	mounted() {
 		this.getAllOrganizations();
 		this.getManagerList(1);
+		let adminRight = LocalStore.getItem(HIVE_ADMIN_RIGHTS);
+		this.right = adminRight.split(',');
 	},
 	methods: {
 		sortById() {
@@ -232,6 +237,7 @@ export default {
 		},
 		getRights() {
 			this.managementParams.rights = [];
+
 			if (this.beefarmerChecked) {
 				this.managementParams.rights.push(this.beefarmerType);
 			}
@@ -290,13 +296,26 @@ export default {
 			result.then(res => {
 				// console.log(res)
 				if (res.data.responseCode === '000000') {
-					this.$message({
-						message: '添加管理员成功',
-						type: 'success',
-					});
+					// this.$message({
+					// 	message: '添加管理员成功',
+					// 	type: 'success',
+					// });
+					this.$alert(
+						`用户名:${res.data.data.username} 密码:${this.managementParams.password}`,
+						'用户名和密码',
+						{
+							confirmButtonText: '确定',
+							callback: action => {
+								this.$message({
+									type: 'info',
+									message: `添加管理员成功`,
+								});
+							},
+						}
+					);
 					this.managementParams = {
 						name: '',
-						organizationId: '',
+						// organizationId: '',
 						email: '',
 						mobile: '',
 						code: '',
@@ -306,6 +325,8 @@ export default {
 						type: '2',
 					};
 					this.getManagerList(this.currentPageNo);
+				} else if (res.data.responseCode === '000034') {
+					this.$message.error('验证码错误');
 				} else {
 					this.$message.error('添加管理员失败');
 				}
@@ -373,8 +394,10 @@ export default {
 			this.deleteIdList.length = 0;
 			if (this.checkAll) {
 				this.adminList.forEach(element => {
-					this.deleteIdList.push(element.adminId);
+					console.log(112, element);
+					this.deleteIdList.push(element.id);
 				});
+				// console.log(111, this.deleteIdList);
 			} else {
 				this.checkList.forEach((element, index) => {
 					if (element) {
@@ -462,7 +485,14 @@ export default {
 				registerFlag: 1,
 				messageType: 2298872,
 			});
-			result.then(res => {});
+			result.then(res => {
+				if (res.data.responseCode === '000000') {
+					this.$message({
+						message: '发送验证码成功',
+						type: 'success',
+					});
+				}
+			});
 		},
 	},
 };

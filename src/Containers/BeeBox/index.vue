@@ -2,10 +2,10 @@
   <div class="outer-box">
     <div class="hive-top">
             <div class="hive-control-btn">
-                <span v-if="right.indexOf('9')===-1" ><i class="iconfont icon-add"></i>
+                <span v-if="right.indexOf('4')>-1" ><i class="iconfont icon-add"></i>
                   <el-button type="text" @click="toSomePage('/addbeebox')">添加</el-button>
                 </span>
-                <span><i class="iconfont icon-069delete"></i>
+                <span v-if="right.indexOf('4')>-1"><i class="iconfont icon-069delete"></i>
                   <el-button type="text" @click="deleteBeeBox" >删除</el-button>
                 </span>
                 <span><i class="iconfont icon-shuaxin1"></i>
@@ -136,18 +136,13 @@
 			</baidu-map> -->
       <baidu-map style="width:100%;height:100%" :center="{lng, lat}" :zoom="zoom">
         <!-- <bm-city-list anchor="BMAP_ANCHOR_TOP_LEFT"></bm-city-list> -->
-        <bm-point-collection shape="BMAP_POINT_SHAPE_CIRCLE" color="red" size="BMAP_POINT_SIZE_NORMAL" ></bm-point-collection>
+        <bm-point-collection :points="points" shape="BMAP_POINT_SHAPE_CIRCLE" color="red" size="BMAP_POINT_SIZE_NORMAL" @click="clickHandler" ></bm-point-collection>
         <bm-navigation anchor="BMAP_ANCHOR_TOP_RIGHT"></bm-navigation>
         <bm-scale anchor="BMAP_ANCHOR_TOP_RIGHT"></bm-scale>
         <bm-marker :position="{lng, lat}" :dragging="true" animation="BMAP_ANIMATION_BOUNCE">
           <!-- <bm-label content="当前蜂箱" :labelStyle="{color: 'red', fontSize : '24px'}" :offset="{width: -35, height: 30}" /> -->
         </bm-marker>
       </baidu-map>
-			<!-- <baidu-map class="map" style="width:100%;height:100%" center="中国">
-				<bml-marker-clusterer :averageCenter="true">
-				    <bm-marker v-for="marker of markers" shape="BMAP_POINT_SHAPE_STAR" color="red" size="BMAP_POINT_SIZE_SMALL" :position="{lng: marker.lng, lat: marker.lat}"></bm-marker>
-				</bml-marker-clusterer>
-			</baidu-map> -->
           </div>
         </div>
         <div class="section-right-bottom">
@@ -156,7 +151,7 @@
               编组
             </div>
 
-            <props-select @getList="createStartData"></props-select>
+            <props-select @getList="createStartData" @getGroup="getGroupList"></props-select>
 
 
             <div class="form-row">
@@ -269,10 +264,10 @@ export default {
 			array1: [],
 			position: { lng: 116.404, lat: 39.915 },
 			center: { lng: 116.404, lat: 39.915 },
-			points:[],
-      zoom:9,
-      lng:116.404,
-      lat: 39.915
+			points: [],
+			zoom: 9,
+			lng: 116.404,
+			lat: 39.915,
 		};
 	},
 	mounted: function() {
@@ -285,19 +280,35 @@ export default {
 		let adminRight = LocalStore.getItem(HIVE_ADMIN_RIGHTS);
 		this.right = adminRight.split(',');
 	},
-	beforeDestroy(){
+	beforeDestroy() {
 		clearInterval(hiveTimer);
 		clearInterval(timer);
 	},
 	methods: {
-		clickHandler (e) {
-	    	for(let  i =0;i<this.hiveList.length;i++){
-	    		if(e.point.lng===this.hiveList[i].lng&&e.point.lat===this.hiveList[i].lat){
-	    			this.getBeeBoxInfo(this.hiveList[i].beeBoxNo);
-	    			this.clickBoxId(this.hiveList[i].beeBoxNo);
-	    		}
-	    	}
-	    },
+		// clickHandler(e) {
+		// 	for (let i = 0; i < this.hiveList.length; i++) {
+		// 		if (e.point.lng === this.hiveList[i].lng && e.point.lat === this.hiveList[i].lat) {
+		// 			this.getBeeBoxInfo(this.hiveList[i].beeBoxNo);
+		// 			this.clickBoxId(this.hiveList[i].beeBoxNo);
+		// 		}
+		// 	}
+		// },
+		//点击图上的某个点
+		clickHandler(e) {
+			this.lng = e.point.lng;
+			this.lat = e.point.lat;
+			// alert(`单击点的坐标为：${e.point.lng}, ${e.point.lat}`);
+			let result = post('/getBeeBoxByPosition', {
+				lng: this.lng,
+				lat: this.lat,
+			});
+			result.then(res => {
+				console.log(11234, res.data);
+				if (res.data.responseCode === '000000') {
+					this.idSelectSearch(res.data.data.beeBoxNo);
+				}
+			});
+		},
 		sortByBeeBoxNum() {
 			this.array1 = sortBy('beeBoxNum', this.groupStatusList, this.checkAllGroupStatus, [], this.groupList, true);
 			this.beeFarmerSortList = [];
@@ -321,7 +332,9 @@ export default {
 						this.beeBoxInfo.lat = data.lat;
 						this.beeBoxInfo.lng = data.lng;
 						this.latlng = '' + this.beeBoxInfo.lat + ',' + '' + this.beeBoxInfo.lng;
-					//	console.log(this.latlng);
+						this.lat = data.lat;
+						this.lng = data.lng;
+						//	console.log(this.latlng);
 						this.beeBoxInfo.productionDate = moment(data.productionDate).format('YYYY-MM-DD');
 						// 将值赋值给列表
 						if (data.status === 0) this.beeBoxInfo.status = '正在运行';
@@ -346,35 +359,33 @@ export default {
 			result.then(res => {
 				//console.log(111167, res);
 				if (res.data.responseCode === '000000') {
-
-					this.createStartData(res)
+					this.createStartData(res);
 					// 画扇形图
 				}
 			});
 		},
-    createStartData(res){
-      let data = res.data.data;
-      this.hiveList = data;
-      let list = data
-      if(data.length>0&&this.beeBoxNo===""){
-        this.beeBoxNo = list[0].beeBoxNo
-        this.clickBoxId(list[0].beeBoxNo);
-        this.getBeeBoxInfo(list[0].beeBoxNo);
-      }
-      // 将值赋值给列表
-      if (data.length > 0) {
-        for (let i = 0; i < this.hiveList.length; i++) {
-          this.statusList[i] = false;
-        }
-        const points = [];
-        for (let i=0;i<this.hiveList.length;i++) {
-          const position = { lng: this.hiveList[i].lng, lat: this.hiveList[i].lat};
-          points.push(position);
-        }
-        this.points = points
-
-      }
-    },
+		createStartData(res) {
+			let data = res.data.data;
+			this.hiveList = data;
+			let list = data;
+			if (data.length > 0 && this.beeBoxNo === '') {
+				this.beeBoxNo = list[0].beeBoxNo;
+				this.clickBoxId(list[0].beeBoxNo);
+				this.getBeeBoxInfo(list[0].beeBoxNo);
+			}
+			// 将值赋值给列表
+			if (data.length > 0) {
+				for (let i = 0; i < this.hiveList.length; i++) {
+					this.statusList[i] = false;
+				}
+				const points = [];
+				for (let i = 0; i < this.hiveList.length; i++) {
+					const position = { lng: this.hiveList[i].lng, lat: this.hiveList[i].lat };
+					points.push(position);
+				}
+				this.points = points;
+			}
+		},
 		//删除蜂箱
 		deleteBeeBox() {
 			this.deleteIdArray = [];
@@ -393,20 +404,21 @@ export default {
 			let result = post('/deleteBeeBoxes', {
 				ids: this.deleteIdArray,
 			});
-			result.then(res => {
-        hiveTimer = setTimeout(this.getHiveList, 5000);
-				if (res.data.responseCode === '000000') {
-					this.$message({
-						message: '删除蜂箱成功',
-						type: 'success',
-					});
-					this.getHiveList(null);
-					this.deleteIdObject = {};
-				}
-			}).catch((err)=>{
-        hiveTimer = setTimeout(this.getHiveList, 5000);
-
-      });
+			result
+				.then(res => {
+					hiveTimer = setTimeout(this.getHiveList, 5000);
+					if (res.data.responseCode === '000000') {
+						this.$message({
+							message: '删除蜂箱成功',
+							type: 'success',
+						});
+						this.getHiveList(null);
+						this.deleteIdObject = {};
+					}
+				})
+				.catch(err => {
+					hiveTimer = setTimeout(this.getHiveList, 5000);
+				});
 		},
 		//获取饼图信息 总览信息
 		getPai() {
@@ -452,7 +464,7 @@ export default {
 		// 					this.fold.battery.push(d.battery);
 		// 					this.fold.date.push(moment(data.createDate).format('YYYY-MM-DD hh:mm'));
 		// 				}
-						// this.$refs.fool.drawFoldLine(this.fold);
+		// this.$refs.fool.drawFoldLine(this.fold);
 		// 			}
 		// 		}
 		// 	});
@@ -499,10 +511,10 @@ export default {
 				}
 				result.then(res => {
 					if (res.data.responseCode === '000000') {
-
 						let d = res.data.data;
-						if (d.length>0) {
-                d = d[0]
+						console.log(123456,d);
+						if (d.length > 0) {
+							d = d[0];
 
 							sensorDataId = d.id;
 							temperature.push(d.temperature);
@@ -527,16 +539,16 @@ export default {
 			}, 5000);
 		},
 		// 添加到编组列表
-		addToGroup() {
-			let result = post('/saveGroupBeeBox', {
-				beeBoxGroup: {
-					id: 1,
-					groupName: '',
-				},
-				ids: [],
-			});
-			result.then(res => {});
-		},
+		// addToGroup() {
+		// 	let result = post('/saveGroupBeeBox', {
+		// 		beeBoxGroup: {
+		// 			id: 1,
+		// 			groupName: '',
+		// 		},
+		// 		ids: [],
+		// 	});
+		// 	result.then(res => {});
+		// },
 
 		// 显示编组信息列表 //刷新现有组列表
 		getGroupList() {
@@ -663,7 +675,7 @@ export default {
 			}
 			return data;
 		},
-	}
+	},
 };
 </script>
 
@@ -880,14 +892,14 @@ table tr th {
 }
 
 .overview-row-left {
-	width:100%;
+	width: 100%;
 	text-align: left;
 }
 
 .overview-row-right {
 	text-align: left;
 	width: 100%;
-  margin-top: 10px;
+	margin-top: 10px;
 }
 
 .line-chart-box {
@@ -962,7 +974,7 @@ textarea {
 .icon-span i {
 	font-size: 13px;
 }
-.selected{
-  background: rgb(153, 206, 232)
+.selected {
+	background: rgb(153, 206, 232);
 }
 </style>

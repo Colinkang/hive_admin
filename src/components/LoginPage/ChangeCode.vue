@@ -97,23 +97,29 @@ export default {
 				code: this.fix.code,
 			};
 			if (Validate(input, changeCodeSchema) !== null) {
-				this.status = 'wrong';
-				this.text = '输入项都不能为空';
+				this.$message({
+					message: '输入项都不能为空',
+					type: 'warning',
+				});
 				setTimeout(() => {
 					this.changeCodeShowAlert = false;
 				}, 1000);
 			} else if (this.fix.newPassword !== this.fix.newPasswordConfirm) {
-				this.status = 'wrong';
-				this.text = '两次密码不一致';
+				this.$message({
+					message: '两次密码不一致',
+					type: 'warning',
+				});
 				setTimeout(() => {
 					this.changeCodeShowAlert = false;
 				}, 1000);
 			} else {
-				let result = post('/', {});
+				let result = post('/adminUpdatePassword', input);
 				result.then(res => {
 					if (res.data.responseCode === '000000') {
-						this.status = 'success';
-						this.text = '修改密码成功';
+						this.$message({
+							message: '修改密码成功',
+							type: 'success',
+						});
 						setTimeout(() => {
 							this.changeCodeShowAlert = false;
 						}, 1000);
@@ -125,8 +131,7 @@ export default {
 							code: '',
 						};
 					} else {
-						this.status = 'wrong';
-						this.text = '修改密码失败';
+						this.$message.error('修改密码失败');
 						setTimeout(() => {
 							this.changeCodeShowAlert = false;
 						}, 1000);
@@ -169,7 +174,14 @@ export default {
 	margin-top: 10px;
 }
 .sent-code {
-	color: rgb(50, 66, 222);
+	font-size: 13px;
+	color: #fff;
+	padding: 2px 4px;
+	margin-left: 10px;
+	background-color: #40557b;
+	width: 120px;
+	display: inline-block;
+	text-align: center;
 }
 .sent-code:hover {
 	color: rgb(122, 122, 122);

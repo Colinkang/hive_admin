@@ -20,7 +20,7 @@
             管理员ID
           </el-col>
           <el-col :span="5">
-            {{manager.adminId}}
+            {{manager.id}}
           </el-col>
 
         </el-row>
@@ -29,7 +29,7 @@
             管理员类型
           </el-col>
           <el-col :span="5">
-            {{manager.type}}
+            {{manager.type_value}}
           </el-col>
 
         </el-row>
@@ -55,7 +55,15 @@
             验证码
           </el-col> 
           <el-col :span="3">
-            <el-input size="mini" v-model="beekeeper.code"  placeholder="请输入内容"></el-input>
+            <el-input size="mini" v-model="manager.code"  placeholder="请输入内容"></el-input>
+          </el-col>
+        </el-row>
+				 <el-row class="form-row">
+          <el-col :span="3" style="text-align:right;margin-right:20px;">
+            地址
+          </el-col>
+          <el-col :span="5">
+            <el-input size="mini"  placeholder="请输入内容" v-model="manager.address"></el-input>
           </el-col>
         </el-row>
         <el-row class="form-row">
@@ -81,14 +89,39 @@ export default {
 			email: '',
 			mobile: '',
 			id: '',
-			address,
+			address: '',
 			type_value: '',
+			code: '',
 		},
 	}),
 	mounted() {
 		this.getManagerInfo();
 	},
 	methods: {
+		sendCode() {
+			let result = post('/adminSMSService', {
+				mobile: this.manager.mobile,
+				userName: this.manager.username,
+				messageType: 2298872,
+				registerFlag: 1,
+			});
+			result.then(res => {
+				console.log(1234, res);
+				if (res.data.responseCode === '000000') {
+					console.log('获取验证码成功');
+					this.$message({
+						message: '获取验证码成功',
+						type: 'success',
+					});
+				} else if (res.data.responseCode === '000033') {
+					// this.$message('');
+					this.$message({
+						message: '输入的手机号与预留的手机号不一致',
+						type: 'warning',
+					});
+				}
+			});
+		},
 		save() {
 			let options = {
 				id: this.manager.id,
@@ -98,12 +131,15 @@ export default {
 				email: this.manager.email,
 				type: this.manager.type,
 				address: this.manager.address,
+				code: this.manager.code,
 			};
+			console.log(options, Validate(options, adminDetailSchema));
 			if (Validate(options, adminDetailSchema) !== null) {
 				this.$message({
 					message: '参数都不能为空',
 					type: 'warning',
 				});
+				return;
 			}
 			let result = post('/updateAdminInfo', options);
 			// this.$router.back();
@@ -113,6 +149,9 @@ export default {
 						message: '更新管理员信息成功',
 						type: 'success',
 					});
+				} else {
+					console.log(res.data);
+					this.$message.error('更新管理员信息失败');
 				}
 			});
 		},
@@ -174,7 +213,14 @@ export default {
 	margin-top: 10px;
 }
 .sent-code {
-	color: rgb(50, 66, 222);
+	font-size: 13px;
+	color: #fff;
+	padding: 2px 4px;
+	margin-left: 10px;
+	background-color: #40557b;
+	width: 120px;
+	display: inline-block;
+	text-align: center;
 }
 .sent-code:hover {
 	color: rgb(122, 122, 122);

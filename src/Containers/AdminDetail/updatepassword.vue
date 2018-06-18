@@ -46,9 +46,9 @@
           <el-col :span="4">
             <el-button type="primary" @click="save">确认修改</el-button>
           </el-col>
-          <el-col :span="4">
+          <!-- <el-col :span="4">
             <el-button type="default" @click="hive">取消</el-button>
-          </el-col>
+          </el-col> -->
         </el-row>
       </div>
     </div>
@@ -74,11 +74,18 @@ export default {
 	}),
 	methods: {
 		sendCode() {
+			if (!this.fix.mobile) {
+				this.$message({
+					message: '请先输入手机号',
+					type: 'warning',
+				});
+				return;
+			}
 			let options = {
 				mobile: this.fix.mobile,
 				userName: localStore.getItem(HIVE_USER_NAME),
 				messageType: 2298872,
-				registerFlag: 'hello',
+				// registerFlag: 'hello',
 			};
 			console.log(options);
 			let result = post('/adminSMSService', options);
@@ -86,8 +93,16 @@ export default {
 				console.log(1234, res);
 				if (res.data.responseCode === '000000') {
 					console.log('获取验证码成功');
-				} else {
+					this.$message({
+						message: '获取验证码成功',
+						type: 'success',
+					});
+				} else if (res.data.responseCode === '000033') {
 					// this.$message('');
+					this.$message({
+						message: '输入的手机号与预留的手机号不一致',
+						type: 'warning',
+					});
 				}
 			});
 		},
@@ -129,9 +144,9 @@ export default {
 				});
 			}
 		},
-		hive() {
-			this.$emit('hide');
-		},
+		// hive() {
+		// 	this.$emit('hide');
+		// },
 	},
 };
 </script>
@@ -163,7 +178,14 @@ export default {
 	margin-top: 10px;
 }
 .sent-code {
-	color: rgb(50, 66, 222);
+	font-size: 13px;
+	color: #fff;
+	padding: 2px 4px;
+	margin-left: 10px;
+	background-color: #40557b;
+	width: 120px;
+	display: inline-block;
+	text-align: center;
 }
 .sent-code:hover {
 	color: rgb(122, 122, 122);

@@ -4,7 +4,7 @@
     <span class="title">蜂农</span>
   </div>
   <div class="form-row form-row-section">
-    <div class="input-section-left">
+    <div class="input-section-left" v-if="right.indexOf('3')>-1">
       <div class="form-row">
         <span style="margin-left:20px;margin-top:10px;display:block">创建蜂农</span>
         <span class="input-item" style="margin-left:20px;"><label>姓名 <input ref="name" :class="{ active : isEditStatus}" style="width:120px;" v-model="creatFramerData.name" value="creatFramerData.name"/></label></span>
@@ -77,7 +77,7 @@
     </table>
   </div>
   <div class="form-row">
-    <el-button type="text" class="icon-span" @click="deleteFarmerList"><i class="iconfont icon-069delete">删除</i></el-button>
+    <el-button v-if="right.indexOf('3')>-1" type="text" class="icon-span" @click="deleteFarmerList"><i class="iconfont icon-069delete">删除</i></el-button>
     <el-button type="text" class="icon-span" @click="getFarmerList(1)"><i class="iconfont icon-shuaxin1">刷新</i></el-button>
 
   </div>
@@ -88,6 +88,8 @@
 </div>
 </template>
 <script>
+import { HIVE_ADMIN_RIGHTS } from '../../common/localStorageKey';
+import LocalStore from '../../common/localStore';
 import { get, post } from '../../common/post.js';
 import { Validate, beeFarmerAddSchema } from '../../common/schema.js';
 import { sortBy } from '../../common/utils.js';
@@ -96,85 +98,86 @@ export default {
 	name: '',
 	data() {
 		return {
-			beeFarmerLists: [],//蜂农列表
-			creatFramerData:{
+			beeFarmerLists: [], //蜂农列表
+			creatFramerData: {
 				name: '',
 				address: '',
 				mobile: '',
-				code:'',
+				code: '',
 				password: '',
 				organizationId: '',
 				email: '',
-				beeBoxNum:0
-			},//创建蜂农表单数据
-			currentPage:1,
-			deleteIdArray:[],//需要删除数据的数组
-			deleteIdObject:{},//需要删除对象的数组
-			isEditStatus:false,//编辑的时候姓名的状态
-			organizationLists:[],//获取列表的对象
-			codeText:'发送短信验证码',//短信验证码按钮的字
-			codeStatus:false,//短信验证码按钮的状态
-			totalPageNo:1,//需要展示的多少也
-			checkAllStatus:false,//全选的状态
-			beeFarmerKeyWords:'',//搜索关键字
-			statusList:[],//按钮状态列表
-			sortStatus:true,//默认从小到大
-			idArray:[],//获取蜂农组织id的数组
-			beeFarmerSortList:[],//排序后的数据
-			array1:[]
+				beeBoxNum: 0,
+			}, //创建蜂农表单数据
+			currentPage: 1,
+			deleteIdArray: [], //需要删除数据的数组
+			deleteIdObject: {}, //需要删除对象的数组
+			isEditStatus: false, //编辑的时候姓名的状态
+			organizationLists: [], //获取列表的对象
+			codeText: '发送短信验证码', //短信验证码按钮的字
+			codeStatus: false, //短信验证码按钮的状态
+			totalPageNo: 1, //需要展示的多少也
+			checkAllStatus: false, //全选的状态
+			beeFarmerKeyWords: '', //搜索关键字
+			statusList: [], //按钮状态列表
+			sortStatus: true, //默认从小到大
+			idArray: [], //获取蜂农组织id的数组
+			beeFarmerSortList: [], //排序后的数据
+			array1: [],
+			right: '',
 		};
 	},
 	methods: {
-		sortById(){
-		    this.array1 = sortBy('id',this.statusList,this.checkAllStatus,[],this.beeFarmerLists,true);
-		    this.beeFarmerSortList = [];
-			this.$nextTick(()=>{
+		sortById() {
+			this.array1 = sortBy('id', this.statusList, this.checkAllStatus, [], this.beeFarmerLists, true);
+			this.beeFarmerSortList = [];
+			this.$nextTick(() => {
 				this.beeFarmerLists = this.beeFarmerSortList.concat(this.array1);
 				this.array1 = [];
 			});
 		},
-		sortByBeeBoxNum(){
-			this.array1 = sortBy('beeBoxNum',this.statusList,this.checkAllStatus,[],this.beeFarmerLists,true);
+		sortByBeeBoxNum() {
+			this.array1 = sortBy('beeBoxNum', this.statusList, this.checkAllStatus, [], this.beeFarmerLists, true);
 			this.beeFarmerSortList = [];
-			this.$nextTick(()=>{
+			this.$nextTick(() => {
 				this.beeFarmerLists = this.beeFarmerSortList.concat(this.array1);
 				this.array1 = [];
 			});
 		},
-		sortByCreateDate(){
-			this.array1 = sortBy('createDate',this.statusList,this.checkAllStatus,[],this.beeFarmerLists,true)
+		sortByCreateDate() {
+			this.array1 = sortBy('createDate', this.statusList, this.checkAllStatus, [], this.beeFarmerLists, true);
 			this.beeFarmerSortList = [];
-			this.$nextTick(()=>{
+			this.$nextTick(() => {
 				this.beeFarmerLists = this.beeFarmerSortList.concat(this.array1);
 				this.array1 = [];
 			});
 		},
-		sortByUpdateDate(){
-			this.array1 = sortBy('updateDate',this.statusList,this.checkAllStatus,[],this.beeFarmerLists,true)
+		sortByUpdateDate() {
+			this.array1 = sortBy('updateDate', this.statusList, this.checkAllStatus, [], this.beeFarmerLists, true);
 			this.beeFarmerSortList = [];
-			this.$nextTick(()=>{
+			this.$nextTick(() => {
 				this.beeFarmerLists = this.beeFarmerSortList.concat(this.array1);
 				this.array1 = [];
 			});
 		},
 		//点击列表显示的编辑蜂农信息
-		editBeeFarmer(id,index){
+		editBeeFarmer(id, index) {
 			let BeeFarmerData = this.beeFarmerLists[index];
-			this.$refs.name.setAttribute("readonly","readonly");
+			this.$refs.name.setAttribute('readonly', 'readonly');
 			this.isEditStatus = true;
 			console.log(BeeFarmerData);
 			this.creatFramerData = {
 				name: BeeFarmerData.name,
 				address: BeeFarmerData.address,
 				mobile: BeeFarmerData.mobile,
-				code:BeeFarmerData.code,
+				code: BeeFarmerData.code,
 				password: BeeFarmerData.password,
 				organizationId: BeeFarmerData.organizationId,
 				email: BeeFarmerData.email,
 				beeBoxNum: BeeFarmerData.beeBoxNum,
-				id:id,
-				username:BeeFarmerData.username
-			}
+				id: id,
+				username: BeeFarmerData.username,
+			};
 		},
 		//创建蜂农 编辑蜂农
 		createFarmer() {
@@ -189,40 +192,41 @@ export default {
 			};
 			if (Validate(options, beeFarmerAddSchema) !== null) {
 				this.$message({
-		          showClose: true,
-		          message: '字段都不能为空',
-		          type: 'warning'
-		        });
+					showClose: true,
+					message: '字段都不能为空',
+					type: 'warning',
+				});
 				return;
 			}
 			let message = '创建';
-			if(this.creatFramerData.id !== undefined){
-				message = '修改'
+			if (this.creatFramerData.id !== undefined) {
+				message = '修改';
 			}
 			let result = post('/alterBeeFarmer', this.creatFramerData);
 			result.then(res => {
 				// console.log(res);
-				if(res.data.responseCode === "000000"){
+				if (res.data.responseCode === '000000') {
 					this.$message({
-			          showClose: true,
-			          message: message+'成功',
-			          type: 'success'
-			        });
-			        this.getFarmerList(1);
-				}else{
+						showClose: true,
+						message: message + '成功',
+						type: 'success',
+					});
+					this.clearFarmerInfo();
+					this.getFarmerList(1);
+				} else {
 					this.$message({
-			          showClose: true,
-			          message: message+'失败',
-			          type: 'error'
-			        });
+						showClose: true,
+						message: message + '失败',
+						type: 'error',
+					});
 				}
 			});
 		},
 		//清空蜂农信息
-		clearFarmerInfo(){
-			this.$refs.name.removeAttribute("readonly");
+		clearFarmerInfo() {
+			this.$refs.name.removeAttribute('readonly');
 			this.isEditStatus = false;
-			if(this.creatFramerData.id !== undefined || this.creatFramerData.username !== undefined){
+			if (this.creatFramerData.id !== undefined || this.creatFramerData.username !== undefined) {
 				delete this.creatFramerData.id;
 				delete this.creatFramerData.username;
 			}
@@ -230,11 +234,11 @@ export default {
 				name: '',
 				address: '',
 				mobile: '',
-				code:'',
+				code: '',
 				password: '',
 				organizationId: '',
-				email: ''
-			}
+				email: '',
+			};
 		},
 		//显示列表页  // 刷新列表页
 		getFarmerList(page) {
@@ -245,34 +249,34 @@ export default {
 				pageNo: page,
 				pageSize: 10,
 			});
-			result.then(res=>{
+			result.then(res => {
 				this.beeFarmerLists = res.data.data.beeFarmers;
 				this.totalPageNo = res.data.data.totalPageNo;
 				this.statusList.length = this.beeFarmerLists.length;
-				for(let i =0;i<this.statusList.length;i++){
-					this.statusList[i] = false
+				for (let i = 0; i < this.statusList.length; i++) {
+					this.statusList[i] = false;
 				}
 				console.log(this.totalPageNo);
-			})
+			});
 		},
 		//点击分页显示的数据信息
-		handleCurrentChange(){
+		handleCurrentChange() {
 			this.checkAllStatus = false;
 			this.deleteId = [];
-			if(this.beeFarmerKeyWords===''){
+			if (this.beeFarmerKeyWords === '') {
 				let result = post('/getPageFarmers', {
 					pageNo: this.currentPage,
 					pageSize: 10,
 				});
-				result.then(res=>{
-					this.beeFarmerLists = res.data.data.beeFarmers
-					this.totalPageNo = res.data.data.totalPageNo
+				result.then(res => {
+					this.beeFarmerLists = res.data.data.beeFarmers;
+					this.totalPageNo = res.data.data.totalPageNo;
 					this.statusList.length = this.beeFarmerLists.length;
-					for(let i =0;i<this.statusList.length;i++){
-						this.statusList[i] = false
+					for (let i = 0; i < this.statusList.length; i++) {
+						this.statusList[i] = false;
 					}
-				})
-			}else{
+				});
+			} else {
 				let result = post('/searchBeeFarmer', {
 					keyword: this.beeFarmerKeyWords,
 					pageNo: val,
@@ -283,8 +287,8 @@ export default {
 					this.beeFarmerLists = res.data.data.beeFarmers;
 					this.totalPageNo = res.data.data.totalPageNo;
 					this.statusList.length = this.beeFarmerLists.length;
-					for(let i =0;i<this.statusList.length;i++){
-						this.statusList[i] = false
+					for (let i = 0; i < this.statusList.length; i++) {
+						this.statusList[i] = false;
 					}
 				});
 			}
@@ -292,107 +296,126 @@ export default {
 		// 删除蜂农
 		deleteFarmerList() {
 			this.deleteIdArray = [];
-			for(let item in this.deleteIdObject){
+			for (let item in this.deleteIdObject) {
 				this.deleteIdArray.push(item);
 			}
-			if(this.deleteIdArray.length ===0){
+			if (this.deleteIdArray.length === 0) {
 				this.$message({
 					message: '请先点击列表选择要删除的蜂箱',
 					type: 'warning',
 				});
 				return false;
 			}
-			console.log(this.deleteIdArray)
+			console.log(this.deleteIdArray);
 			this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
 				confirmButtonText: '确定',
 				cancelButtonText: '取消',
 				type: 'warning',
-				center: true
-	        }).then(() => {
-				console.log(this.deleteId);
-				let result = post('/deleteFarmers', {
-					ids: this.deleteIdArray,
-				});
-				result.then(res=>{
-					if(res.data.responseCode==="000000"){
-						this.$message({
-							type: 'success',
-							message: '删除成功!'
-						});
-						this.getFarmerList();
-					}else{
-						this.$message({
-							type: 'error',
-							message: '删除错误!'
-						});
-					}
-					console.log(res)
+				center: true,
+			})
+				.then(() => {
+					console.log(this.deleteId);
+					let result = post('/deleteFarmers', {
+						ids: this.deleteIdArray,
+					});
+					result.then(res => {
+						if (res.data.responseCode === '000000') {
+							this.$message({
+								type: 'success',
+								message: '删除成功!',
+							});
+							this.getFarmerList();
+						} else {
+							this.$message({
+								type: 'error',
+								message: '删除错误!',
+							});
+						}
+						console.log(res);
+					});
 				})
-	        }).catch(() => {
-				this.$message({
-					type: 'info',
-					message: '已取消删除'
+				.catch(() => {
+					this.$message({
+						type: 'info',
+						message: '已取消删除',
+					});
 				});
-	        });
 		},
 		//获取组织
-		getAllOrganizations(){
-			let result = get('/getAllOrganizations','');
-			result.then(res=>{
-				console.log(res)
-				this.organizationLists = res.data.data
-			})
+		getAllOrganizations() {
+			let result = get('/getAllOrganizations', '');
+			result.then(res => {
+				console.log(res);
+				this.organizationLists = res.data.data;
+			});
 		},
 		//发送验证码
 		sendVerifyCode() {
-			if(this.codeStatus)return
-			let leftTime = 60
-			this.codeText = leftTime + 's'
-			this.codeStatus = true
-			var timer = setInterval(()=>{
+			if (!this.creatFramerData.mobile && this.creatFramerData.name) {
+				this.$message({
+					message: '请先输入姓名和电话号码',
+					type: 'warning',
+				});
+			}
+
+			if (this.codeStatus) return;
+			let leftTime = 60;
+			this.codeText = leftTime + 's';
+			this.codeStatus = true;
+			var timer = setInterval(() => {
 				leftTime--;
-				this.codeText = leftTime + 's'
-				if(leftTime === 0){
+				this.codeText = leftTime + 's';
+				if (leftTime === 0) {
 					this.codeStatus = false;
 					this.codeText = '发送短信验证码';
-					clearInterval(timer)
+					clearInterval(timer);
 				}
-			},1000);
+			}, 1000);
 			let result = post('/adminSMSService', {
 				mobile: this.creatFramerData.mobile,
 				userName: this.creatFramerData.name,
 				registerFlag: 1,
-				messageType: 2298872
+				messageType: 2298872,
 			});
 			result.then(res => {
+				if (res.data.responseCode === '000000') {
+					this.$message({
+						message: '获取验证码成功',
+						type: 'success',
+					});
+				}
 				console.log(res);
 			});
 		},
 		//点击全选的状态
-		changeAllStatus(val){
-			for(let i =0;i<this.statusList.length;i++){
-				this.statusList[i] = val
+		changeAllStatus(val) {
+			for (let i = 0; i < this.statusList.length; i++) {
+				this.statusList[i] = val;
 			}
-			if(val){
-				this.beeFarmerLists.forEach((item,index)=>{
-					this.deleteIdObject[item.id] = val
-				})
+			if (val) {
+				this.beeFarmerLists.forEach((item, index) => {
+					this.deleteIdObject[item.id] = val;
+				});
 			}
 		},
 		//单个点击的状态
-		changeStatus(index,val,id){
+		changeStatus(index, val, id) {
 			event.preventDefault();
-			if(val){
+			if (val) {
 				this.deleteIdObject[id] = val;
-			}else{
+			} else {
 				delete this.deleteIdObject[id];
 			}
 			console.log(this.deleteIdObject);
-			if(!val){this.checkAllStatus = false};
-			if(this.statusList.toString().indexOf("false")<0){this.checkAllStatus = true};
+			if (!val) {
+				this.checkAllStatus = false;
+			}
+			if (this.statusList.toString().indexOf('false') < 0) {
+				this.checkAllStatus = true;
+			}
 		},
 		//搜索关键字
-		serachBeeFramerList(){
+		serachBeeFramerList() {
 			let result = post('/searchBeeFarmer', {
 				keyword: this.beeFarmerKeyWords,
 				pageNo: 1,
@@ -403,37 +426,39 @@ export default {
 				this.beeFarmerLists = res.data.data.beeFarmers;
 				this.totalPageNo = res.data.data.totalPageNo;
 				this.statusList.length = this.beeFarmerLists.length;
-				for(let i =0;i<this.statusList.length;i++){
-					this.statusList[i] = false
+				for (let i = 0; i < this.statusList.length; i++) {
+					this.statusList[i] = false;
 				}
 				console.log(this.beeFarmerLists);
 			});
-		}
+		},
 	},
-	mounted(){
+	mounted() {
 		this.getAllOrganizations();
 		this.getFarmerList(1);
+		let adminRight = LocalStore.getItem(HIVE_ADMIN_RIGHTS);
+		this.right = adminRight.split(',');
 	},
-	filters:{
-		toBeeStatus(data){
-			if(data === 0 || data === 1){
+	filters: {
+		toBeeStatus(data) {
+			if (data === 0 || data === 1) {
 				data = '在线';
-			}else if(data === 2){
+			} else if (data === 2) {
 				data = '异常';
-			}else{
+			} else {
 				data = '离线';
 			}
 			return data;
 		},
 		formatDate(timestamp) {
-	      return moment(timestamp).format('YYYY-MM-DD');
-	    }
+			return moment(timestamp).format('YYYY-MM-DD');
+		},
 	},
-	watch:{
-		beeFarmerLists(newVal,oldVal){
-			console.log(newVal,oldVal);
-		}
-	}
+	watch: {
+		beeFarmerLists(newVal, oldVal) {
+			console.log(newVal, oldVal);
+		},
+	},
 };
 </script>
 <style lang="" scoped>
@@ -487,12 +512,12 @@ export default {
 .sent-code {
 	font-size: 13px;
 	color: #fff;
-	padding:2px 4px;
+	padding: 2px 4px;
 	margin-left: 10px;
-	background-color:#40557b;
-	width:120px;
-	display:inline-block;
-	text-align:center;
+	background-color: #40557b;
+	width: 120px;
+	display: inline-block;
+	text-align: center;
 }
 
 .sent-code:hover {
@@ -505,7 +530,8 @@ export default {
 	margin-top: 10px;
 }
 
-.sure-btn,.clear-btn {
+.sure-btn,
+.clear-btn {
 	width: 80px;
 	height: 30px;
 	margin-left: 20px;
@@ -515,7 +541,7 @@ export default {
 	background: #40557b;
 	color: white;
 	cursor: pointer;
-	display:inline-block;
+	display: inline-block;
 }
 
 .list-box {
@@ -531,7 +557,7 @@ export default {
 
 .header table,
 .header th {
-	height:40px;
+	height: 40px;
 	border: none;
 	font-size: 13px;
 	cursor: pointer;
@@ -567,7 +593,7 @@ export default {
 .icon-span i {
 	font-size: 13px;
 }
-.active{
-	background-color:#a5a5a5;
+.active {
+	background-color: #a5a5a5;
 }
 </style>

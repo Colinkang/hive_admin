@@ -107,7 +107,7 @@ export default {
 				mobile: this.beeBox.mobile,
 				code: this.beeBox.code,
 			};
-		  console.log(111,options)
+			console.log(111, options);
 			if (Validate(options, beeBoxAddSchema) !== null) {
 				this.$message({
 					message: '字段都不能为空',
@@ -160,6 +160,10 @@ export default {
 			});
 			result.then(res => {
 				if (res.data.responseCode === '000000') {
+					this.$message({
+						message: '获取验证码成功',
+						type: 'success',
+					});
 				}
 			});
 		},
@@ -176,7 +180,14 @@ export default {
 	margin-top: 20px;
 }
 .sent-code {
-	color: rgb(50, 66, 222);
+	font-size: 13px;
+	color: #fff;
+	padding: 2px 4px;
+	margin-left: 10px;
+	background-color: #40557b;
+	width: 120px;
+	display: inline-block;
+	text-align: center;
 }
 .sent-code:hover {
 	color: rgb(122, 122, 122);

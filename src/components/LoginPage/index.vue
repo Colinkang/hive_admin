@@ -23,13 +23,6 @@
       <div class="line-height margin-top">
         <button type="success" class="btn" @click="checkLoin">登录</button>
       </div>
-
-      <el-row class="line-height margin-top" v-if="showAlert">
-        <el-col :span="24">
-          <el-alert :title="text" :type="status==='wrong'?'error':'success'">
-          </el-alert>
-        </el-col>
-      </el-row>
     </div>
 
   </div>
@@ -45,13 +38,12 @@ import {
 	IS_LOGIN,
 	HIVE_USER_PASSWORD,
 	HIVE_REMENBER_USERNAME,
-  HIVE_ADMIN_ID,
-  HIVE_ADMIN_RIGHTS,
-  HIVE_ADMIN_TYPE,
-  HIVE_NAV_INDEX
+	HIVE_ADMIN_ID,
+	HIVE_ADMIN_RIGHTS,
+	HIVE_ADMIN_TYPE,
+	HIVE_NAV_INDEX,
 } from '../../common/localStorageKey';
 import LocalStore from '../../common/localStore';
-import updatepwd from './updatepwd';
 import ChangeCode from './ChangeCode.vue';
 export default {
 	name: '',
@@ -65,15 +57,15 @@ export default {
 		showChangeCode: false,
 	}),
 	components: {
-		updatepwd,
 		ChangeCode,
 	},
 	methods: {
 		checkLoin() {
 			if (this.account === '' || this.password === '') {
-				this.showAlert = true;
-				this.status = 'wrong';
-				this.text = '用户名密码不能为空';
+				this.$message({
+					message: '用户名密码不能为空',
+					type: 'warning',
+				});
 				return;
 			} else {
 				let result = postLogin('/adminLogin', {
@@ -83,9 +75,10 @@ export default {
 				result.then(res => {
 					this.showAlert = true;
 					if (res.data.responseCode === '000000') {
-
-						this.status = 'success';
-						this.text = '验证成功，欢迎登陆';
+						this.$message({
+							message: '验证成功，欢迎登陆',
+							type: 'success',
+						});
 						//保存token到local
 						LocalStore.setItem(HIVE_API_TOKEN, res.data.data.authToken);
 						LocalStore.setItem(HIVE_USER_NAME, this.account);
@@ -93,7 +86,7 @@ export default {
 						LocalStore.setItem(HIVE_ADMIN_RIGHTS, res.data.data.rights);
 						LocalStore.setItem(HIVE_ADMIN_TYPE, res.data.data.type);
 						LocalStore.setItem(HIVE_REMENBER_USERNAME, this.checked);
-            LocalStore.setItem(HIVE_NAV_INDEX, '0');
+						LocalStore.setItem(HIVE_NAV_INDEX, '0');
 						if (this.checked) {
 							LocalStore.setItem(HIVE_USER_PASSWORD, this.password);
 						}
@@ -102,8 +95,7 @@ export default {
 							this.$emit('login-success');
 						}, 1000);
 					} else {
-						this.status = 'wrong';
-						this.text = '用户或者密码错误';
+						 this.$message.error('用户或者密码错误');
 					}
 				});
 			}
@@ -126,7 +118,7 @@ export default {
 	top: 0;
 	min-width: 1280px;
 	min-height: 720px;
-  overflow: scroll;
+	overflow: scroll;
 }
 
 .login-logo {

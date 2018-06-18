@@ -31,9 +31,10 @@ const beeFarmerAddSchema = Joi.object().keys({
 
 const organizeAddSchema = Joi.object().keys({
     organizationName: Joi.string().max(10).required(),
+    adminId: Joi.any(),
     contactName: Joi.string().max(10).required(),
     email: Joi.string().required(),
-    mobile: Joi.string().required(),
+    contactPhone: Joi.string().required(),
     address: Joi.string().required()
 });
 
@@ -57,15 +58,13 @@ const createRuleSchema = Joi.object().keys({
 });
 const createManagerSchema = Joi.object().keys({
     address: Joi.string().required(),
-    code: Joi.string().required(),
+    code: Joi.any(),
     email: Joi.string().required(),
     mobile: Joi.string().required(),
     name: Joi.string().required(),
-    organizationId: Joi.number().required(),
     password: Joi.string().required(),
     rights: Joi.any(),
     type: Joi.any(),
-
 });
 
 const adminDetailSchema = Joi.object().keys({
@@ -75,7 +74,8 @@ const adminDetailSchema = Joi.object().keys({
     mobile: Joi.string().required(),
     email: Joi.string().required(),
     type: Joi.number().required(),
-    address: joi.string().required(),
+    address: Joi.string().allow(null),
+    code: Joi.string().required()
 });
 module.exports = {
     Validate,

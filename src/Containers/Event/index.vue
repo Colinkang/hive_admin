@@ -1,6 +1,6 @@
 <template>
 <div class="container">
-  <div class="section-left">
+  <div class="section-left" v-if="right.indexOf('5') > -1">
     <ul>
       <li :class="selected===1?'selected':''">AI模式</li>
       <li :class="selected===2?'selected':''" @click="selectModule(2)">人工模式</li>
@@ -105,7 +105,7 @@
         <span style="margin-right:20px" @click="getEvents">
           <i class="iconfont icon-shuaxin1">刷新</i>
         </span>
-        <span @click="deleteEvents">
+        <span v-if="right.indexOf('5') > -1" @click="deleteEvents">
           <i class="iconfont icon-069delete">删除</i>
         </span>
       </div>
@@ -182,6 +182,7 @@
 </div>
 </template>
 <script>
+import { HIVE_ADMIN_RIGHTS } from '../../common/localStorageKey';
 import { get, post } from '../../common/post.js';
 import { HIVE_ADMIN_ID } from '../../common/localStorageKey';
 import LocalStore from '../../common/localStore';
@@ -212,11 +213,14 @@ export default {
 		deleteGroupIdObject: {},
 		deleteGroupIdArray: [],
 		array1: [],
+		right: '',
 	}),
 	mounted() {
 		this.getGroups();
 		this.getEvents();
 		this.getHistoryAlertList();
+		let adminRight = LocalStore.getItem(HIVE_ADMIN_RIGHTS);
+		this.right = adminRight.split(',');
 	},
 	methods: {
 		sortByCreateDate() {

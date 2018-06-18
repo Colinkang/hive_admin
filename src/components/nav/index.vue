@@ -1,25 +1,25 @@
 <template>
 <div class="nav">
   <el-menu :default-active="index" class="el-menu-vertical-demo" @select="select" @open="handleOpen" @close="handleClose" background-color="#404040" text-color="rgba(105, 105, 106)" active-text-color="rgb(105, 105, 106)" :collapse="collapse" :router="true">
-    <el-menu-item index="0" route="/beebox" v-show="right.indexOf('4')>-1">
+    <el-menu-item index="0" route="/beebox" v-show="right.indexOf('4')>-1||right.indexOf('9')>-1">
       <span class="nav-text">
         <i class="iconfont icon-boxxiangzi"></i>
         <span slot="title">蜂箱</span>
       </span>
     </el-menu-item>
-    <el-menu-item index="1" route="/beefarmer" v-show="right.indexOf('3')>-1">
+    <el-menu-item index="1" route="/beefarmer" v-show="right.indexOf('3')>-1||right.indexOf('8')>-1">
       <span class="nav-text">
         <i class="iconfont icon-wo"></i>
         <span slot="title">蜂农</span>
       </span>
     </el-menu-item>
-    <el-menu-item index="2" route="/organization" v-show="right.indexOf('2')>-1">
+    <el-menu-item index="2" route="/organization" v-show="right.indexOf('2')>-1||right.indexOf('7')>-1">
       <span class="nav-text">
         <i class="iconfont icon-renshu"></i>
         <span slot="title">组织</span>
       </span>
     </el-menu-item>
-    <el-menu-item index="3" route="/event"  v-show="right.indexOf('5')>-1">
+    <el-menu-item index="3" route="/event"  v-show="right.indexOf('5')>-1||right.indexOf('10')>-1">
       <span class="nav-text">
         <i class="iconfont icon-event"></i>
         <span slot="title">事件</span>
@@ -37,7 +37,7 @@
         <span slot="title">无人机</span>
       </span>
     </el-menu-item>
-    <el-menu-item index="6" route="/control" v-if="right.indexOf('1')>-1">
+    <el-menu-item index="6" route="/control" v-if="right.indexOf('1')>-1||right.indexOf('6')>-1">
       <span class="nav-text">
         <i class="iconfont icon-guanli2"></i>
         <span slot="title">管理</span>

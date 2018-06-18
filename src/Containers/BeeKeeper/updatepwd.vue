@@ -38,6 +38,7 @@
 </div>
 </template>
 <script>
+
 import { post } from '../../common/post';
 export default {
 	data() {
