@@ -134,10 +134,15 @@
 				:scroll-wheel-zoom="true">
 				</bm-marker>
 			</baidu-map> -->
-			<baidu-map class="map" style="width:100%;height:100%" :zoom="4">
-				<bm-point-collection :points="points"  color="red" size="BMAP_POINT_SIZE_MEDIUM" @click="clickHandler">
-				</bm-point-collection>
-			</baidu-map>
+      <baidu-map style="width:100%;height:100%" :center="{lng, lat}" :zoom="zoom">
+        <!-- <bm-city-list anchor="BMAP_ANCHOR_TOP_LEFT"></bm-city-list> -->
+        <bm-point-collection shape="BMAP_POINT_SHAPE_CIRCLE" color="red" size="BMAP_POINT_SIZE_NORMAL" ></bm-point-collection>
+        <bm-navigation anchor="BMAP_ANCHOR_TOP_RIGHT"></bm-navigation>
+        <bm-scale anchor="BMAP_ANCHOR_TOP_RIGHT"></bm-scale>
+        <bm-marker :position="{lng, lat}" :dragging="true" animation="BMAP_ANIMATION_BOUNCE">
+          <!-- <bm-label content="当前蜂箱" :labelStyle="{color: 'red', fontSize : '24px'}" :offset="{width: -35, height: 30}" /> -->
+        </bm-marker>
+      </baidu-map>
 			<!-- <baidu-map class="map" style="width:100%;height:100%" center="中国">
 				<bml-marker-clusterer :averageCenter="true">
 				    <bm-marker v-for="marker of markers" shape="BMAP_POINT_SHAPE_STAR" color="red" size="BMAP_POINT_SIZE_SMALL" :position="{lng: marker.lng, lat: marker.lat}"></bm-marker>
@@ -150,11 +155,8 @@
             <div class="form-title">
               编组
             </div>
-            <div class="form-row">
-              <span>名称</span>
-              <input type="text" name="" value="" class="name-input">
-            </div>
-            <props-select></props-select>
+
+            <props-select @getList="createStartData"></props-select>
 
 
             <div class="form-row">
@@ -267,7 +269,10 @@ export default {
 			array1: [],
 			position: { lng: 116.404, lat: 39.915 },
 			center: { lng: 116.404, lat: 39.915 },
-			points:[]
+			points:[],
+      zoom:9,
+      lng:116.404,
+      lat: 39.915
 		};
 	},
 	mounted: function() {
@@ -332,6 +337,7 @@ export default {
 				path: path,
 			});
 		},
+
 		// 获取蜂箱列表信息 蜂箱信息  地图信息
 		getHiveList(keyword) {
 			this.points = [];
@@ -340,33 +346,35 @@ export default {
 			result.then(res => {
 				//console.log(111167, res);
 				if (res.data.responseCode === '000000') {
-					let data = res.data.data;
-					this.hiveList = data;
-					let list = data
-          if(data.length>0&&this.beeBoxNo===""){
-            this.beeBoxNo = list[0].beeBoxNo
-            this.clickBoxId(list[0].beeBoxNo);
-            this.getBeeBoxInfo(list[0].beeBoxNo);
-          }
-					// 将值赋值给列表
-					console.log(res.data)
-					if (data.length > 0) {
-						for (let i = 0; i < this.hiveList.length; i++) {
-							this.statusList[i] = false;
-						}
-						const points = [];
-						for (let i=0;i<this.hiveList.length;i++) {
-							const position = { lng: this.hiveList[i].lng, lat: this.hiveList[i].lat};
-							points.push(position);
-						}
-						this.points = points
-						console.log(this.points);
-					}
-					//console.log(122, this.hiveList);
+
+					this.createStartData(res)
 					// 画扇形图
 				}
 			});
 		},
+    createStartData(res){
+      let data = res.data.data;
+      this.hiveList = data;
+      let list = data
+      if(data.length>0&&this.beeBoxNo===""){
+        this.beeBoxNo = list[0].beeBoxNo
+        this.clickBoxId(list[0].beeBoxNo);
+        this.getBeeBoxInfo(list[0].beeBoxNo);
+      }
+      // 将值赋值给列表
+      if (data.length > 0) {
+        for (let i = 0; i < this.hiveList.length; i++) {
+          this.statusList[i] = false;
+        }
+        const points = [];
+        for (let i=0;i<this.hiveList.length;i++) {
+          const position = { lng: this.hiveList[i].lng, lat: this.hiveList[i].lat};
+          points.push(position);
+        }
+        this.points = points
+
+      }
+    },
 		//删除蜂箱
 		deleteBeeBox() {
 			this.deleteIdArray = [];
