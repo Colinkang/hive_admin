@@ -134,7 +134,7 @@
 				:scroll-wheel-zoom="true">
 				</bm-marker>
 			</baidu-map> -->
-      <baidu-map style="width:100%;height:100%" :center="{lng, lat}" :zoom="zoom">
+      <baidu-map style="width:100%;height:100%" :center="lng&&lat?{lng, lat}:'北京'" :zoom="zoom">
         <!-- <bm-city-list anchor="BMAP_ANCHOR_TOP_LEFT"></bm-city-list> -->
         <bm-point-collection :points="points" shape="BMAP_POINT_SHAPE_CIRCLE" color="red" size="BMAP_POINT_SIZE_NORMAL" @click="clickHandler" ></bm-point-collection>
         <bm-navigation anchor="BMAP_ANCHOR_TOP_RIGHT"></bm-navigation>
@@ -305,7 +305,8 @@ export default {
 			result.then(res => {
 				console.log(11234, res.data);
 				if (res.data.responseCode === '000000') {
-					this.idSelectSearch(res.data.data.beeBoxNo);
+					// this.idSelectSearch(res.data.data.beeBoxNo);
+					this.slectThisRow(res.data.data.beeBoxNo);
 				}
 			});
 		},
@@ -337,7 +338,7 @@ export default {
 						//	console.log(this.latlng);
 						this.beeBoxInfo.productionDate = moment(data.productionDate).format('YYYY-MM-DD');
 						// 将值赋值给列表
-						if (data.status === 0) this.beeBoxInfo.status = '正在运行';
+						if (data.status === 0 || data.status === 1) this.beeBoxInfo.status = '正在运行';
 						else if (data.status === 2) this.beeBoxInfo.status = '异常';
 						else this.beeBoxInfo.status = '离线';
 					}
@@ -359,12 +360,18 @@ export default {
 			result.then(res => {
 				//console.log(111167, res);
 				if (res.data.responseCode === '000000') {
-					this.createStartData(res);
+					console.log(9999,res.data)
+					hiveTimer = setTimeout(this.getHiveList, 10000);
+					this.createStartData(res,false);
 					// 画扇形图
 				}
 			});
 		},
-		createStartData(res) {
+		createStartData(res,isFromPropsSelect) {
+			if(isFromPropsSelect){
+			clearInterval(hiveTimer)
+			}
+			
 			let data = res.data.data;
 			this.hiveList = data;
 			let list = data;
@@ -406,7 +413,7 @@ export default {
 			});
 			result
 				.then(res => {
-					hiveTimer = setTimeout(this.getHiveList, 5000);
+					
 					if (res.data.responseCode === '000000') {
 						this.$message({
 							message: '删除蜂箱成功',
@@ -512,7 +519,7 @@ export default {
 				result.then(res => {
 					if (res.data.responseCode === '000000') {
 						let d = res.data.data;
-						console.log(123456,d);
+						console.log(123456, d);
 						if (d.length > 0) {
 							d = d[0];
 

@@ -492,12 +492,12 @@ export default {
 .input-section-left {
 	width: 65%;
 	height: 160px;
+	border-right: 2px solid white;
 }
 
 .input-section-right {
 	width: 35%;
 	height: 160px;
-	border-left: 2px solid white;
 	width: 70%;
 	height: 160px;
 }

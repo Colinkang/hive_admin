@@ -1,6 +1,6 @@
 const Joi = require('joi');
 const Validate = function (input, schema) {
-    const { error } = Joi.validate(input, schema);
+    const { error } = Joi.validate(input, schema, { allowUnknown: true });
     return error;
 }
 const loginSchema = Joi.object().keys({
@@ -65,6 +65,8 @@ const createManagerSchema = Joi.object().keys({
     password: Joi.string().required(),
     rights: Joi.any(),
     type: Joi.any(),
+    id: Joi.any(),
+    username: Joi.any()
 });
 
 const adminDetailSchema = Joi.object().keys({

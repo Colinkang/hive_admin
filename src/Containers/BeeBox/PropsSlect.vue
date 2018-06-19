@@ -46,8 +46,8 @@
         <span><input type="text" name="" value="" style="width:60px" placeholder="终止经度" v-model="input2"></span>
       </div>
       <div class="" style="margin-top:5px;">
-        <span style="margin-right:5px"><input type="text" name="" value="" style="width:60px" placeholder="起始维度" v-model="input1"></span>--
-        <span><input type="text" name="" value="" style="width:60px" placeholder="终止纬度" v-model="input2"></span>
+        <span style="margin-right:5px"><input type="text" name="" value="" style="width:60px" placeholder="起始维度" v-model="input3"></span>--
+        <span><input type="text" name="" value="" style="width:60px" placeholder="终止纬度" v-model="input4"></span>
       </div>
 
     </div>
@@ -106,6 +106,7 @@ const config = {
 	productionDate: '生产日期',
 	position: '地理位置',
 };
+let timer;
 export default {
 	name: '',
 	data: () => ({
@@ -281,8 +282,10 @@ export default {
 			let obj = {};
 			let array = [];
 			let condition = this.condition;
-
+			console.log(111111, condition);
 			for (let con of condition) {
+				console.log(98, con);
+				obj = {};
 				switch (con.type) {
 					case 'beeFarmerId':
 						{
@@ -325,8 +328,9 @@ export default {
 						}
 						break;
 				}
-				if (condition.children) {
-					for (let child of condition.children) {
+				if (con.children) {
+					for (let child of con.children) {
+						console.log(999989, child);
 						switch (child.type) {
 							case 'beeFarmerId':
 								{
@@ -374,22 +378,31 @@ export default {
 
 				array.push(obj);
 			}
-			//console.log(11121212,array)
+			console.log(11121212, array);
 			let result = post('/queryGroupBeeBox', {
 				filterItems: array,
 			});
 			result.then(res => {
-				//  console.log(1111, res);
+				timer = setTimeout(this.add(), 10000);
 				this.ids = [];
 				let data = res.data.data;
 				for (let d of data) {
 					this.ids.push(d.beeBoxNo);
 				}
+
 				// 展示表格数据
-				this.$emit('getList', res);
+				this.$emit('getList', res, true);
 			});
 		},
 		save() {
+			console.log(this.ids);
+			if (this.ids === undefined) {
+				this.$message({
+					message: '请先添加查询条件，才能进行编组',
+					type: 'warning',
+				});
+				return;
+			}
 			if (this.ids.length === 0) {
 				this.$message({
 					message: '没有符合该条件的蜂箱，不能添加编组',
@@ -397,8 +410,8 @@ export default {
 				});
 				return;
 			}
-			if(!this.groupName){
-					this.$message({
+			if (!this.groupName) {
+				this.$message({
 					message: '编组名称不能为空',
 					type: 'warning',
 				});
@@ -412,7 +425,7 @@ export default {
 				beeBoxIds: this.ids,
 			});
 			result.then(res => {
-				console.log(1123,res);
+				console.log(1123, res);
 				if (res.data.responseCode === '000000') {
 					this.$message({
 						message: '保存编组成功',
