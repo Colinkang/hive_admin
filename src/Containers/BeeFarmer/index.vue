@@ -506,7 +506,6 @@ export default {
   width: 30%;
   height: 160px;
   border-left: 2px solid white;
->>>>>>> b6e309c8bd113e4a9c64474b324e507e8a3ec76c
 } */
 
 .sent-code {

@@ -7,7 +7,7 @@
     <div class="input-section-left" v-if="right.indexOf('1')>-1">
       <div class="form-row">
         <span style="margin-left:20px;margin-top:10px;display:block">创建管理员</span>
-        <span class="input-item" style="margin-left:20px;"><label>姓名 <input v-model.trim="managementParams.name" style="width:120px;"/></label></span>
+        <span class="input-item" style="margin-left:20px;"><label>姓名 <input ref="name"  v-model.trim="managementParams.name" style="width:120px;"/></label></span>
         <!-- <span class="input-item" style="margin-left:20px;"><label>合作社   
           <select v-model.trim="managementParams.organizationId" style="width:120px;" placeholder="请选择">
               <option
@@ -74,11 +74,13 @@
       </div>
       <div class="form-row" style="margin-top:10px">
 
-
       </div>
       <div class="form-row">
         <div class="sure-btn" @click="createManager">
           确认
+        </div>
+				 <div class="clear-btn" @click="clearManager">
+          清空
         </div>
       </div>
     </div>
@@ -113,7 +115,7 @@
         <th>地址</th>
         <th>状态</th>
       </tr>
-      <tr v-for="(item, index) in adminList" :key="item.id">
+      <tr v-for="(item, index) in adminList" :key="item.id" @click="editControl(item.id,index)">
         <td style="border:none;width:3%;text-align:center;background:none">
           <el-checkbox v-model="checkList[index]" @change="checkedChange"></el-checkbox>
         </td>
@@ -200,6 +202,47 @@ export default {
 		this.right = adminRight.split(',');
 	},
 	methods: {
+		//编辑管理员信息
+		editControl(id, index) {
+			let adminData = this.adminList[index];
+			this.$refs.name.setAttribute('readonly', 'readonly');
+			// this.isEditStatus = true;
+			console.log(adminData);
+			this.managementParams = {
+				name: adminData.name,
+				address: adminData.address,
+				mobile: adminData.mobile,
+				code: adminData.code,
+				password: adminData.password,
+				// organizationId: BeeFarmerData.organizationId,
+				email: adminData.email,
+				// beeBoxNum: BeeFarmerData.beeBoxNum,
+				id: id,
+				username: adminData.username,
+			};
+		},
+		//清空管理员信息
+		clearManager() {
+			this.$refs.name.removeAttribute('readonly');
+			this.isEditStatus = false;
+			if (this.managementParams.id !== undefined || this.managementParams.username !== undefined) {
+				delete this.managementParams.id;
+				delete this.managementParams.username;
+			}
+			this.managementParams = {
+				name: '',
+				address: '',
+				mobile: '',
+				code: '',
+				password: '',
+				email: '',
+			};
+			this.beefarmerChecked = false;
+			this.beeboxChecked = false;
+			this.eventChecked = false;
+			this.adminChecked = false;
+			this.organizationChecked = false;
+		},
 		sortById() {
 			this.array1 = sortBy('id', this.checkList, this.checkAll, [], this.adminList, true);
 			this.beeFarmerSortList = [];
@@ -283,7 +326,13 @@ export default {
 		},
 		// 创建管理员  //编辑管理员
 		createManager() {
-			this.getRights();
+			let message = '创建';
+			if (this.managementParams.id !== undefined) {
+				message = '修改';
+				this.getRights();
+			} else {
+				this.getRights();
+			}
 			console.log(888, this.managementParams, Validate(this.managementParams, createManagerSchema));
 			if (Validate(this.managementParams, createManagerSchema) !== null) {
 				this.$message({
@@ -296,10 +345,6 @@ export default {
 			result.then(res => {
 				// console.log(res)
 				if (res.data.responseCode === '000000') {
-					// this.$message({
-					// 	message: '添加管理员成功',
-					// 	type: 'success',
-					// });
 					this.$alert(
 						`用户名:${res.data.data.username} 密码:${this.managementParams.password}`,
 						'用户名和密码',
@@ -308,7 +353,7 @@ export default {
 							callback: action => {
 								this.$message({
 									type: 'info',
-									message: `添加管理员成功`,
+									message: message + `管理员成功`,
 								});
 							},
 						}
@@ -561,7 +606,8 @@ export default {
 	vertical-align: top;
 }
 
-.sure-btn {
+.sure-btn,
+.clear-btn {
 	width: 80px;
 	height: 30px;
 	margin-left: 20px;
