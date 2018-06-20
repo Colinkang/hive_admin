@@ -291,7 +291,7 @@ export default {
 			let obj = {};
 			let array = [];
 			let condition = this.condition;
-			console.log(111111, condition);
+			//console.log(111111, condition);
 			for (let con of condition) {
 				console.log(98, con);
 				obj = {};
@@ -339,7 +339,7 @@ export default {
 				}
 				if (con.children) {
 					for (let child of con.children) {
-						console.log(999989, child);
+						//console.log(999989, child);
 						switch (child.type) {
 							case 'beeFarmerId':
 								{
@@ -392,9 +392,12 @@ export default {
 				filterItems: array,
 			});
 			result.then(res => {
-				console.log(456, res);
+        timer = setTimeout(()=>{
+          this.add()
+        }, 10000);
+				//console.log(456, res);
 				let data = res.data.data;
-				console.log(1234, data);
+				//console.log(1234, data);
 				if (!data || data.length === 0) {
 					this.$message({
 						message: '没查询到相关数据',
@@ -402,7 +405,7 @@ export default {
 					});
 					return;
 				}
-				timer = setTimeout(this.add(), 10000);
+
 				this.ids = [];
 
 				for (let d of data) {
@@ -445,7 +448,7 @@ export default {
 				beeBoxIds: this.ids,
 			});
 			result.then(res => {
-				console.log(1123, res);
+			//	console.log(1123, res);
 				if (res.data.responseCode === '000000') {
 					this.$message({
 						message: '保存编组成功',
@@ -460,6 +463,10 @@ export default {
 				}
 			});
 		},
+    clearTimer(){
+      //alert(222)
+      clearInterval(timer)
+    },
 		deleteById() {
 			let index = this.conditionIndex;
 			let conditionArr = this.condition;

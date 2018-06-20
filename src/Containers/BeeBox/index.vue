@@ -17,7 +17,7 @@
                 v-model="search"
                 clearable
                 prefix-icon="el-icon-search"
-                @keyup.enter.native="getHiveList(search)"
+                @keyup.enter.native="searchByKeyWord"
                 ></el-input>
             </div>
         </div>
@@ -151,7 +151,7 @@
               编组
             </div>
 
-            <props-select @emptyBeeBox="emptyBeeBox" @getList="createStartData" @getGroup="getGroupList"></props-select>
+            <props-select @emptyBeeBox="emptyBeeBox" @getList="createStartData" @getGroup="getGroupList" ref="PropsSlect"></props-select>
 
 
             <div class="form-row">
@@ -295,7 +295,7 @@ export default {
 				lat: this.lat,
 			});
 			result.then(res => {
-				console.log(11234, res.data);
+				//console.log(11234, res.data);
 				if (res.data.responseCode === '000000') {
 					// 点击点图上点和点击列表上某行相一致
 					this.slectThisRow(res.data.data.beeBoxNo);
@@ -342,6 +342,11 @@ export default {
 				path: path,
 			});
 		},
+    searchByKeyWord(){
+      this.$refs['PropsSlect'].clearTimer()
+      this.beeBoxNo = '';
+      this.getHiveList(this.search)
+    },
 		// 获取蜂箱列表信息  搜索页面
 		getHiveList(keyword) {
 			this.points = [];
@@ -365,11 +370,10 @@ export default {
 		},
 		createStartData(res) {
 			//alert(11111)
-			console.log(100000, res);
+			//console.log(100000, res);
 			let data = res.data.data;
 			this.hiveList = data;
-			// this.hiveList.reverse();
-			console.log(1112, this.hiveList);
+			//console.log(1112, this.hiveList);
 			let list = data;
 			if (data.length > 0 && this.beeBoxNo === '') {
 				//alert(2222)
@@ -472,7 +476,7 @@ export default {
 		// 	});
 		// },
 		clickBoxId(id) {
-			clearInterval(timer);
+
 			let _this = this;
 			//console.log(123, _this.beeBoxNo);
 			sensorDataId = '';
