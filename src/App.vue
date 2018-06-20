@@ -34,7 +34,7 @@ input{
 }
 .el-main{
   margin: 0;
-  padding: 0;
+  padding: 0 !important;
   background-color: #3f3b3a
 }
 #app {
