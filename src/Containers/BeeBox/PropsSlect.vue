@@ -68,7 +68,7 @@
 
     </div>
     <div class="canshu" style="text-align:right">
-      <span class="hover" style="margin-right:20px" @click="add"><i class="iconfont icon-search"></i>
+      <span class="hover" style="margin-right:20px" @click="search"><i class="iconfont icon-search"></i>
       查询
       </span>
       <span class="hover" @click="deleteById"> <i class="iconfont icon-069delete" ></i>
@@ -123,6 +123,9 @@ export default {
 		conditionIndex: '',
 		groupName: '',
 	}),
+	beforeDestroy(){
+		clearInterval(timer)
+	},
 	methods: {
 		selectProps(e) {
 			let value = e.target.value;
@@ -277,8 +280,14 @@ export default {
 			//let value = e.target.value
 			console.log(key);
 		},
+		search(){
+
+			this.add();
+			this.$emit('emptyBeeBox');
+		},
 		add() {
-			console.log(123, this.condition);
+			//console.log(123, this.condition);
+			clearInterval(timer)
 			let obj = {};
 			let array = [];
 			let condition = this.condition;
@@ -378,20 +387,31 @@ export default {
 
 				array.push(obj);
 			}
-			console.log(11121212, array);
+			//console.log(11121212, array);
 			let result = post('/queryGroupBeeBox', {
 				filterItems: array,
 			});
 			result.then(res => {
+				console.log(456, res);
+				let data = res.data.data;
+				console.log(1234, data);
+				if (!data || data.length === 0) {
+					this.$message({
+						message: '没查询到相关数据',
+						type: 'warning',
+					});
+					return;
+				}
 				timer = setTimeout(this.add(), 10000);
 				this.ids = [];
-				let data = res.data.data;
+
 				for (let d of data) {
 					this.ids.push(d.beeBoxNo);
 				}
 
 				// 展示表格数据
-				this.$emit('getList', res, true);
+				this.$emit('getList',res);
+				//
 			});
 		},
 		save() {
@@ -432,6 +452,11 @@ export default {
 						type: 'success',
 					});
 					this.$emit('getGroup');
+				} else if (res.data.responseCode === '000100') {
+					this.$message({
+						message: '编组名称不能和已有名称相同',
+						type: 'warning',
+					});
 				}
 			});
 		},

@@ -17,7 +17,7 @@
                 v-model="search"
                 clearable
                 prefix-icon="el-icon-search"
-                @keyup.enter.native = "getHiveList(search)"
+                @keyup.enter.native="getHiveList(search)"
                 ></el-input>
             </div>
         </div>
@@ -33,10 +33,10 @@
             <th>湿度</th>
             <th>重量</th>
             <th>压强</th>
-            <th>状态</th>
+            <!-- <th>状态</th> -->
             <th>电量</th>
           </tr>
-          <tr v-for="(item,index) in hiveList" :key="item.boxId" @click="slectThisRow(item.beeBoxNo)" :class="beeBoxNo===item.beeBoxNo?'selected':''">
+          <tr v-for="(item,index) in hiveList" :key="item.beeBoxNo" @click="slectThisRow(item.beeBoxNo)" :class="beeBoxNo===item.beeBoxNo?'selected':''">
           	<td>
           		<el-checkbox v-model="statusList[index]" @change="changeStatus(index,statusList[index],item.id)"></el-checkbox>
           	</td>
@@ -45,7 +45,7 @@
             <td>{{item.humidity | nullToLine}}</td>
             <td>{{item.gravity | nullToLine}}</td>
             <td>{{item.airPressure | nullToLine}}</td>
-            <td>{{item.status | toBeeBoxStatus}}</td>
+            <!-- <td>{{item.status | toBeeBoxStatus}}</td> -->
             <td>{{item.battery | nullToLine}}</td>
           </tr>
         </table>
@@ -151,7 +151,7 @@
               编组
             </div>
 
-            <props-select @getList="createStartData" @getGroup="getGroupList"></props-select>
+            <props-select @emptyBeeBox="emptyBeeBox" @getList="createStartData" @getGroup="getGroupList"></props-select>
 
 
             <div class="form-row">
@@ -285,15 +285,7 @@ export default {
 		clearInterval(timer);
 	},
 	methods: {
-		// clickHandler(e) {
-		// 	for (let i = 0; i < this.hiveList.length; i++) {
-		// 		if (e.point.lng === this.hiveList[i].lng && e.point.lat === this.hiveList[i].lat) {
-		// 			this.getBeeBoxInfo(this.hiveList[i].beeBoxNo);
-		// 			this.clickBoxId(this.hiveList[i].beeBoxNo);
-		// 		}
-		// 	}
-		// },
-		//点击图上的某个点
+		// 点击地图上的某个点进行切换
 		clickHandler(e) {
 			this.lng = e.point.lng;
 			this.lat = e.point.lat;
@@ -305,11 +297,12 @@ export default {
 			result.then(res => {
 				console.log(11234, res.data);
 				if (res.data.responseCode === '000000') {
-					// this.idSelectSearch(res.data.data.beeBoxNo);
+					// 点击点图上点和点击列表上某行相一致
 					this.slectThisRow(res.data.data.beeBoxNo);
 				}
 			});
 		},
+		// 蜂箱数据进行排序
 		sortByBeeBoxNum() {
 			this.array1 = sortBy('beeBoxNum', this.groupStatusList, this.checkAllGroupStatus, [], this.groupList, true);
 			this.beeFarmerSortList = [];
@@ -322,10 +315,8 @@ export default {
 		getBeeBoxInfo(beeBoxId) {
 			let result = post('/getBeeBox', { beeBoxId: beeBoxId });
 			result.then(res => {
-				//console.log(1119887, res);
 				if (res.data.responseCode === '000000') {
 					let data = res.data.data;
-					//console.log(88888, data);
 					if (data) {
 						this.beeBoxInfo.beeBoxId = data.beeBoxNo;
 						this.beeBoxInfo.batchNo = data.batchNo;
@@ -351,31 +342,37 @@ export default {
 				path: path,
 			});
 		},
-
-		// 获取蜂箱列表信息 蜂箱信息  地图信息
+		// 获取蜂箱列表信息  搜索页面
 		getHiveList(keyword) {
 			this.points = [];
 			console.log(keyword);
+			// clearInterval(hiveTimer);
+			// 先清除要不然搜索出现问题
+			// clearInterval(timer);
 			let result = post('/getAllBeeBoxSensorData', { keyword: keyword || null });
 			result.then(res => {
-				//console.log(111167, res);
 				if (res.data.responseCode === '000000') {
-					console.log(9999,res.data)
-					hiveTimer = setTimeout(this.getHiveList, 10000);
-					this.createStartData(res,false);
-					// 画扇形图
+					console.log(9999, res.data);
+					hiveTimer = setTimeout(this.getHiveList, 100000);
+					this.createStartData(res);
 				}
 			});
 		},
-		createStartData(res,isFromPropsSelect) {
-			if(isFromPropsSelect){
-			clearInterval(hiveTimer)
-			}
-			
+		emptyBeeBox() {
+			//alert(2222)
+			this.beeBoxNo = '';
+			clearInterval(hiveTimer);
+		},
+		createStartData(res) {
+			//alert(11111)
+			console.log(100000, res);
 			let data = res.data.data;
 			this.hiveList = data;
+			// this.hiveList.reverse();
+			console.log(1112, this.hiveList);
 			let list = data;
 			if (data.length > 0 && this.beeBoxNo === '') {
+				//alert(2222)
 				this.beeBoxNo = list[0].beeBoxNo;
 				this.clickBoxId(list[0].beeBoxNo);
 				this.getBeeBoxInfo(list[0].beeBoxNo);
@@ -393,6 +390,7 @@ export default {
 				this.points = points;
 			}
 		},
+
 		//删除蜂箱
 		deleteBeeBox() {
 			this.deleteIdArray = [];
@@ -413,7 +411,6 @@ export default {
 			});
 			result
 				.then(res => {
-					
 					if (res.data.responseCode === '000000') {
 						this.$message({
 							message: '删除蜂箱成功',
@@ -447,9 +444,7 @@ export default {
 
 		// 点击列表某行获取蜂箱信息，并将该行标记颜色
 		slectThisRow(beeBoxNo) {
-			//  this.idChange(id)
 			this.beeBoxNo = beeBoxNo;
-			//console.log('99999', beeBoxNo);
 			this.getBeeBoxInfo(beeBoxNo);
 			this.clickBoxId(beeBoxNo);
 		},
@@ -477,6 +472,7 @@ export default {
 		// 	});
 		// },
 		clickBoxId(id) {
+			clearInterval(timer);
 			let _this = this;
 			//console.log(123, _this.beeBoxNo);
 			sensorDataId = '';
@@ -538,24 +534,12 @@ export default {
 								battery,
 								date,
 							};
-							//console.log(1111111, obj);
 							_this.$refs.fool.drawFoldLine(obj);
 						}
 					}
 				});
 			}, 5000);
 		},
-		// 添加到编组列表
-		// addToGroup() {
-		// 	let result = post('/saveGroupBeeBox', {
-		// 		beeBoxGroup: {
-		// 			id: 1,
-		// 			groupName: '',
-		// 		},
-		// 		ids: [],
-		// 	});
-		// 	result.then(res => {});
-		// },
 
 		// 显示编组信息列表 //刷新现有组列表
 		getGroupList() {
@@ -598,18 +582,7 @@ export default {
 				}
 			});
 		},
-		// 添加到已有条件列表
-		addToTermList() {
-			this.termList.push({
-				name: this.term.name,
-				condition: this.term.condition,
-				value: this.term.value,
-			});
-		},
-		//显示已有条件列表
-		getTermList() {},
-		//搜索框用来查找蜂箱列表
-		searchBoxList() {},
+
 		//点击全选的状态
 		changeAllStatus(val) {
 			for (let i = 0; i < this.statusList.length; i++) {
@@ -736,7 +709,7 @@ export default {
 .section-left {
 	position: relative;
 	width: 30%;
-	overflow: scroll;
+	overflow-y: scroll;
 	padding-bottom: 20px;
 	background: white;
 }
@@ -779,6 +752,7 @@ export default {
 table {
 	border-collapse: collapse;
 	width: 100%;
+	border-right: none;
 }
 
 table tr:hover {
@@ -800,7 +774,10 @@ td {
 table tr th {
 	width: 11.28%;
 }
-
+tr,
+table {
+	border-right: none !important;
+}
 .detail-box {
 	position: relative;
 	width: 100%;
@@ -971,7 +948,7 @@ textarea {
 .group-table {
 	height: 305px;
 	background: #e8f0f9;
-	overflow: scroll;
+	/* overflow: scroll; */
 }
 .icon-span {
 	float: right;

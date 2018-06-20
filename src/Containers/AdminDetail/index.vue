@@ -192,7 +192,7 @@ export default {
 <style lang="" scoped>
 .container {
 	width: 100%;
-	height: 100%;
+	height: 950px;
 	color: white;
 	display: flex;
 	justify-content: center;

@@ -25,8 +25,8 @@ body {
 	min-width: 1280px;
 	margin: 0;
 	padding: 0;
-	height: 100%;
-	overflow: hidden;
+	/* height: 100%;
+	overflow: hidden; */
 }
 input {
 	padding: 0;

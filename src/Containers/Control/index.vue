@@ -114,7 +114,7 @@
         <th>邮箱</th>
         <th>联系电话</th>
         <th>地址</th>
-        <th>状态</th>
+        <!-- <th>状态</th> -->
       </tr>
       <tr class="row-hover" v-for="(item, index) in adminList" :key="item.id" @click="editControl(item.id,index,item)">
         <td style="border:none;width:3%;text-align:center;background:none">
@@ -130,7 +130,7 @@
         <td>{{ item.email }}</td>
         <td>{{ item.mobile }}</td>
         <td>{{ item.address }}</td>
-        <td>{{ item.status ? '在线' : '离线' }}</td>
+        <!-- <td>{{ item.status ? '在线' : '离线' }}</td> -->
       </tr>
     </table>
   </div>
@@ -549,13 +549,13 @@ export default {
 <style lang="" scoped>
 .container {
 	width: calc(100%-18px);
-	margin-top: 40px;
-	margin-left: 10px;
+	margin-left: 0px;
 	margin-right: 10px;
 	background: #15232f;
 	border: 1px solid #235978;
 	color: white;
 	padding-bottom: 100px;
+	min-height: 920px;
 }
 
 .form-row {

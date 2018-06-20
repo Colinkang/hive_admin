@@ -1,5 +1,5 @@
 <template>
-  <div id="">
+  <div id="container">
     AI
 
   </div>
@@ -13,4 +13,7 @@ export default {
 }
 </script>
 <style lang="" scoped>
+#container{
+  height: 900px;
+}
 </style>

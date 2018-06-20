@@ -4,40 +4,50 @@
     <el-col :span="3">
       蜂箱ID
     </el-col>
-    <el-col :span="5">
-      <el-input size="small"  placeholder="请输入内容" v-model.trim="beeBox.beeBoxNo"></el-input>
+    <el-col :span="3">
+      <el-input size="mini"  placeholder="请输入内容" v-model.trim="beeBox.beeBoxNo"></el-input>
     </el-col>
     <el-col :span="3" :offset="3">
       所属蜂农ID
     </el-col>
-    <el-col :span="5">
+		<el-col :span="3">
+		 <el-select size="mini" v-model="beeBox.farmerId" clearable placeholder="请选择" style="width:100%">
+    <el-option
+      v-for="item in farmList"
+      :key="item.id"
+      :label="item.username"
+      :value="item.id">
+    </el-option>
+  </el-select>
+	</el-col>
+    <!-- <el-col :span="5">
       <el-input size="small"  placeholder="请输入内容" v-model.trim="beeBox.farmerId"></el-input>
-    </el-col>
+    </el-col> -->
   </el-row>
   <el-row class="form-row">
     <el-col :span="3">
       出厂批次
     </el-col>
-    <el-col :span="5">
-      <el-input size="small"  placeholder="请输入内容" v-model.trim="beeBox.batchNo"></el-input>
+    <el-col :span="3">
+      <el-input size="mini"  placeholder="请输入内容" v-model.trim="beeBox.batchNo"></el-input>
     </el-col>
     <el-col :span="3" :offset="3">
       手机号码
     </el-col>
-    <el-col :span="5">
-      <el-input size="small"  placeholder="请输入内容" v-model.trim="beeBox.mobile"></el-input>
+    <el-col :span="3">
+      <el-input size="mini"  placeholder="请输入内容" v-model.trim="beeBox.mobile"></el-input>
     </el-col>
-    <el-col :span="4">
-      <span class="sent-code" @click="sendCode">发送验证码</span>
+    <el-col :span="3">
+      <span class="sent-code"  @click="sendCode">发送验证码</span>
     </el-col>
   </el-row>
   <el-row class="form-row">
     <el-col :span="3">
       生产日期
     </el-col>
-    <el-col :span="5">
+    <el-col :span="3">
       <!-- <el-input size="small"  placeholder="请输入内容" v-model="beeBox.entryDate"></el-input> -->
-			 <el-date-picker size="small"
+			 <el-date-picker size="mini"
          v-model.trim="beeBox.entryDate"
          type="date"
          placeholder="选择日期" value-format="yyyy-MM-dd">
@@ -46,8 +56,8 @@
     <el-col :span="3" :offset="3">
       验证码
     </el-col>
-    <el-col :span="5">
-      <el-input size="small"  placeholder="请输入内容" v-model.trim="beeBox.code"></el-input>
+    <el-col :span="3">
+      <el-input size="mini"  placeholder="请输入内容" v-model.trim="beeBox.code"></el-input>
     </el-col>
 
   </el-row>
@@ -55,13 +65,13 @@
     <el-col :span="3">
       厂商
     </el-col>
-    <el-col :span="5">
-      <el-input size="small"  placeholder="请输入内容" v-model.trim="beeBox.manufacturer"></el-input>
+    <el-col :span="3">
+      <el-input size="mini"  placeholder="请输入内容" v-model.trim="beeBox.manufacturer"></el-input>
     </el-col>
     <el-col :span="3" :offset="3">
       状态
     </el-col>
-    <el-col :span="5">
+    <el-col :span="3">
       <el-radio v-model="beeBox.status" label="1">禁用</el-radio>
       <el-radio v-model="beeBox.status" label="2">开启</el-radio>
     </el-col>
@@ -94,7 +104,11 @@ export default {
 			mobile: '',
 			code: '',
 		},
+		farmList: [],
 	}),
+	mounted() {
+		this.getFarmer();
+	},
 	methods: {
 		save() {
 			let options = {
@@ -167,12 +181,23 @@ export default {
 				}
 			});
 		},
+		getFarmer() {
+			let result = get('/getAllFarmers', null);
+			result.then(res => {
+				console.log(111, res);
+				if (res.data.responseCode === '000000') {
+					this.farmList = res.data.data;
+				}
+			});
+		},
 	},
 };
 </script>
 <style lang="" scoped>
 .container {
 	color: white;
+	height: 950px;
+	overflow: hidden;
 }
 .form-row {
 	height: 40px;
@@ -188,6 +213,8 @@ export default {
 	width: 120px;
 	display: inline-block;
 	text-align: center;
+	height: 25px;
+	line-height: 25px;
 }
 .sent-code:hover {
 	color: rgb(122, 122, 122);

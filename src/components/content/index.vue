@@ -15,8 +15,8 @@ export default {
 <style lang="" scoped>
 .my-content{
   width: 100%;
-  height: 100%;
-  overflow-x: hidden;
+  /* height: 100%; */
+  /* overflow-x: hidden; */
   background-color:#162f46
 }
 </style>

@@ -124,7 +124,7 @@ export default {
 }
 
 .el-header {
-	padding: 0;
+	padding: 0!important;
 	background: rgb(55, 55, 55);
 }
 
@@ -167,7 +167,7 @@ export default {
 .el-main {
 	width: 100%;
 	height: 100%;
-	overflow: hidden;
+	overflow: hidden!important;
 }
 .el-container {
 	height: 100%;

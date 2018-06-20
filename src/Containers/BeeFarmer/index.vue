@@ -56,7 +56,7 @@
         <th>邮箱</th>
         <th>联系电话</th>
         <th>地址</th>
-        <th>状态</th>
+        <!-- <th>状态</th> -->
       </tr>
       <tr v-for="(beeFarmerList,index) in beeFarmerLists" :key="beeFarmerList.id" @click="editBeeFarmer(beeFarmerList.id,index)">
         <td style="border:none;width:3%;text-align:center;background:none">
@@ -72,7 +72,7 @@
         <td>{{beeFarmerList.email}}</td>
         <td>{{beeFarmerList.mobile}}</td>
         <td>{{beeFarmerList.address}}</td>
-        <td>{{beeFarmerList.status | toBeeStatus}}</td>
+        <!-- <td>{{beeFarmerList.status | toBeeStatus}}</td> -->
       </tr>
     </table>
   </div>
@@ -464,13 +464,14 @@ export default {
 <style lang="" scoped>
 .container {
 	width: calc(100%-18px);
-	margin-top: 40px;
+	/* margin-top: 40px;
 	margin-left: 10px;
-	margin-right: 10px;
+	margin-right: 10px; */
 	background: #15232f;
 	border: 1px solid #235978;
 	color: white;
 	padding-bottom: 100px;
+	min-height:900px;
 }
 
 .form-row {
