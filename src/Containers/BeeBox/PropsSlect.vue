@@ -46,8 +46,8 @@
         <span><input type="text" name="" value="" style="width:60px" placeholder="终止经度" v-model="input2"></span>
       </div>
       <div class="" style="margin-top:5px;">
-        <span style="margin-right:5px"><input type="text" name="" value="" style="width:60px" placeholder="起始维度" v-model="input1"></span>--
-        <span><input type="text" name="" value="" style="width:60px" placeholder="终止纬度" v-model="input2"></span>
+        <span style="margin-right:5px"><input type="text" name="" value="" style="width:60px" placeholder="起始维度" v-model="input3"></span>--
+        <span><input type="text" name="" value="" style="width:60px" placeholder="终止纬度" v-model="input4"></span>
       </div>
 
     </div>
@@ -68,7 +68,7 @@
 
     </div>
     <div class="canshu" style="text-align:right">
-      <span class="hover" style="margin-right:20px" @click="add"><i class="iconfont icon-search"></i>
+      <span class="hover" style="margin-right:20px" @click="search"><i class="iconfont icon-search"></i>
       查询
       </span>
       <span class="hover" @click="deleteById"> <i class="iconfont icon-069delete" ></i>
@@ -106,6 +106,7 @@ const config = {
 	productionDate: '生产日期',
 	position: '地理位置',
 };
+let timer;
 export default {
 	name: '',
 	data: () => ({
@@ -122,6 +123,9 @@ export default {
 		conditionIndex: '',
 		groupName: '',
 	}),
+	beforeDestroy(){
+		clearInterval(timer)
+	},
 	methods: {
 		selectProps(e) {
 			let value = e.target.value;
@@ -276,13 +280,21 @@ export default {
 			//let value = e.target.value
 			console.log(key);
 		},
+		search(){
+
+			this.add();
+			this.$emit('emptyBeeBox');
+		},
 		add() {
-			console.log(123, this.condition);
+			//console.log(123, this.condition);
+			clearInterval(timer)
 			let obj = {};
 			let array = [];
 			let condition = this.condition;
-
+			console.log(111111, condition);
 			for (let con of condition) {
+				console.log(98, con);
+				obj = {};
 				switch (con.type) {
 					case 'beeFarmerId':
 						{
@@ -325,8 +337,9 @@ export default {
 						}
 						break;
 				}
-				if (condition.children) {
-					for (let child of condition.children) {
+				if (con.children) {
+					for (let child of con.children) {
+						console.log(999989, child);
 						switch (child.type) {
 							case 'beeFarmerId':
 								{
@@ -374,22 +387,42 @@ export default {
 
 				array.push(obj);
 			}
-			//console.log(11121212,array)
+			//console.log(11121212, array);
 			let result = post('/queryGroupBeeBox', {
 				filterItems: array,
 			});
 			result.then(res => {
-				//  console.log(1111, res);
-				this.ids = [];
+				console.log(456, res);
 				let data = res.data.data;
+				console.log(1234, data);
+				if (!data || data.length === 0) {
+					this.$message({
+						message: '没查询到相关数据',
+						type: 'warning',
+					});
+					return;
+				}
+				timer = setTimeout(this.add(), 10000);
+				this.ids = [];
+
 				for (let d of data) {
 					this.ids.push(d.beeBoxNo);
 				}
+
 				// 展示表格数据
-				this.$emit('getList', res);
+				this.$emit('getList',res);
+				//
 			});
 		},
 		save() {
+			console.log(this.ids);
+			if (this.ids === undefined) {
+				this.$message({
+					message: '请先添加查询条件，才能进行编组',
+					type: 'warning',
+				});
+				return;
+			}
 			if (this.ids.length === 0) {
 				this.$message({
 					message: '没有符合该条件的蜂箱，不能添加编组',
@@ -397,8 +430,8 @@ export default {
 				});
 				return;
 			}
-			if(!this.groupName){
-					this.$message({
+			if (!this.groupName) {
+				this.$message({
 					message: '编组名称不能为空',
 					type: 'warning',
 				});
@@ -412,13 +445,18 @@ export default {
 				beeBoxIds: this.ids,
 			});
 			result.then(res => {
-				console.log(1123,res);
+				console.log(1123, res);
 				if (res.data.responseCode === '000000') {
 					this.$message({
 						message: '保存编组成功',
 						type: 'success',
 					});
 					this.$emit('getGroup');
+				} else if (res.data.responseCode === '000100') {
+					this.$message({
+						message: '编组名称不能和已有名称相同',
+						type: 'warning',
+					});
 				}
 			});
 		},

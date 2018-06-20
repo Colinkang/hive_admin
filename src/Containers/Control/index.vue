@@ -75,7 +75,8 @@
       <div class="form-row" style="margin-top:10px">
 
       </div>
-      <div class="form-row">
+      <div class="form-row ">
+				
         <div class="sure-btn" @click="createManager">
           确认
         </div>
@@ -113,9 +114,9 @@
         <th>邮箱</th>
         <th>联系电话</th>
         <th>地址</th>
-        <th>状态</th>
+        <!-- <th>状态</th> -->
       </tr>
-      <tr v-for="(item, index) in adminList" :key="item.id" @click="editControl(item.id,index)">
+      <tr class="row-hover" v-for="(item, index) in adminList" :key="item.id" @click="editControl(item.id,index,item)">
         <td style="border:none;width:3%;text-align:center;background:none">
           <el-checkbox v-model="checkList[index]" @change="checkedChange"></el-checkbox>
         </td>
@@ -129,7 +130,7 @@
         <td>{{ item.email }}</td>
         <td>{{ item.mobile }}</td>
         <td>{{ item.address }}</td>
-        <td>{{ item.status ? '在线' : '离线' }}</td>
+        <!-- <td>{{ item.status ? '在线' : '离线' }}</td> -->
       </tr>
     </table>
   </div>
@@ -207,7 +208,8 @@ export default {
 			let adminData = this.adminList[index];
 			this.$refs.name.setAttribute('readonly', 'readonly');
 			// this.isEditStatus = true;
-			console.log(adminData);
+
+			console.log(989, adminData);
 			this.managementParams = {
 				name: adminData.name,
 				address: adminData.address,
@@ -217,7 +219,8 @@ export default {
 				// organizationId: BeeFarmerData.organizationId,
 				email: adminData.email,
 				// beeBoxNum: BeeFarmerData.beeBoxNum,
-				id: id,
+				id: adminData.id,
+				type: adminData.type,
 				username: adminData.username,
 			};
 		},
@@ -326,6 +329,7 @@ export default {
 		},
 		// 创建管理员  //编辑管理员
 		createManager() {
+			console.log(this.managementParams);
 			let message = '创建';
 			if (this.managementParams.id !== undefined) {
 				message = '修改';
@@ -545,13 +549,13 @@ export default {
 <style lang="" scoped>
 .container {
 	width: calc(100%-18px);
-	margin-top: 40px;
-	margin-left: 10px;
+	margin-left: 0px;
 	margin-right: 10px;
 	background: #15232f;
 	border: 1px solid #235978;
 	color: white;
 	padding-bottom: 100px;
+	min-height: 920px;
 }
 
 .form-row {
@@ -573,12 +577,13 @@ export default {
 .input-section-left {
 	width: 70%;
 	height: 250px;
+	border-right: 2px solid white;
 }
 
 .input-section-right {
 	width: 30%;
 	height: 200px;
-	border-left: 2px solid white;
+	/* border-left: 2px solid white; */
 }
 
 .sent-code {
@@ -617,6 +622,7 @@ export default {
 	background: #40557b;
 	color: white;
 	cursor: pointer;
+	float: left;
 }
 
 .list-box {
@@ -671,5 +677,8 @@ export default {
 	font-size: 12px;
 	margin-left: 0px;
 	color: white;
+}
+.row-hover:hover {
+	cursor: pointer;
 }
 </style>

@@ -26,7 +26,7 @@ export default new Router({
             path: '/',
             name: 'content',
             component: content,
-            //redirect: '/',
+            redirect: '/beebox',
             children: [
                 {
                     path: 'beebox',

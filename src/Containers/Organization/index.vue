@@ -563,8 +563,8 @@ export default {
 <style lang="" scoped>
 .container {
 	width: calc(100%-18px);
-	margin-top: 40px;
-	margin-left: 10px;
+	/* margin-top: 40px;
+	margin-left: 10px; */
 	margin-right: 10px;
 	background: #15232f;
 	border: 1px solid #235978;
@@ -592,12 +592,12 @@ export default {
 .input-section-left {
 	width: 65%;
 	height: 160px;
+	border-right: 2px solid white;
 }
 
 .input-section-right {
 	width: 35%;
 	height: 160px;
-	border-left: 2px solid white;
 }
 
 .sent-code {

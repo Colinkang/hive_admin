@@ -436,6 +436,7 @@ export default {
 	width: 100%;
 	display: flex;
 	color: #32354d;
+	min-height: 920px;
 }
 
 .section-left {
