@@ -448,29 +448,7 @@ export default {
 			this.getBeeBoxInfo(beeBoxNo);
 			this.clickBoxId(beeBoxNo);
 		},
-		// 获取折线图的数据，并将数据显示在折线图上
-		// getFold(beeBoxNo) {
-		// 	let result = post('/getBeeBoxSensorData', {
-		// 		beeBoxNos: [beeBoxNo], //所有信息
-		// 	});
-		// 	result.then(res => {
-		// 		if (res.data.responseCode === '000000') {
-		// 			let data = res.data.data;
-		// 			console.log(2345, data);
-		// 			if (data.length > 0) {
-		// 				for (let d of data) {
-		// 					this.fold.temperature.push(d.temperature);
-		// 					this.fold.humidity.push(d.humidity);
-		// 					this.fold.gravity.push(d.gravity);
-		// 					this.fold.airPressure.push(d.airPressure);
-		// 					this.fold.battery.push(d.battery);
-		// 					this.fold.date.push(moment(data.createDate).format('YYYY-MM-DD hh:mm'));
-		// 				}
-		// this.$refs.fool.drawFoldLine(this.fold);
-		// 			}
-		// 		}
-		// 	});
-		// },
+
 		clickBoxId(id) {
 			clearInterval(timer);
 			let _this = this;
