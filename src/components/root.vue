@@ -139,7 +139,8 @@ export default {
 }
 
 .el-menu {
-	border: 1px solid #0b1b36;
+	border:none;
+  border-right: none;
 	background: #0b1b36 !important;
 }
 .login-page {
@@ -167,6 +168,7 @@ export default {
 .el-main {
 	width: 100%;
 	height: 100%;
+  background: #162f46;
 	overflow: hidden!important;
 }
 .el-container {

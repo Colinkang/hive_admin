@@ -53,7 +53,7 @@
           </el-col>
           <el-col :span="3" >
             验证码
-          </el-col> 
+          </el-col>
           <el-col :span="3">
             <el-input size="mini" v-model="manager.code"  placeholder="请输入内容"></el-input>
           </el-col>
@@ -197,15 +197,18 @@ export default {
 	display: flex;
 	justify-content: center;
 	align-items: center;
+
 }
 .detail-box {
 	width: 80%;
 	height: 700px;
-	border: 1px solid #036eb8;
+	border: 2px solid #036eb8;
+  background: #3f3e3c;
 }
 .section-top {
 	height: 250px;
 	background: #646260;
+  border-bottom: 2px solid #036eb8;
 }
 .form-row {
 	height: 30px;

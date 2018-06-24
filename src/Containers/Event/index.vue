@@ -156,7 +156,7 @@
       <div class="form-row group-table">
         <table border="0" style="border:none">
           <tr style="border:none;background:#40577f;color:white">
-            <th style="border:none;width:25%;color:white">
+            <th style="border:none;width:10%;color:white">
               <el-checkbox v-model="checked" @change="changeAllGroupStatus(checked)"></el-checkbox>
             </th>
             <th style="border:none;width:25%;color:white" @click="sortByCreateDate">
@@ -437,23 +437,24 @@ export default {
 	display: flex;
 	color: #32354d;
 	min-height: 920px;
+  margin-top: 40px;
+  margin-left: 10px;
+  margin-right: 10px;
 }
 
 .section-left {
 	width: 44%;
 	min-height: 800px;
 	margin-left: 1px;
-	padding: 10px;
-	padding-top: 30px;
 }
 
 .section-right {
-	width: 54%;
+	width: 53%;
 	min-height: 800px;
-	margin-left: 10px;
-	margin-right: 10px;
+  background: #15232f;
 	padding: 10px;
-	padding-top: 40px;
+  margin-left: 10px;
+  margin-right: 20px;
 }
 
 ul {
@@ -533,10 +534,10 @@ li:hover {
 
 .exit-rule {
 	width: 100%;
-	height: 410px;
+	height: 600px;
 	color: black;
 	background: white;
-	overflow: scroll;
+	overflow-y: scroll;
 }
 
 .sure-btn {
@@ -553,9 +554,9 @@ li:hover {
 }
 
 .group-table {
-	height: 600px;
+	height: 872px;
 	background: #e8f0f9;
-	overflow: scroll;
+	overflow-y: scroll;
 	color: white;
 	margin-top: 20px;
 }

@@ -4,7 +4,7 @@
     <span>名称</span>
     <input type="text" v-model="groupName" class="name-input" style="width:180px">
   </div>
-  <div class="tiaojian" style="vertical-align: top;">
+  <div class="tiaojian" style="vertical-align: top;margin-top:10px;">
     <div class="">
       条件
     </div>
@@ -18,9 +18,9 @@
         <option value="position">地理位置</option>
       </select>
   </div>
-  <div class="canshu">
+  <div class="canshu" style="margin-top:10px;">
     <div class="">
-      参数({{ slectType==='id' ?'输入id范围' :slectType==='beeFarmerName' ?'输入蜂农姓名' :slectType==='beeFarmerId' ?'输入蜂农Id' :slectType==='manufacturer' ?'输入制造商名字' :slectType==='batchNo' ?'输入批次范围' :slectType==='date' ?'输入生产日期' :'输入地理位置范围' }})
+      ({{ slectType==='id' ?'输入id范围' :slectType==='beeFarmerName' ?'输入蜂农姓名' :slectType==='beeFarmerId' ?'输入蜂农Id' :slectType==='manufacturer' ?'输入制造商名字' :slectType==='batchNo' ?'输入批次范围' :slectType==='date' ?'输入生产日期' :'输入地理位置范围' }})
     </div>
     <div class="" v-if="slectType==='id'||slectType==='batchNo'">
       <span style="margin-right:5px"><input type="text" name="" value="" style="width:60px" v-model="input1"></span>--
@@ -62,14 +62,14 @@
   </div>
   <div class="form-row">
     <div class="tiaojian">
-      <div class="">
+      <div class="exit-tiaojian">
         已有条件
       </div>
 
     </div>
     <div class="canshu" style="text-align:right">
-      <span class="hover" style="margin-right:20px" @click="search"><i class="iconfont icon-search"></i>
-      查询
+      <span class="hover" style="margin-right:20px" @click="search"><i class="iconfont icon-add"></i>
+      添加
       </span>
       <span class="hover" @click="deleteById"> <i class="iconfont icon-069delete" ></i>
       删除
@@ -489,6 +489,11 @@ export default {
 .canshu {
 	width: 49%;
 	display: inline-block;
+}
+
+.exit-tiaojian{
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 .sure-btn {

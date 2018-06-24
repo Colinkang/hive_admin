@@ -16,61 +16,53 @@ import Control from '../Containers/Control/index.vue'
 import AddBeeBox from '../Containers/BeeBox/add.vue'
 import AdminDetail from '../Containers/AdminDetail/index.vue'
 import AdminDetailUpdatePwd from '../Containers/AdminDetail/updatepassword.vue'
-
+import FeedBack from '@/Containers/FeedBack/feedback.vue';
 
 Vue.use(Router)
 
 export default new Router({
-    routes: [
+  routes: [
+    {
+      path: '/',
+      name: 'content',
+      component: content,
+      redirect: '/beebox',
+      children: [
         {
-            path: '/',
-            name: 'content',
-            component: content,
-            redirect: '/beebox',
-            children: [
-                {
-                    path: 'beebox',
-                    component: BeeBox
-                },
-                {
-                    path: 'beefarmer',
-                    component: BeeFarmer
-                },
-                {
-                    path: 'organization',
-                    component: Organization
-                },
-                {
-                    path: 'event',
-                    component: Event
-                },
-                {
-                    path: 'ai',
-                    component: AI
-                },
-                {
-                    path: 'dron',
-                    component: Drone
-                },
-                {
-                    path: 'control',
-                    component: Control
-                }
-                ,
-                {
-                    path: 'addbeebox',
-                    component: AddBeeBox
-                }
-                ,
-                {
-                    path: 'admindetail',
-                    component: AdminDetail
-                },
-                {
-                    path: 'updatepwd',
-                    component: AdminDetailUpdatePwd
-                }
-            ]
+          path: 'beebox',
+          component: BeeBox
+        }, {
+          path: 'beefarmer',
+          component: BeeFarmer
+        }, {
+          path: 'organization',
+          component: Organization
+        }, {
+          path: 'event',
+          component: Event
+        }, {
+          path: 'ai',
+          component: AI
+        }, {
+          path: 'dron',
+          component: Drone
+        }, {
+          path: 'control',
+          component: Control
+        }, {
+          path: 'addbeebox',
+          component: AddBeeBox
+        }, {
+          path: 'admindetail',
+          component: AdminDetail
+        }, {
+          path: 'updatepwd',
+          component: AdminDetailUpdatePwd
+        }, {
+          path: 'feedback',
+          component: FeedBack
         }
-    ]
+      ]
+    }
+  ]
 })
