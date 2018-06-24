@@ -121,7 +121,8 @@ export default {
 				mobile: this.beeBox.mobile,
 				code: this.beeBox.code,
 			};
-			console.log(111, options);
+			// console.log(111, options);
+			console.log(1111,Validate(options, beeBoxAddSchema))
 			if (Validate(options, beeBoxAddSchema) !== null) {
 				this.$message({
 					message: '字段都不能为空',
