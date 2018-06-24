@@ -1,5 +1,5 @@
 <template>
-<div id="foldChart" :style="{width: '100%', height: '100%'}"></div>
+<div id="foldChart" :style="{width: '96%', height: '96%',marginLeft:'2%',overflow:'hidden'}"></div>
 </template>
 <script>
 import echarts from 'echarts';
@@ -76,12 +76,13 @@ export default {
         legend: {
           data: ['温度', '湿度', '重量', '压强', '电量'],
           textStyle: {
-            color: 'white'
+            color: 'black'
           }
         },
         grid: {
           top: 70,
           bottom: 50,
+          left:'20px',
           right: 50
         },
         xAxis: [{
@@ -174,6 +175,7 @@ export default {
           },
 
         ],
+        backgroundColor:'#eee'
       };
 
       foldChart.setOption(option);

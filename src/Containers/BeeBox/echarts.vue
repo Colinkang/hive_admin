@@ -1,5 +1,5 @@
 <template>
-    <div id="myChart" :style="{width: '100%', height: '100%'}"></div>
+    <div id="myChart" :style="{width: '96%', height: '96%',marginTop:'3%'}"></div>
 </template>
 <script>
 import echarts from 'echarts';
@@ -24,12 +24,17 @@ export default {
 					trigger: 'item',
 					formatter: '',
 				},
+        // legend:{
+        //   orient:'vertical',
+        //   right:0,
+        //   data:['数量','离线','异常','正常','策略保护','非策略保护'],
+        // },
 				series: [
 					{
 						name: '总量',
 						type: 'pie',
 						selectedMode: 'single',
-						radius: [0, '20%'],
+						radius: [0, '40%'],
 
 						label: {
 							normal: {
@@ -49,7 +54,7 @@ export default {
 					{
 						name: '总量',
 						type: 'pie',
-						radius: ['30%', '45%'],
+						radius: ['50%', '80%'],
 						label: {
 							normal: {
 								// shadowBlur:3,
@@ -96,6 +101,7 @@ export default {
 						],
 					},
 				],
+        backgroundColor:'#eee'
 			};
 			myChart.setOption(option);
 		},

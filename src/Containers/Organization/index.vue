@@ -1,47 +1,50 @@
 <template>
 <div class="container">
-  <div class="form-row">
-    <span class="title">组织</span>
-  </div>
-  <div class="form-row form-row-section">
-    <div class="input-section-left" v-if="right.indexOf('2') > -1">
-      <div class="form-row">
-        <span style="margin-left:20px;margin-top:10px;display:block">创建组织</span>
-        <span class="input-item" style="margin-left:20px;"><label>联系人名称 <input v-model="organizeData.contactName" style="width:120px;"/></label></span>
-        <!-- <span class="input-item" style="margin-left:20px"><label>
-            <select style="width:120px;">
-            	<option>1</option>
-            </select></label></span> -->
-		<span class="input-item" style="margin-left:20px"><label>管理员名称
-	      <select style="width:120px;" v-model="organizeData.adminId">
-		    <option v-for="controlList in controlLists" :key="controlList.id" :value="controlList.id">{{controlList.controlName}}</option>
-	    </select></label></span>
-        <span class="input-item" style="margin-left:20px;"><label>组织名称 <input v-model="organizeData.organizationName" style="width:120px;"/></label></span>
-        <span class="input-item" style="margin-left:20px;"><label>邮箱 <input v-model="organizeData.email" style="width:120px;"/></label></span>
-        <span class="input-item" style="margin-left:20px;"><label>联系电话 <input v-model="organizeData.contactPhone" style="width:120px;"/></label></span>
-        <span class="input-item" style="margin-left:20px;"><label>地址 <input v-model="organizeData.address" style="width:350px;"/></label></span>
-      </div>
-      <div class="form-row">
-        <div class="sure-btn" @click="createOrg">
-          确认
+  <div class="header-box">
+    <div class="form-row">
+      <span class="title" style="margin-left:10px">组织</span>
+    </div>
+    <div class="form-row form-row-section">
+      <div class="input-section-left" v-if="right.indexOf('2') > -1">
+        <div class="form-row">
+          <span style="margin-left:20px;margin-top:10px;display:block">创建组织</span>
+          <span class="input-item" style="margin-left:20px;"><label>联系人名称 <input v-model="organizeData.contactName" style="width:120px;"/></label></span>
+          <!-- <span class="input-item" style="margin-left:20px"><label>
+              <select style="width:120px;">
+                <option>1</option>
+              </select></label></span> -->
+      <span class="input-item" style="margin-left:20px"><label>管理员名称
+          <select style="width:120px;" v-model="organizeData.adminId">
+          <option v-for="controlList in controlLists" :key="controlList.id" :value="controlList.id">{{controlList.controlName}}</option>
+        </select></label></span>
+          <span class="input-item" style="margin-left:20px;"><label>组织名称 <input v-model="organizeData.organizationName" style="width:120px;"/></label></span>
+          <span class="input-item" style="margin-left:20px;"><label>邮箱 <input v-model="organizeData.email" style="width:120px;"/></label></span>
+          <span class="input-item" style="margin-left:20px;"><label>联系电话 <input v-model="organizeData.contactPhone" style="width:120px;"/></label></span>
+          <span class="input-item" style="margin-left:20px;"><label>地址 <input v-model="organizeData.address" style="width:350px;"/></label></span>
         </div>
-        <div class="clear-btn" @click="clearOrg">
-          清空
+        <div class="form-row">
+          <div class="sure-btn" @click="createOrg">
+            确认
+          </div>
+          <div class="clear-btn" @click="clearOrg">
+            清空
+          </div>
+        </div>
+      </div>
+      <div class="input-section-right">
+        <div class="form-row">
+          <span style="margin-left:20px;margin-top:10px;display:block">搜索</span>
+          <span class="input-item" style="margin-left:20px;"><label>关键字 <input v-model="keyWord" style="width:140px;"/></label></span>
+        </div>
+        <div class="form-row">
+          <div @click="searchOrganization" class="sure-btn">
+            确认
+          </div>
         </div>
       </div>
     </div>
-    <div class="input-section-right">
-      <div class="form-row">
-        <span style="margin-left:20px;margin-top:10px;display:block">搜索</span>
-        <span class="input-item" style="margin-left:20px;"><label>关键字 <input v-model="keyWord" style="width:140px;"/></label></span>
-      </div>
-      <div class="form-row">
-        <div @click="searchOrganization" class="sure-btn">
-          确认
-        </div>
-      </div>
-    </div>
   </div>
+
   <div class="list-container">
     <div class="list-left">
       <div class="form-row">
@@ -49,7 +52,8 @@
       </div>
       <table border="0" class="header">
         <tr>
-          <th style="border:none;width:3%;text-align:center">
+          <th style="border:none;width:10%;text-align:left">
+
             <el-checkbox v-model="organizeAllStatus" @change="changeAllOrganizeStatus(organizeAllStatus)"></el-checkbox>
           </th>
           <th @click="sortById">组织ID<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
@@ -59,10 +63,10 @@
           <!-- <th>成员数量</th> -->
         </tr>
         <tr v-for="(organizeList,index) in organizeLists" :key="organizeList.id" @click="getOrgFarmerList(organizeList.id,index)">
-          <td style="border:none;width:3%;text-align:center;background:none">
+          <td style="border:none;width:10%;text-align:left;background:none">
             <el-checkbox v-model="organizeStatusList[index]" @change="changeOrganizeStatus(index,organizeStatusList[index],organizeList.id)"></el-checkbox>
           </td>
-          <td>{{organizeList.id}}</td> 
+          <td>{{organizeList.id}}</td>
           <td>{{organizeList.organizationName}}</td>
           <td>{{organizeList.contactName}}</td>
           <!-- <td>{{organizeList.adminId}}</td> -->
@@ -88,7 +92,7 @@
       </div>
       <table border="0" class="header">
         <tr>
-          <th style="border:none;width:3%;text-align:center">
+          <th style="border:none;width:5%;text-align:left">
             <el-checkbox v-model="BeeFarmerAllStatus" @change="changeAllBeeFramerStatus(BeeFarmerAllStatus)"></el-checkbox>
           </th>
           <th @click="sortByBeeFarmerId">组织ID<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
@@ -101,7 +105,7 @@
           <th>地址</th>
         </tr>
         <tr v-for="(beeframerList,index) in beeframerLists" :key="beeframerList.id">
-          <td style="border:none;width:3%;text-align:center;background:none" >
+          <td style="border:none;width:5%;text-align:left;background:none" >
             <el-checkbox v-model="BeeFarmerStatusList[index]" @change="changeBeeFramerStatus(index,BeeFarmerStatusList[index],beeframerList.id)"></el-checkbox>
           </td>
           <td>{{beeframerList.id}}</td>
@@ -563,11 +567,9 @@ export default {
 <style lang="" scoped>
 .container {
 	width: calc(100%-18px);
-	/* margin-top: 40px;
-	margin-left: 10px; */
+	margin-top: 40px;
+	margin-left: 10px;
 	margin-right: 10px;
-	background: #15232f;
-	border: 1px solid #235978;
 	color: white;
 	padding-bottom: 10px;
 }
@@ -580,23 +582,29 @@ export default {
 .title {
 	display: inline-block;
 	margin-top: 10px;
-	margin-left: 10px;
-	margin-bottom: 20px;
-	font-size: 17px;
-}
 
+	margin-bottom: 20px;
+	font-size: 20px;
+}
+.header-box{
+  	border: 1px solid #235978;
+    padding-bottom: 40px;
+
+    background: #15232f;
+}
 .form-row-section {
+
 	display: flex;
 }
 
 .input-section-left {
-	width: 65%;
+	width: 75%;
 	height: 160px;
 	border-right: 2px solid white;
 }
 
 .input-section-right {
-	width: 35%;
+	width: 25%;
 	height: 160px;
 }
 
@@ -632,7 +640,7 @@ export default {
 .list-box {
 	width: 100%;
 	height: 500px;
-	margin-top: 30px;
+	margin-top: 20px;
 }
 
 .header {
@@ -649,7 +657,7 @@ export default {
 }
 
 .header td {
-	background: #c3bfc1;
+	background: rgb(247,247,247);
 	border: 1px solid white;
 	font-size: 14px;
 	height: 25px;
@@ -689,9 +697,8 @@ export default {
 
 .list-left {
 	height: 900px;
-	margin-left: 10px;
 	background: #2c4261;
-	padding: 10px;
+	padding: 20px;
 	width: 30%;
 }
 
@@ -699,9 +706,8 @@ export default {
 	width: 70%;
 	height: 900px;
 	margin-left: 10px;
-	margin-right: 10px;
 	background: #0b1b36;
-	padding: 10px;
+	padding: 20px;
 }
 .farmer-span {
 	margin-left: 20px;

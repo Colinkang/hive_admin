@@ -1,5 +1,6 @@
 <template>
 <div class="container">
+<div class="header-box">
   <div class="form-row">
     <span class="title">管理</span>
   </div>
@@ -8,7 +9,7 @@
       <div class="form-row">
         <span style="margin-left:20px;margin-top:10px;display:block">创建管理员</span>
         <span class="input-item" style="margin-left:20px;"><label>姓名 <input ref="name"  v-model.trim="managementParams.name" style="width:120px;"/></label></span>
-        <!-- <span class="input-item" style="margin-left:20px;"><label>合作社   
+        <!-- <span class="input-item" style="margin-left:20px;"><label>合作社
           <select v-model.trim="managementParams.organizationId" style="width:120px;" placeholder="请选择">
               <option
                 v-for="item in organizationLists"
@@ -76,11 +77,11 @@
 
       </div>
       <div class="form-row ">
-				
+
         <div class="sure-btn" @click="createManager">
           确认
         </div>
-				 <div class="clear-btn" @click="clearManager">
+         <div class="clear-btn" @click="clearManager">
           清空
         </div>
       </div>
@@ -97,6 +98,8 @@
       </div>
     </div>
   </div>
+
+</div>
 
   <div class="list-box">
     <table border="0" class="header">
@@ -133,15 +136,16 @@
         <!-- <td>{{ item.status ? '在线' : '离线' }}</td> -->
       </tr>
     </table>
+    <div class="form-row" style="margin-top:20px">
+      <el-button v-if="right.indexOf('1')>-1" type="text" class="icon-span" @click="deleteManager"><i class="iconfont icon-069delete">删除</i></el-button>
+      <el-button type="text" class="icon-span" @click="handlePageChange(currentPageNo)"><i class="iconfont icon-shuaxin1">刷新</i></el-button>
+    </div>
+    <div class="form-row" style="text-align:center;margin-top:20px">
+      <el-pagination small layout="prev, pager, next" :pagesize="10" @current-change="handlePageChange" :total="10*totalPageNo">
+      </el-pagination>
+    </div>
   </div>
-  <div class="form-row">
-    <el-button v-if="right.indexOf('1')>-1" type="text" class="icon-span" @click="deleteManager"><i class="iconfont icon-069delete">删除</i></el-button>
-    <el-button type="text" class="icon-span" @click="handlePageChange(currentPageNo)"><i class="iconfont icon-shuaxin1">刷新</i></el-button>
-  </div>
-  <div class="form-row" style="text-align:center">
-    <el-pagination small layout="prev, pager, next" :pagesize="10" @current-change="handlePageChange" :total="10*totalPageNo">
-    </el-pagination>
-  </div>
+
 </div>
 </template>
 <script>
@@ -549,13 +553,17 @@ export default {
 <style lang="" scoped>
 .container {
 	width: calc(100%-18px);
-	margin-left: 0px;
+	margin-left: 10px;
 	margin-right: 10px;
-	background: #15232f;
-	border: 1px solid #235978;
+  margin-top: 40px;
 	color: white;
 	padding-bottom: 100px;
 	min-height: 920px;
+}
+.header-box{
+  background: #15232f;
+  border: 1px solid #235978;
+  padding-bottom: 40px;
 }
 
 .form-row {
@@ -626,9 +634,13 @@ export default {
 }
 
 .list-box {
-	width: 100%;
-	margin-top: 30px;
+	width: 98%;
+	margin-top: 20px;
+  padding: 10px;
 	margin-bottom: 40px;
+  margin-right: 10px;
+  height: 600px;
+  background: #2c4261;
 }
 
 .header {
@@ -644,8 +656,8 @@ export default {
 }
 
 .header td {
-	background: #c3bfc1;
-	border: 1px solid white;
+	background: rgb(275,275,274);
+	border: 1px solid #eee;
 	font-size: 14px;
 	height: 25px;
 	line-height: 25px;
@@ -680,5 +692,8 @@ export default {
 }
 .row-hover:hover {
 	cursor: pointer;
+}
+.el-pagination button{
+  background: #2c4261 !important;
 }
 </style>
