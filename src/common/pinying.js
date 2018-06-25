@@ -129,8 +129,10 @@ var Pinyin = (function (){
 
 function compare(val1,val2) {
     // 转换为拼音
-    val1 = Pinyin.getFullChars(val1).toLowerCase();
-    val2 = Pinyin.getFullChars(val2).toLowerCase();
+    if(!val1.organizationName || !val2.organizationName) return;
+    console.log(345,val1.organizationName,val2.organizationName)
+    val1 = Pinyin.getFullChars(val1.organizationName).toLowerCase();
+    val2 = Pinyin.getFullChars(val2.organizationName).toLowerCase();
     
     // 获取较长的拼音的长度
     var length =  val1.length > val2.length ? val1.length:val2.length ;
@@ -152,6 +154,19 @@ function compare(val1,val2) {
     }
 }
 
-module.exports =compare;
-
+let sortStatus = false;
+export function sortByOrganzation(beeFarmerLists){
+    console.log(345,sortStatus)
+    if(sortStatus) {
+        beeFarmerLists.reverse(); 
+        return beeFarmerLists;
+    }else{
+        beeFarmerLists = beeFarmerLists.sort(compare);
+        sortStatus = true;
+        return beeFarmerLists;
+        
+    }
+    
+     
+}
 // 自定义的比较函数

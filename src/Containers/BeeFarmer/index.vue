@@ -93,7 +93,7 @@ import LocalStore from '../../common/localStore';
 import { get, post } from '../../common/post.js';
 import { Validate, beeFarmerAddSchema } from '../../common/schema.js';
 import { sortBy } from '../../common/utils.js';
-import compare from '../../common/pinying.js';
+import { sortByOrganzation } from '../../common/pinying.js';
 import moment from 'moment';
 export default {
 	name: '',
@@ -126,6 +126,7 @@ export default {
 			beeFarmerSortList: [], //排序后的数据
 			array1: [],
 			right: '',
+			org_status:''
 		};
 	},
 	methods: {
@@ -162,7 +163,15 @@ export default {
 			});
 		},
 		sortByOrg() {
-			compare();
+			
+			
+			this.array1 = sortByOrganzation(this.beeFarmerLists);
+			// sortBy('organizationName', this.statusList, this.checkAllStatus, [], this.beeFarmerLists, true);
+			this.beeFarmerSortList = [];
+			this.$nextTick(() => {
+				this.beeFarmerLists = this.beeFarmerSortList.concat(this.array1);
+				this.array1 = [];
+			});
 		},
 		//点击列表显示的编辑蜂农信息
 		editBeeFarmer(id, index) {
@@ -567,7 +576,7 @@ export default {
 }
 
 .header td {
-	background:rgb(247,247,247) ;
+	background: rgb(247, 247, 247);
 	border: 1px solid #eee;
 	font-size: 14px;
 	height: 25px;
