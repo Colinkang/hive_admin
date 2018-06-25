@@ -112,8 +112,8 @@
               <div class="detail-col detail-col02" :title="beeBoxInfo.productionDate">
                 生产日期: {{beeBoxInfo.productionDate}}
               </div>
-              <div class="detail-col detail-col03" :title="beeBoxInfo.status | toBeeBoxStatus">
-                状态: {{beeBoxInfo.status | toBeeBoxStatus}}
+              <div class="detail-col detail-col03" :title="beeBoxInfo.battery">
+                电量: {{beeBoxInfo.battery}}
               </div>
             </div>
           </div>
@@ -228,6 +228,7 @@ export default {
 				lat: '39.915',
 				lng: '116.404',
 				productionDate: '',
+				battery: '',
 				status: '',
 			},
 			pai: {},
@@ -277,8 +278,8 @@ export default {
 			statusList: [], //按钮状态列表
 			sortStatus: true, //默认从小到大
 			beeBoxSortList: [], //排序后的数据
-      array1: [],
-      groupSortList:[]
+			array1: [],
+			groupSortList: [],
 		};
 	},
 	mounted: function() {
@@ -353,10 +354,10 @@ export default {
 				this.hiveList = this.beeBoxSortList.concat(this.array1);
 				this.array1 = [];
 			});
-    },
-    
-     // 编组排序
-     // 蜂箱数量排序
+		},
+
+		// 编组排序
+		// 蜂箱数量排序
 		// 点击地图上的某个点进行切换
 		clickHandler(e) {
 			this.lng = e.point.lng;
@@ -391,12 +392,14 @@ export default {
 			result.then(res => {
 				if (res.data.responseCode === '000000') {
 					let data = res.data.data;
+					console.log(123,data);
 					if (data) {
 						this.beeBoxInfo.beeBoxId = data.beeBoxNo;
 						this.beeBoxInfo.batchNo = data.batchNo;
 						this.beeBoxInfo.manufacturer = data.manufacturer;
 						this.beeBoxInfo.lat = data.lat;
 						this.beeBoxInfo.lng = data.lng;
+						this.beeBoxInfo.battery = data.battery;
 						this.latlng = '' + this.beeBoxInfo.lat + ',' + '' + this.beeBoxInfo.lng;
 						this.lat = data.lat;
 						this.lng = data.lng;
