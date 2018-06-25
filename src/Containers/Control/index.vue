@@ -24,16 +24,19 @@
         <span class="input-item" style="margin-left:20px;"><label>验证码 <input v-model.trim="managementParams.code" style="width:70px;"/></label></span>
         <span class="input-item" style="margin-left:20px;"><label>密码 <input style="width:120px;" v-model.trim="managementParams.password"/></label></span>
         <span class="input-item" style="margin-left:20px;"><label>地址 <input v-model.trim="managementParams.address" style="width:250px;"/></label></span>
-        <span class="input-item" style="font-size:17px;margin-left:20px">类型</span>
-        <span class="input-item" style="margin-left:20px">
-          <div class="">
-            <el-checkbox v-model="beefarmerChecked" style="font-size:15px;color:white">蜂农管理</el-checkbox>
-          </div>
-          <div class="" style="margin-top:5px">
-            <el-radio v-model="beefarmerType" label="8" >只读</el-radio>
-            <el-radio v-model="beefarmerType" label="3" >管理</el-radio>
-          </div>
+        <span  class="input-item" style="margin-left:20px;">
+          <span class="" style="font-size:17px;margin-left:20px">类型</span>
+          <span class="input-item" style="margin-left:20px;margin-top:0">
+            <div class="">
+              <el-checkbox v-model="beefarmerChecked" style="font-size:15px;color:white">蜂农管理</el-checkbox>
+            </div>
+            <div class="" style="margin-top:5px">
+              <el-radio v-model="beefarmerType" label="8" >只读</el-radio>
+              <el-radio v-model="beefarmerType" label="3" >管理</el-radio>
+            </div>
+          </span>
         </span>
+
         <span class="input-item" style="margin-left:20px">
           <div class="">
             <el-checkbox v-model="beeboxChecked" style="font-size:15px;color:white">蜂箱管理</el-checkbox>

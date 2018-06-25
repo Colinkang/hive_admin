@@ -118,7 +118,7 @@
             </div>
           </div>
           <div class="line-chart-box">
-            <fold ref="fool"></fold>
+            <fold ref="fool" :beeBoxNo="beeBoxNo"></fold>
           </div>
         </div>
         <div class="section-right-top-right">

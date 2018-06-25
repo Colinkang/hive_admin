@@ -563,8 +563,8 @@ export default {
 }
 
 .header td {
-	background: #c3bfc1;
-	border: 1px solid white;
+	background:rgb(247,247,247) ;
+	border: 1px solid #eee;
 	font-size: 14px;
 	height: 25px;
 	line-height: 25px;
