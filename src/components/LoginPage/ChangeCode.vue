@@ -2,7 +2,7 @@
   <div class="container">
     <div class="detail-box">
       <div class="section-top">
-        <el-row style="font-size:25px;top:70px">修改密码</el-row>
+        <el-row style="font-size:25px;top:70px">忘记密码</el-row>
         <el-row style="font-size:14px;top:80px"></el-row>
         <el-row style="font-size:14px;top:90px"></el-row>
       </div>
@@ -42,7 +42,7 @@
             <el-input size="mini" v-model.trim="fix.mobile"  placeholder="请输入内容"></el-input>
           </el-col>
           <el-col :span="4">
-            <span class="sent-code">发送短信获取验证码</span>
+            <span class="sent-code" @click="sendCode">发送短信获取验证码</span>
           </el-col>
           <el-col :span="3" >
             验证码
@@ -61,12 +61,6 @@
             <el-button type="default" @click="hive">取消</el-button>
           </el-col>
         </el-row>
-          <el-row class="line-height margin-top" v-if="changeCodeShowAlert">
-        <el-col :span="24">
-          <el-alert :title="text" :type="status==='wrong'?'error':'success'">
-          </el-alert>
-        </el-col>
-      </el-row>
       </div>
     </div>
 
@@ -78,7 +72,6 @@ import { Validate, changeCodeSchema } from '../../common/schema.js';
 export default {
 	name: '',
 	data: () => ({
-		changeCodeShowAlert: false,
 		fix: {
 			username: '',
 			newPassword: '',
@@ -88,41 +81,67 @@ export default {
 		},
 	}),
 	methods: {
+		sendCode() {
+			if (!this.fix.mobile) {
+				this.$message({
+					message: '请先输入手机号',
+					type: 'warning',
+				});
+				return;
+			}
+			let options = {
+				mobile: this.fix.mobile,
+				userName: this.fix.username,
+				messageType: 2298872,
+				// registerFlag: 'hello',
+			};
+			console.log(options);
+			let result = post('/adminSMSService', options);
+			result.then(res => {
+				console.log(1234, res);
+				if (res.data.responseCode === '000000') {
+					console.log('获取验证码成功');
+					this.$message({
+						message: '获取验证码成功',
+						type: 'success',
+					});
+				} else if (res.data.responseCode === '000033') {
+					// this.$message('');
+					this.$message({
+						message: '输入的手机号与预留的手机号不一致',
+						type: 'warning',
+					});
+				}
+			});
+		},
 		save() {
 			this.changeCodeShowAlert = true;
 			let input = {
 				username: this.fix.username,
-				newPassword: this.fix.newPassword,
+				password: this.fix.newPassword,
 				mobile: this.fix.mobile,
-				code: this.fix.code,
+				smsCode: this.fix.code,
 			};
+			console.log(222, Validate(input, changeCodeSchema));
 			if (Validate(input, changeCodeSchema) !== null) {
 				this.$message({
 					message: '输入项都不能为空',
 					type: 'warning',
 				});
-				setTimeout(() => {
-					this.changeCodeShowAlert = false;
-				}, 1000);
 			} else if (this.fix.newPassword !== this.fix.newPasswordConfirm) {
 				this.$message({
 					message: '两次密码不一致',
 					type: 'warning',
 				});
-				setTimeout(() => {
-					this.changeCodeShowAlert = false;
-				}, 1000);
 			} else {
 				let result = post('/adminUpdatePassword', input);
 				result.then(res => {
+					console.log(333,res);
 					if (res.data.responseCode === '000000') {
 						this.$message({
 							message: '修改密码成功',
 							type: 'success',
 						});
-						setTimeout(() => {
-							this.changeCodeShowAlert = false;
-						}, 1000);
 						this.fix = {
 							username: '',
 							newPassword: '',
@@ -132,9 +151,6 @@ export default {
 						};
 					} else {
 						this.$message.error('修改密码失败');
-						setTimeout(() => {
-							this.changeCodeShowAlert = false;
-						}, 1000);
 					}
 				});
 			}

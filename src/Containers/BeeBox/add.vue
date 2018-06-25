@@ -5,13 +5,13 @@
       <el-col :span="3">
         蜂箱ID
       </el-col>
-      <el-col :span="3">
+      <el-col :span="4">
         <el-input size="mini" placeholder="请输入内容" v-model.trim="beeBox.beeBoxNo"></el-input>
       </el-col>
       <el-col :span="3" :offset="3">
         所属蜂农ID
       </el-col>
-      <el-col :span="3">
+      <el-col :span="4">
         <el-select size="mini" v-model="beeBox.farmerId" clearable placeholder="请选择" style="width:100%">
           <el-option v-for="item in farmList" :key="item.id" :label="item.username" :value="item.id">
           </el-option>
@@ -25,13 +25,13 @@
       <el-col :span="3">
         出厂批次
       </el-col>
-      <el-col :span="3">
+      <el-col :span="4">
         <el-input size="mini" placeholder="请输入内容" v-model.trim="beeBox.batchNo"></el-input>
       </el-col>
       <el-col :span="3" :offset="3">
         手机号码
       </el-col>
-      <el-col :span="3">
+      <el-col :span="4">
         <el-input size="mini" placeholder="请输入内容" v-model.trim="beeBox.mobile"></el-input>
       </el-col>
       <el-col :span="3">
@@ -42,7 +42,7 @@
       <el-col :span="3">
         生产日期
       </el-col>
-      <el-col :span="3">
+      <el-col :span="4">
         <!-- <el-input size="small"  placeholder="请输入内容" v-model="beeBox.entryDate"></el-input> -->
         <el-date-picker style="width:100%;" size="mini" v-model.trim="beeBox.entryDate" type="date" placeholder="选择日期" value-format="yyyy-MM-dd">
         </el-date-picker>
@@ -50,7 +50,7 @@
       <el-col :span="3" :offset="3">
         验证码
       </el-col>
-      <el-col :span="3">
+      <el-col :span="4">
         <el-input size="mini" placeholder="请输入内容" v-model.trim="beeBox.code"></el-input>
       </el-col>
 
@@ -59,7 +59,7 @@
       <el-col :span="3">
         厂商
       </el-col>
-      <el-col :span="3">
+      <el-col :span="4">
         <el-input size="mini" placeholder="请输入内容" v-model.trim="beeBox.manufacturer"></el-input>
       </el-col>
       <el-col :span="3" :offset="3">

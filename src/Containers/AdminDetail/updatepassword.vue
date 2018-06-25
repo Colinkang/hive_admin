@@ -7,6 +7,15 @@
         <el-row style="font-size:14px;top:90px"></el-row>
       </div>
       <div class="">
+				 <el-row class="form-row">
+          <el-col :span="3">
+            旧登录密码
+          </el-col>
+          <el-col :span="5">
+            <el-input size="mini" type="oldPassword" v-model.trim="fix.oldPassword"  placeholder="请输入内容"></el-input>
+          </el-col>
+
+        </el-row>
         <el-row class="form-row">
           <el-col :span="3">
             新登录密码
@@ -57,7 +66,7 @@
 </template>
 <script>
 import { get, post } from '../../common/post.js';
-import { Validate, changeCodeSchema } from '../../common/schema.js';
+import { Validate, updatePasswordSchema } from '../../common/schema.js';
 import localStore from '../../common/localStore.js';
 import { HIVE_USER_NAME } from '../../common/localStorageKey.js';
 export default {
@@ -66,6 +75,7 @@ export default {
 		changeCodeShowAlert: false,
 		fix: {
 			username: '',
+			oldPassword: '',
 			newPassword: '',
 			newPasswordConfirm: '',
 			mobile: '',
@@ -109,12 +119,13 @@ export default {
 		save() {
 			let input = {
 				username: localStore.getItem(HIVE_USER_NAME),
+				oldPassword: this.fix.oldPassword,
 				password: this.fix.newPassword,
 				mobile: this.fix.mobile,
 				smsCode: this.fix.code,
 			};
 			console.log(1111, input);
-			if (Validate(input, changeCodeSchema) !== null) {
+			if (Validate(input, updatePasswordSchema) !== null) {
 				this.$message({
 					message: '输入都不能为空',
 					type: 'warning',
@@ -136,6 +147,16 @@ export default {
 					} else if (res.data.responseCode === '000033') {
 						this.$message({
 							message: '与注册时的手机号不一致',
+							type: 'warning',
+						});
+					} else if (res.data.responseCode === '000038') {
+						this.$message({
+							message: '旧登录密码不正确',
+							type: 'warning',
+						});
+					} else if (res.data.responseCode === '000034') {
+						this.$message({
+							message: '验证码错误',
 							type: 'warning',
 						});
 					} else {
@@ -167,12 +188,12 @@ export default {
 	width: 80%;
 	height: 700px;
 	border: 2px solid #036eb8;
-  background: #3f3e3c;
+	background: #3f3e3c;
 }
 .section-top {
 	height: 250px;
 	background: #646260;
-  border-bottom: 2px solid #036eb8;
+	border-bottom: 2px solid #036eb8;
 }
 .form-row {
 	height: 30px;
