@@ -45,4 +45,7 @@ input {
 	text-align: center;
 	height: 100%;
 }
+.el-radio+.el-radio{
+  margin-left: 0!important;
+}
 </style>
