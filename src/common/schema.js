@@ -10,7 +10,7 @@ const loginSchema = Joi.object().keys({
 
 const beeBoxAddSchema = Joi.object().keys({
     beeBoxNo: Joi.string().max(25).required(),
-    farmerId: Joi.string().required(),
+    farmerId: Joi.number().required(),
     manufacturer: Joi.string().required(),
     batchNo: Joi.string().required(),
     status: Joi.string().required(),

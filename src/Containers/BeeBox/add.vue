@@ -81,157 +81,151 @@
 </div>
 </template>
 <script>
-import {
-  get,
-  post
-} from '../../common/post.js';
-import {
-  Validate,
-  beeBoxAddSchema
-} from '../../common/schema.js';
+import { get, post } from '../../common/post.js';
+import { Validate, beeBoxAddSchema } from '../../common/schema.js';
 export default {
-  name: '',
-  data: () => ({
-    showAlert: false,
-    text: '',
-    status: '',
-    radio: '',
-    beeBox: {
-      beeBoxNo: '',
-      farmerId: '',
-      manufacturer: '',
-      batchNo: '',
-      status: '',
-      entryDate: '',
-      mobile: '',
-      code: '',
-    },
-    farmList: [],
-  }),
-  mounted() {
-    this.getFarmer();
-  },
-  methods: {
-    save() {
-      let options = {
-        beeBoxNo: this.beeBox.beeBoxNo,
-        farmerId: this.beeBox.farmerId,
-        manufacturer: this.beeBox.manufacturer,
-        batchNo: this.beeBox.batchNo,
-        status: this.beeBox.status,
-        entryDate: this.beeBox.entryDate,
-        mobile: this.beeBox.mobile,
-        code: this.beeBox.code,
-      };
-      console.log(111, options);
-      if (Validate(options, beeBoxAddSchema) !== null) {
-        this.$message({
-          message: '字段都不能为空',
-          type: 'warning',
-        });
-        return;
-      }
-      console.log(options);
-      let result = post('/alterBeeBox', options);
-      result.then(res => {
-        this.showAlert = true;
-        console.log(112, res);
-        if (res.data.responseCode === '000000') {
-          this.$message({
-            message: '该蜂箱添加成功',
-            type: 'success',
-          });
-          this.$router.push({
-            path: '/beebox',
-          });
-        } else if (res.data.responseCode === '000110') {
-          this.$message({
-            message: '蜂箱ID已经添加过了',
-            type: 'warning',
-          });
-        } else if (res.data.responseCode === '000031') {
-          this.$message({
-            message: '没有该蜂农信息',
-            type: 'warning',
-          });
-        } else {
-          this.$message.error('添加失败');
-        }
-      });
-      //保存成功后
-    },
-    sendCode() {
-      if (!this.beeBox.mobile) {
-        this.$message({
-          message: '手机号不能为空',
-          type: 'warning',
-        });
-        return;
-      }
-      let result = post('/adminSMSService', {
-        mobile: this.beeBox.mobile,
-        userName: 'hello',
-        registerFlag: 1,
-        messageType: 2298872,
-      });
-      result.then(res => {
-        if (res.data.responseCode === '000000') {
-          this.$message({
-            message: '获取验证码成功',
-            type: 'success',
-          });
-        }
-      });
-    },
-    getFarmer() {
-      let result = get('/getAllFarmers', null);
-      result.then(res => {
-        console.log(111, res);
-        if (res.data.responseCode === '000000') {
-          this.farmList = res.data.data;
-        }
-      });
-    },
-  },
+	name: '',
+	data: () => ({
+		showAlert: false,
+		text: '',
+		status: '',
+		radio: '',
+		beeBox: {
+			beeBoxNo: '',
+			farmerId: '',
+			manufacturer: '',
+			batchNo: '',
+			status: '',
+			entryDate: '',
+			mobile: '',
+			code: '',
+		},
+		farmList: [],
+	}),
+	mounted() {
+		this.getFarmer();
+	},
+	methods: {
+		save() {
+			let options = {
+				beeBoxNo: this.beeBox.beeBoxNo,
+				farmerId: this.beeBox.farmerId,
+				manufacturer: this.beeBox.manufacturer,
+				batchNo: this.beeBox.batchNo,
+				status: this.beeBox.status,
+				entryDate: this.beeBox.entryDate,
+				mobile: this.beeBox.mobile,
+				code: this.beeBox.code,
+			};
+			console.log(111, options);
+			if (Validate(options, beeBoxAddSchema) !== null) {
+				this.$message({
+					message: '字段都不能为空',
+					type: 'warning',
+				});
+				return;
+			}
+			console.log(options);
+			let result = post('/alterBeeBox', options);
+			result.then(res => {
+				this.showAlert = true;
+				console.log(112, res);
+				if (res.data.responseCode === '000000') {
+					this.$message({
+						message: '该蜂箱添加成功',
+						type: 'success',
+					});
+					this.$router.push({
+						path: '/beebox',
+					});
+				} else if (res.data.responseCode === '000110') {
+					this.$message({
+						message: '蜂箱ID已经添加过了',
+						type: 'warning',
+					});
+				} else if (res.data.responseCode === '000031') {
+					this.$message({
+						message: '没有该蜂农信息',
+						type: 'warning',
+					});
+				} else {
+					this.$message.error('添加失败');
+				}
+			});
+			//保存成功后
+		},
+		sendCode() {
+			if (!this.beeBox.mobile) {
+				this.$message({
+					message: '手机号不能为空',
+					type: 'warning',
+				});
+				return;
+			}
+			let result = post('/adminSMSService', {
+				mobile: this.beeBox.mobile,
+				userName: 'hello',
+				registerFlag: 1,
+				messageType: 2298872,
+			});
+			result.then(res => {
+				if (res.data.responseCode === '000000') {
+					this.$message({
+						message: '获取验证码成功',
+						type: 'success',
+					});
+				}
+			});
+		},
+		getFarmer() {
+			let result = get('/getAllFarmers', null);
+			result.then(res => {
+				console.log(111, res);
+				if (res.data.responseCode === '000000') {
+					this.farmList = res.data.data;
+				}
+			});
+		},
+	},
 };
 </script>
 <style lang="" scoped>
 .container {
-  color: white;
-  height: 950px;
-  overflow: hidden;
-  margin-top: 100px;
+	color: white;
+	height: 950px;
+	overflow: hidden;
+	margin-top: 100px;
 }
 
 .add-box {
-  width: 90%;
-  margin-left: 5%;
-  height: 400px;
-  border: 2px solid #036eb8;
-  background: #3f3e3c;
+	width: 90%;
+	margin-left: 5%;
+	height: 400px;
+	border: 2px solid #036eb8;
+	background: #3f3e3c;
 }
 
 .form-row {
-  height: 40px;
-  line-height: 40px;
-  margin-top: 20px;
+	height: 40px;
+	line-height: 40px;
+	margin-top: 20px;
 }
 
 .sent-code {
-  font-size: 13px;
-  color: #fff;
-  padding: 2px 4px;
-  margin-left: 10px;
-  background-color: #40557b;
-  width: 120px;
-  display: inline-block;
-  text-align: center;
-  height: 25px;
-  line-height: 25px;
+	font-size: 13px;
+	color: #fff;
+	padding: 2px 4px;
+	margin-left: 10px;
+	background-color: #40557b;
+	width: 120px;
+	display: inline-block;
+	text-align: center;
+	height: 25px;
+	line-height: 25px;
 }
 
 .sent-code:hover {
-  color: rgb(122, 122, 122);
-  cursor: pointer;
+	color: rgb(122, 122, 122);
+	cursor: pointer;
 }
 </style>
