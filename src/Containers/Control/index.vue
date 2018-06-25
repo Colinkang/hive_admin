@@ -113,7 +113,7 @@
         <th @click="sortByType">管理员类型<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
         <th @click="sortByCreateDate">创建时间<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
         <th @click="sortByUpdateDate">修改时间<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
-        <th>合作社</th>
+        <!-- <th>合作社</th> -->
         <th>邮箱</th>
         <th>联系电话</th>
         <th>地址</th>
@@ -129,7 +129,7 @@
         <td>{{ typeStrObj[item.type] }}</td>
         <td>{{ formatDate(item.createDate) }}</td>
         <td>{{ formatDate(item.updateDate) }}</td>
-        <td>{{ item.organizationName }}</td>
+        <!-- <td>{{ item.organizationName }}</td> -->
         <td>{{ item.email }}</td>
         <td>{{ item.mobile }}</td>
         <td>{{ item.address }}</td>

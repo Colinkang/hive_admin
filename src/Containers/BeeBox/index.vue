@@ -536,6 +536,7 @@ export default {
 		},
 
 		clickBoxId(id) {
+			clearInterval(timer);
 			let _this = this;
 			//console.log(123, _this.beeBoxNo);
 			sensorDataId = '';
@@ -581,7 +582,8 @@ export default {
 						console.log(123456, d);
 						if (d.length > 0) {
 							d = d[0];
-
+              if(!d.temperature&&!d.humidity&&!d.gravity&&!d.airPressure&&!d.battery) return;
+						
 							sensorDataId = d.id;
 							temperature.push(d.temperature);
 							humidity.push(d.humidity);

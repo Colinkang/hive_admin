@@ -52,7 +52,7 @@
         <th @click="sortByBeeBoxNum">蜂箱数量<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
         <th @click="sortByCreateDate">创建时间<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
         <th @click="sortByUpdateDate">修改时间<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
-        <th>合作社</th>
+        <th @click="sortByOrg">合作社<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
         <th>邮箱</th>
         <th>联系电话</th>
         <th>地址</th>
@@ -93,6 +93,7 @@ import LocalStore from '../../common/localStore';
 import { get, post } from '../../common/post.js';
 import { Validate, beeFarmerAddSchema } from '../../common/schema.js';
 import { sortBy } from '../../common/utils.js';
+import compare from '../../common/pinying.js';
 import moment from 'moment';
 export default {
 	name: '',
@@ -159,6 +160,9 @@ export default {
 				this.beeFarmerLists = this.beeFarmerSortList.concat(this.array1);
 				this.array1 = [];
 			});
+		},
+		sortByOrg() {
+			compare();
 		},
 		//点击列表显示的编辑蜂农信息
 		editBeeFarmer(id, index) {
@@ -471,7 +475,7 @@ export default {
 	border: 1px solid #235978;
 	color: white;
 	padding-bottom: 100px;
-	min-height:900px;
+	min-height: 900px;
 }
 
 .form-row {
