@@ -140,7 +140,7 @@ export default {
 
 .el-menu {
 	border:none;
-  border-right: none;
+  border-right: none!important;
 	background: #0b1b36 !important;
 }
 .login-page {

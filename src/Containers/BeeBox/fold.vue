@@ -34,7 +34,9 @@ let yAxis1 = {
   }
 }
 export default {
-
+  props:{
+    beeBoxNo:''
+  },
   name: 'fold',
   data() {
     return {
@@ -55,6 +57,11 @@ export default {
 
       let option = {
         color: colors,
+        title:{
+          text:this.beeBoxNo,
+          top:0,
+          x:'center'
+        },
 
         tooltip: {
           trigger: 'axis',
@@ -71,16 +78,17 @@ export default {
             saveAsImage: {}
           },
           right: 10,
-          top:20
+          top:50
         },
         legend: {
           data: ['温度', '湿度', '重量', '压强', '电量'],
           textStyle: {
             color: 'black'
-          }
+          },
+          top:30
         },
         grid: {
-          top: 70,
+          top: 90,
           bottom: 50,
           left:'20px',
           right: 50
