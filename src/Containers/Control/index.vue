@@ -25,7 +25,7 @@
         <span class="input-item" style="margin-left:20px;"><label>密码 <input style="width:120px;" v-model.trim="managementParams.password"/></label></span>
         <span class="input-item" style="margin-left:20px;"><label>地址 <input v-model.trim="managementParams.address" style="width:250px;"/></label></span>
         <span  class="input-item" style="margin-left:20px;">
-          <span class="" style="font-size:17px;margin-left:20px">类型</span>
+          <span class="" style="font-size:14px">类型</span>
           <span class="input-item" style="margin-left:20px;margin-top:0">
             <div class="">
               <el-checkbox v-model="beefarmerChecked" style="font-size:15px;color:white">蜂农管理</el-checkbox>
