@@ -132,7 +132,7 @@
             <bm-point-collection :points="points" shape="BMAP_POINT_SHAPE_CIRCLE" color="red" size="BMAP_POINT_SIZE_NORMAL" @click="clickHandler"></bm-point-collection>
             <bm-navigation anchor="BMAP_ANCHOR_TOP_RIGHT"></bm-navigation>
             <bm-scale anchor="BMAP_ANCHOR_TOP_RIGHT"></bm-scale>
-            <bm-marker :position="{lng, lat}" :dragging="true" animation="BMAP_ANIMATION_BOUNCE">
+            <bm-marker :position="{lng, lat}" :dragging="true" animation="BMAP_ANIMATION_BOUNCE" v-if="ok">
               <!-- <bm-label content="当前蜂箱" :labelStyle="{color: 'red', fontSize : '24px'}" :offset="{width: -35, height: 30}" /> -->
             </bm-marker>
           </baidu-map>
@@ -281,6 +281,7 @@ export default {
 			beeBoxSortList: [], //排序后的数据
 			array1: [],
 			groupSortList: [],
+			ok: true,
 		};
 	},
 	mounted: function() {
@@ -405,6 +406,7 @@ export default {
 					let data = res.data.data;
 					console.log(123, data);
 					if (data) {
+						this.ok = true;
 						this.beeBoxInfo.beeBoxId = data.beeBoxNo;
 						this.beeBoxInfo.batchNo = data.batchNo;
 						this.beeBoxInfo.manufacturer = data.manufacturer;
@@ -420,6 +422,8 @@ export default {
 						if (data.status === 0 || data.status === 1) this.beeBoxInfo.status = '正在运行';
 						else if (data.status === 2) this.beeBoxInfo.status = '异常';
 						else this.beeBoxInfo.status = '离线';
+					}else{
+						this.ok = false;
 					}
 				}
 			});
