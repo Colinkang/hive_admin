@@ -422,8 +422,13 @@ export default {
 						if (data.status === 0 || data.status === 1) this.beeBoxInfo.status = '正在运行';
 						else if (data.status === 2) this.beeBoxInfo.status = '异常';
 						else this.beeBoxInfo.status = '离线';
-					}else{
+					} else {
 						this.ok = false;
+						this.beeBoxInfo.beeBoxId = '';
+						this.beeBoxInfo.batchNo = '';
+						this.beeBoxInfo.manufacturer = '';
+						this.beeBoxInfo.battery = '';
+						this.beeBoxInfo.productionDate = '';
 					}
 				}
 			});
@@ -839,7 +844,6 @@ export default {
 table {
 	border-collapse: collapse;
 	width: calc(100% + 1px);
-
 }
 
 table tr:hover {
@@ -1039,7 +1043,7 @@ textarea {
 
 .group-table {
 	height: 315px;
-  background:white;
+	background: white;
 
 	overflow: hidden;
 }
