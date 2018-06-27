@@ -137,7 +137,7 @@
             </bm-marker>
           </baidu-map>
           <div style="height:40px;color:white;font-size:14px;text-align:left;line-height:40px;margin-left:10px">
-            蜂箱定位: {{beeBoxInfo.lat}},{{beeBoxInfo.lng}}
+            蜂箱定位: {{beeBoxInfo.lng}},{{beeBoxInfo.lat}}
           </div>
         </div>
       </div>
@@ -297,17 +297,16 @@ export default {
 		clearInterval(timer);
 	},
 	methods: {
-
 		// 获取中心点的经纬度
-		getLngLat(){
-      let result = get('/getBeeBoxCenterPosition',null);
-			result.then(res=>{
-				console.log(222,res);
-				if(res.data.responseCode === '000000'){
+		getLngLat() {
+			let result = get('/getBeeBoxCenterPosition', null);
+			result.then(res => {
+				console.log(222, res);
+				if (res.data.responseCode === '000000') {
 					this.lng = res.data.data.lng;
 					this.lat = res.data.data.lat;
 				}
-			})
+			});
 		},
 		//排序
 		// 按照id来排序
@@ -404,7 +403,7 @@ export default {
 			result.then(res => {
 				if (res.data.responseCode === '000000') {
 					let data = res.data.data;
-					console.log(123,data);
+					console.log(123, data);
 					if (data) {
 						this.beeBoxInfo.beeBoxId = data.beeBoxNo;
 						this.beeBoxInfo.batchNo = data.batchNo;
@@ -594,8 +593,7 @@ export default {
 						console.log(123456, d);
 						if (d.length > 0) {
 							d = d[0];
-              if(!d.temperature&&!d.humidity&&!d.gravity&&!d.airPressure&&!d.battery) return;
-						
+							if (!d.temperature && !d.humidity && !d.gravity && !d.airPressure && !d.battery) return;
 							sensorDataId = d.id;
 							temperature.push(d.temperature);
 							humidity.push(d.humidity);
@@ -793,7 +791,7 @@ export default {
 .section-left {
 	position: relative;
 	width: 34%;
-  margin-left:10px;
+	margin-left: 10px;
 	overflow-y: scroll;
 	padding-bottom: 20px;
 	background: white;
@@ -837,7 +835,6 @@ export default {
 table {
 	border-collapse: collapse;
 	width: 100%;
-
 }
 
 table tr:hover {
