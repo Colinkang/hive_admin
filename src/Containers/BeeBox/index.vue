@@ -286,8 +286,7 @@ export default {
 		// this.getBeeBoxInfo();
 		this.getPai();
 		this.getHiveList();
-		//hiveTimer = setInterval(this.getHiveList, 5000);
-		// this.getFold();
+		this.getLngLat(); // 设置中心点
 		this.getGroupList();
 		let adminRight = LocalStore.getItem(HIVE_ADMIN_RIGHTS);
 		this.right = adminRight.split(',');
@@ -297,6 +296,18 @@ export default {
 		clearInterval(timer);
 	},
 	methods: {
+
+		// 获取中心点的经纬度
+		getLngLat(){
+      let result = get('/getBeeBoxCenterPosition',null);
+			result.then(res=>{
+				console.log(222,res);
+				if(res.data.responseCode === '000000'){
+					this.lng = res.data.data.lng;
+					this.lat = res.data.data.lat;
+				}
+			})
+		},
 		//排序
 		// 按照id来排序
 		sortById() {
