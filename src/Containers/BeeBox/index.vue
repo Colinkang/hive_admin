@@ -159,6 +159,7 @@
             现有组
           </div>
           <div class="form-row group-table">
+
             <table border="0" style="border:none">
               <tr style="border:none;background:#40577f;color:white">
                 <th style="border:none;background:#40577f;color:white">
@@ -169,7 +170,7 @@
                 <!-- <th style="border:none;width:50%;color:white">备注</th> -->
               </tr>
               <!-- <tr v-for="(item,index) in groupList" :key="item.id" @click="slectThisGroupRow(item.id)"> -->
-              <tr v-for="(item,index) in groupList" :key="item.id">
+              <tr v-for="(item,index) in groupList" :key="item.id" style="background:white">
                 <td>
                   <el-checkbox v-model="groupStatusList[index]" @change="changeGroupStatus(index,groupStatusList[index],item.id)"></el-checkbox>
                 </td>
@@ -779,6 +780,7 @@ export default {
 .section-left {
 	position: relative;
 	width: 34%;
+  margin-left:10px;
 	overflow-y: scroll;
 	padding-bottom: 20px;
 	background: white;
@@ -822,12 +824,12 @@ export default {
 table {
 	border-collapse: collapse;
 	width: 100%;
-	border-right: none;
+
 }
 
 table tr:hover {
 	cursor: pointer;
-	background: #eee;
+	background: #aaa;
 }
 
 table,
@@ -844,12 +846,6 @@ td {
 table tr th {
 	width: 11.28%;
 }
-
-tr,
-table {
-	border-right: none !important;
-}
-
 .detail-box {
 	position: relative;
 	width: 100%;
@@ -1028,7 +1024,7 @@ textarea {
 
 .group-table {
 	height: 315px;
-	background: #e8f0f9;
+
 	overflow: hidden;
 }
 

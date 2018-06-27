@@ -84,7 +84,8 @@ export default {
 }
 .text{
   margin-top: 50px;
-  width: 70%;
+  width: 90%;
+  padding: 20px;
   height: 150px;
   border-radius: 10px;
 }
