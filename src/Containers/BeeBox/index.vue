@@ -161,7 +161,7 @@
           <div class="form-row group-table">
 
             <table border="0" style="border:none">
-              <tr style="border:none;background:#40577f;color:white">
+              <tr style="background:#40577f;color:white;">
                 <th style="border:none;background:#40577f;color:white">
                   <el-checkbox v-model="checkAllGroupStatus" @change="changeAllGroupStatus(checkAllGroupStatus)"></el-checkbox>
                 </th>
@@ -170,7 +170,7 @@
                 <!-- <th style="border:none;width:50%;color:white">备注</th> -->
               </tr>
               <!-- <tr v-for="(item,index) in groupList" :key="item.id" @click="slectThisGroupRow(item.id)"> -->
-              <tr v-for="(item,index) in groupList" :key="item.id" style="background:white">
+              <tr v-for="(item,index) in groupList" :key="item.id" >
                 <td>
                   <el-checkbox v-model="groupStatusList[index]" @change="changeGroupStatus(index,groupStatusList[index],item.id)"></el-checkbox>
                 </td>
@@ -838,7 +838,8 @@ export default {
 
 table {
 	border-collapse: collapse;
-	width: 100%;
+	width: calc(100% + 1px);
+
 }
 
 table tr:hover {
@@ -1038,6 +1039,7 @@ textarea {
 
 .group-table {
 	height: 315px;
+  background:white;
 
 	overflow: hidden;
 }

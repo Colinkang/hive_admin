@@ -34,7 +34,7 @@ export default {
 						name: '总量',
 						type: 'pie',
 						selectedMode: 'single',
-						radius: [0, '40%'],
+						radius: [0, '35%'],
 
 						label: {
 							normal: {
@@ -54,7 +54,7 @@ export default {
 					{
 						name: '总量',
 						type: 'pie',
-						radius: ['45%', '55%'],
+						radius: ['40%', '50%'],
 						label: {
 							normal: {
 								// shadowBlur:3,
