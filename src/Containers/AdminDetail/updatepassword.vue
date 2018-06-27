@@ -3,8 +3,8 @@
     <div class="detail-box">
       <div class="section-top">
         <el-row style="font-size:25px;top:70px">修改密码</el-row>
-        <el-row style="font-size:14px;top:80px"></el-row>
-        <el-row style="font-size:14px;top:90px"></el-row>
+        <el-row style="font-size:14px;top:80px">管理员：----</el-row>
+        <el-row style="font-size:14px;top:90px">管理员ID：-----</el-row>
       </div>
       <div class="">
 				 <el-row class="form-row">
@@ -36,7 +36,7 @@
         </el-row>
         <el-row class="form-row">
           <el-col :span="3" >
-            手机号
+            联系手机号
           </el-col>
           <el-col :span="5">
             <el-input size="mini" v-model.trim="fix.mobile"  placeholder="请输入内容"></el-input>

@@ -107,6 +107,7 @@ export default {
 .nav {
 	background-color: #0b1b36;
 	z-index: 1111;
+  margin-top: 40px;
 }
 
 .el-menu-item{

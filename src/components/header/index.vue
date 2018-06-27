@@ -80,8 +80,8 @@ export default {
 .el-menu-demo {}
 
 .logo {
-  height: 70%;
-  top: 15%;
+  height: 80%;
+  top: 10%;
   left: 20px;
   position: relative;
   margin-left: 0;
