@@ -34,7 +34,7 @@ export default {
 						name: '总量',
 						type: 'pie',
 						selectedMode: 'single',
-						radius: [0, '35%'],
+						radius: [0, '30%'],
 
 						label: {
 							normal: {
@@ -54,46 +54,19 @@ export default {
 					{
 						name: '总量',
 						type: 'pie',
-						radius: ['40%', '50%'],
+						radius: ['35%', '50%'],
 						label: {
 							normal: {
-								// shadowBlur:3,
-								// shadowOffsetX: 2,
-								// shadowOffsetY: 2,
-								// shadowColor: '#999',
-								// padding: [0, 7],
-								rich: {
-									a: {
-										color: '#999',
-										lineHeight: 22,
-										align: 'center',
-									},
-									// abg: {
-									//     backgroundColor: '#333',
-									//     width: '100%',
-									//     align: 'right',
-									//     height: 22,
-									//     borderRadius: [4, 4, 0, 0]
-									// },
-									hr: {
-										borderColor: '#aaa',
-										width: 2,
-										borderWidth: 0.2,
-										height: 4,
-									},
-									b: {
-										fontSize: 16,
-										lineHeight: 33,
-									},
-									per: {
-										color: '#eee',
-										backgroundColor: '#334455',
-										padding: [1, 2],
-										borderRadius: 2,
-									},
-								},
+                label: {
+    							normal: {
+    								position: 'outside',
+    							},
+    						},
 							},
 						},
+            labelLine:{
+              length:5
+            },
 						data: [
 							{ value: obj.normalBeeBoxNum, name: '正常' },
 							{ value: obj.abnormalBeeBoxNum, name: '异常' },
