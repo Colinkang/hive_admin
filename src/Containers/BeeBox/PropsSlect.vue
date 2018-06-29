@@ -388,6 +388,7 @@ export default {
 				array.push(obj);
 			}
 			//console.log(11121212, array);
+			if(array.length === 0) return;
 			let result = post('/queryGroupBeeBox', {
 				filterItems: array,
 			});
