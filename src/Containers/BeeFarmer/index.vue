@@ -126,7 +126,7 @@ export default {
 			beeFarmerSortList: [], //排序后的数据
 			array1: [],
 			right: '',
-			org_status:''
+			org_status: '',
 		};
 	},
 	methods: {
@@ -163,8 +163,6 @@ export default {
 			});
 		},
 		sortByOrg() {
-			
-			
 			this.array1 = sortByOrganzation(this.beeFarmerLists);
 			// sortBy('organizationName', this.statusList, this.checkAllStatus, [], this.beeFarmerLists, true);
 			this.beeFarmerSortList = [];
@@ -206,7 +204,7 @@ export default {
 			if (Validate(options, beeFarmerAddSchema) !== null) {
 				this.$message({
 					showClose: true,
-					message: '字段都不能为空',
+					message: '字段不能为空',
 					type: 'warning',
 				});
 				return;
@@ -226,6 +224,12 @@ export default {
 					});
 					this.clearFarmerInfo();
 					this.getFarmerList(1);
+				} else if (res.data.responseCode === '000039') {
+					this.$message({
+						showClose: true,
+						message: '修改蜂农信息时密码不能为空',
+						type: 'warning',
+					});
 				} else {
 					this.$message({
 						showClose: true,

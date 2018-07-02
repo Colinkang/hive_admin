@@ -25,7 +25,7 @@ const beeFarmerAddSchema = Joi.object().keys({
     email: Joi.string().required(),
     mobile: Joi.string().required(),
     code: Joi.string().required(),
-    password: Joi.string().required(),
+    password: Joi.any(),
     address: Joi.string().required(),
 })
 
@@ -70,7 +70,7 @@ const createManagerSchema = Joi.object().keys({
     email: Joi.string().required(),
     mobile: Joi.string().required(),
     name: Joi.string().required(),
-    password: Joi.string().required(),
+    password: Joi.any(),
     rights: Joi.any(),
     type: Joi.any(),
     id: Joi.any(),

@@ -3,8 +3,8 @@
     <div class="detail-box">
       <div class="section-top">
         <el-row style="font-size:25px;top:70px">修改密码</el-row>
-        <el-row style="font-size:14px;top:80px">管理员：----</el-row>
-        <el-row style="font-size:14px;top:90px">管理员ID：-----</el-row>
+        <el-row style="font-size:14px;top:80px">管理员：{{username}}</el-row>
+        <el-row style="font-size:14px;top:90px">管理员ID：{{id}}</el-row>
       </div>
       <div class="">
 				 <el-row class="form-row">
@@ -12,7 +12,7 @@
             旧登录密码
           </el-col>
           <el-col :span="5">
-            <el-input size="mini" type="oldPassword" v-model.trim="fix.oldPassword"  placeholder="请输入内容"></el-input>
+            <el-input size="mini" type="password" v-model.trim="fix.oldPassword"  placeholder="请输入内容"></el-input>
           </el-col>
 
         </el-row>
@@ -68,11 +68,13 @@
 import { get, post } from '../../common/post.js';
 import { Validate, updatePasswordSchema } from '../../common/schema.js';
 import localStore from '../../common/localStore.js';
-import { HIVE_USER_NAME } from '../../common/localStorageKey.js';
+import { HIVE_USER_NAME, HIVE_ADMIN_ID } from '../../common/localStorageKey.js';
 export default {
 	name: '',
 	data: () => ({
 		changeCodeShowAlert: false,
+		Id: '',
+		username: '',
 		fix: {
 			username: '',
 			oldPassword: '',
@@ -82,6 +84,10 @@ export default {
 			code: '',
 		},
 	}),
+	mounted() {
+		this.id = localStore.getItem(HIVE_ADMIN_ID);
+		this.username = localStore.getItem(HIVE_USER_NAME);
+	},
 	methods: {
 		sendCode() {
 			if (!this.fix.mobile) {
@@ -160,6 +166,7 @@ export default {
 							type: 'warning',
 						});
 					} else {
+						console.log(1111, res);
 						this.$message.error('修改密码失败');
 					}
 				});

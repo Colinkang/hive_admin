@@ -9,7 +9,7 @@
                   <el-button type="text" @click="deleteBeeBox" >删除</el-button>
                 </span>
       <span><i class="iconfont icon-shuaxin1"></i>
-                  <el-button type="text" @click="getHiveList(null)">刷新</el-button>
+                  <el-button type="text" @click="getHiveList(null);getSingleHiveList(null)">刷新</el-button>
                 </span>
     </div>
     <div class="hive-top-input">
@@ -26,7 +26,7 @@
           <th @click="sortById">蜂箱ID<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
           <th @click="sortByTemperature">温度<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
           <th @click="sortByHumidity">湿度<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
-          <th @click="sortByGravity">重量<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
+          <th @click="sortByGravity">重力<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
           <th @click="sortByAirPressure">压强<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
           <th @click="sortByStatus">状态<i class="iconfont icon-duibi" style="font-size:12px"></i></th>
           <!-- <th>电量</th> -->
@@ -282,12 +282,14 @@ export default {
 			array1: [],
 			groupSortList: [],
 			ok: true,
+			res: '',
 		};
 	},
 	mounted: function() {
 		// this.getBeeBoxInfo();
 		this.getPai();
 		this.getHiveList();
+		this.getSingleHiveList();
 		this.getLngLat(); // 设置中心点
 		this.getGroupList();
 		let adminRight = LocalStore.getItem(HIVE_ADMIN_RIGHTS);
@@ -443,6 +445,23 @@ export default {
 			this.$refs['PropsSlect'].clearTimer();
 			this.beeBoxNo = '';
 			this.getHiveList(this.search);
+			this.getSingleHiveList(this.search);
+		},
+		getSingleHiveList(keyword) {
+			console.log(keyword);
+			clearInterval(hiveTimer);
+			// 先清除要不然搜索出现问题
+			// clearInterval(timer);
+			let result = post('/getAllBeeBoxSensorData', {
+				keyword: keyword || null,
+			});
+			result.then(res => {
+				if (res.data.responseCode === '000000') {
+					console.log(1119999, res.data);
+					this.hiveList = res.data.data;
+					hiveTimer = setInterval(this.getSingleHiveList, 10000);
+				}
+			});
 		},
 		// 获取蜂箱列表信息  搜索页面
 		getHiveList(keyword) {
@@ -457,7 +476,7 @@ export default {
 			result.then(res => {
 				if (res.data.responseCode === '000000') {
 					console.log(9999, res.data);
-					hiveTimer = setTimeout(this.getHiveList, 100000);
+					hiveTimer = setTimeout(this.getHiveList, 5000);
 					this.createStartData(res);
 				}
 			});
@@ -471,6 +490,7 @@ export default {
 			//alert(11111)
 			//console.log(100000, res);
 			let data = res.data.data;
+			console.log(12390, data);
 			this.hiveList = data;
 			//console.log(1112, this.hiveList);
 			let list = data;
@@ -523,6 +543,7 @@ export default {
 							type: 'success',
 						});
 						this.getHiveList(null);
+						// this.getSingleHiveList(null);
 						this.deleteIdObject = {};
 					}
 				})

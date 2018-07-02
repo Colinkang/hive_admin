@@ -128,7 +128,7 @@
             </td>
             <td style="width:16%;">{{ item.ruleName }}</td>
             <td style="width:16%;">{{ item.groupName }}</td>
-            <td style="width:16%;">{{ ruleTypeList[item.ruleType] }}</td>
+            <td style="width:16%;">{{ ruleTypeList[item.ruleType-1] }}</td>
             <td style="width:16%;">{{ item.minThreshold + '~' + item.maxThreshold }}</td>
             <td style="width:16%;">{{ convert(item.notificationTarget, 1) }}</td>
             <td style="width:16%;">{{ convert(item.notificationWay, 2) }}</td>
@@ -288,6 +288,7 @@ export default {
 		getEvents() {
 			let result = get('/getEvents');
 			result.then(res => {
+				console.log(112223,res.data.data)
 				this.eventList = res.data.data;
 				// 重置勾选状态数组
 				this.eventsCheckedList.length = this.eventList.length;
