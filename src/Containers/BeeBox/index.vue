@@ -204,6 +204,7 @@ import PropsSelect from './PropsSlect.vue';
 import { sortBy } from '../../common/utils.js';
 import moment from 'moment';
 let hiveTimer;
+let hiveTimer1;
 let timer;
 let sensorDataId;
 let temperature = [];
@@ -297,6 +298,7 @@ export default {
 	},
 	destroyed() {
 		clearInterval(hiveTimer);
+    clearInterval(hiveTimer1);
 		clearInterval(timer);
 	},
 	methods: {
@@ -448,22 +450,21 @@ export default {
 			this.getSingleHiveList(this.search);
 		},
 		getSingleHiveList(keyword) {
-			console.log(keyword);
-			clearInterval(hiveTimer);
-			// 先清除要不然搜索出现问题
-			// clearInterval(timer);
-			hiveTimer = setInterval(function() {
-				let result = post('/getAllBeeBoxSensorData', {
-					keyword: keyword || null,
-				});
-				result.then(res => {
-					if (res.data.responseCode === '000000') {
-						console.log(11199998, res.data);
-						this.hiveList = res.data.data;
-						// hiveTimer = setInterval(this.getSingleHiveList, 10000);
-					}
-				});
-			}, 10000);
+			clearInterval(hiveTimer1);
+      let result = post('/getAllBeeBoxSensorData', {
+        keyword: keyword || null,
+      });
+      result.then(res => {
+        if (res.data.responseCode === '000000') {
+          console.log(11199998, res.data);
+          this.hiveList = res.data.data;
+          hiveTimer1 = setTimeout(()=> {
+    				this.getSingleHiveList()
+    			}, 10000);
+
+        }
+      });
+
 		},
 		// 获取蜂箱列表信息  搜索页面
 		getHiveList(keyword) {
