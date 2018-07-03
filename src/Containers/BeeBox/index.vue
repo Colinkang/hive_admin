@@ -295,7 +295,7 @@ export default {
 		let adminRight = LocalStore.getItem(HIVE_ADMIN_RIGHTS);
 		this.right = adminRight.split(',');
 	},
-	beforeDestroy() {
+	destroyed() {
 		clearInterval(hiveTimer);
 		clearInterval(timer);
 	},
@@ -452,16 +452,18 @@ export default {
 			clearInterval(hiveTimer);
 			// 先清除要不然搜索出现问题
 			// clearInterval(timer);
-			let result = post('/getAllBeeBoxSensorData', {
-				keyword: keyword || null,
-			});
-			result.then(res => {
-				if (res.data.responseCode === '000000') {
-					console.log(1119999, res.data);
-					this.hiveList = res.data.data;
-					hiveTimer = setInterval(this.getSingleHiveList, 10000);
-				}
-			});
+			hiveTimer = setInterval(function() {
+				let result = post('/getAllBeeBoxSensorData', {
+					keyword: keyword || null,
+				});
+				result.then(res => {
+					if (res.data.responseCode === '000000') {
+						console.log(11199998, res.data);
+						this.hiveList = res.data.data;
+						// hiveTimer = setInterval(this.getSingleHiveList, 10000);
+					}
+				});
+			}, 10000);
 		},
 		// 获取蜂箱列表信息  搜索页面
 		getHiveList(keyword) {
