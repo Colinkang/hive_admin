@@ -214,24 +214,65 @@ export default {
 	methods: {
 		//编辑管理员信息
 		editControl(id, index) {
-			let adminData = this.adminList[index];
-			this.$refs.name.setAttribute('readonly', 'readonly');
-			// this.isEditStatus = true;
+			let result = post('/getIndividualAdminInfo', {
+				adminId: id,
+			});
+			result.then(res => {
+				console.log(234, res);
 
-			console.log(989, adminData);
-			this.managementParams = {
-				name: adminData.name,
-				address: adminData.address,
-				mobile: adminData.mobile,
-				code: adminData.code,
-				password: adminData.password,
-				// organizationId: BeeFarmerData.organizationId,
-				email: adminData.email,
-				// beeBoxNum: BeeFarmerData.beeBoxNum,
-				id: adminData.id,
-				type: adminData.type,
-				username: adminData.username,
-			};
+				this.isEditStatus = true;
+				this.$refs.name.setAttribute('readonly', 'readonly');
+				if (res.data.responseCode === '000000') {
+					let adminData = res.data.data;
+					this.managementParams = {
+						name: adminData.name,
+						address: adminData.address,
+						mobile: adminData.mobile,
+						code: adminData.code,
+						password: adminData.password,
+						email: adminData.email,
+						id: adminData.id,
+						type: adminData.type.toString(),
+						username: adminData.username,
+					};
+					this.beefarmerChecked = adminData.domain.beeFarmer;
+					this.beeboxChecked = adminData.domain.beeBox;
+					this.eventChecked = adminData.domain.event;
+					this.adminChecked = adminData.domain.admin;
+					this.organizationChecked = adminData.domain.organization;
+					this.managementParams.rights = adminData.rights;
+					if (adminData.rights.indexOf(1)) {
+						this.adminType = '1';
+					} else if (adminData.rights.indexOf(6)) {
+						this.adminType = '6';
+					}
+
+					if (adminData.rights.indexOf(2)) {
+						this.organizationType = '2';
+					} else if (adminData.rights.indexOf(7)) {
+						this.organizationType = '7';
+					}
+
+					if (adminData.rights.indexOf(3)) {
+						this.beefarmerType = '3';
+					} else if (adminData.rights.indexOf(8)) {
+						this.beefarmerType = '8';
+					}
+
+					if (adminData.rights.indexOf(4)) {
+						this.beeboxType = '4';
+					} else if (adminData.rights.indexOf(9)) {
+						this.beeboxType = '9';
+					}
+
+					if (adminData.rights.indexOf(5)) {
+						this.eventType = '5';
+					} else if (adminData.rights.indexOf(10)) {
+						this.eventType = '10';
+					}
+				}
+			});
+			// let adminData = this.adminList[index];
 		},
 		//清空管理员信息
 		clearManager() {
@@ -385,8 +426,14 @@ export default {
 					this.getManagerList(this.currentPageNo);
 				} else if (res.data.responseCode === '000034') {
 					this.$message.error('验证码错误');
+				} else if (res.data.responseCode === '000039') {
+					this.$message({
+						showClose: true,
+						message: '修改管理员信息时密码不能为空',
+						type: 'warning',
+					});
 				} else {
-					this.$message.error('添加管理员失败');
+					this.$message.error(message + '管理员失败');
 				}
 			});
 		},
@@ -560,15 +607,15 @@ export default {
 	width: calc(100%-18px);
 	margin-left: 10px;
 	margin-right: 10px;
-  margin-top: 40px;
+	margin-top: 40px;
 	color: white;
 	padding-bottom: 100px;
 	min-height: 920px;
 }
-.header-box{
-  background: #15232f;
-  border: 1px solid #235978;
-  padding-bottom: 40px;
+.header-box {
+	background: #15232f;
+	border: 1px solid #235978;
+	padding-bottom: 40px;
 }
 
 .form-row {
@@ -641,11 +688,11 @@ export default {
 .list-box {
 	width: 98%;
 	margin-top: 20px;
-  padding: 10px;
+	padding: 10px;
 	margin-bottom: 40px;
-  margin-right: 10px;
-  height: 600px;
-  background: #2c4261;
+	margin-right: 10px;
+	height: 600px;
+	background: #2c4261;
 }
 
 .header {
@@ -661,7 +708,7 @@ export default {
 }
 
 .header td {
-	background: rgb(275,275,274);
+	background: rgb(275, 275, 274);
 	border: 1px solid #eee;
 	font-size: 14px;
 	height: 25px;
@@ -698,7 +745,7 @@ export default {
 .row-hover:hover {
 	cursor: pointer;
 }
-.el-pagination button{
-  background: #2c4261 !important;
+.el-pagination button {
+	background: #2c4261 !important;
 }
 </style>
